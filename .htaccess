@@ -1,0 +1,116 @@
+﻿Options -MultiViews
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+RewriteCond %{REQUEST_METHOD} !^(GET|POST)
+RewriteRule .* - [R=405,L]
+
+ServerSignature Off
+#ServerTokens Prod
+#X-Frame-Options: ALLOW-FROM http://localhost/ABC/
+RewriteRule ^Alldocument/?$ - [F]
+RewriteRule ^assets/?$ - [F]
+RewriteRule ^Circular/?$ - [F]
+RewriteRule ^image/?$ - [F]
+RewriteRule ^include/?$ - [F]
+#php_flag display_errors off
+#php_value session.cookie_httponly 1
+#php_value session.cookie_secure 1
+FileETag None
+#ErrorDocument ABC /index
+<IfModule mod_headers.c> 
+	Header set X-XSS-Protection "1; mode=block" 
+ 	Header set Access-Control-Allow-Origin "*"
+	Header set X-Content-Type-Options nosniff
+	Header always set X-Frame-Options "sameorigin"
+	#Header set Content-Security-Policy "default-src 'self';"
+	Header always edit Set-Cookie (.*) "$1; HTTPOnly"
+	Header always edit Set-Cookie (.*) "$1; Secure"
+	Header unset Server
+	Header always unset X-Powered-By
+
+	Header unset X-Forwarded-Host
+	Header unset X-Powered-By
+	Header unset X-CF-Powered-By
+	Header unset X-Mod-Pagespeed
+	Header unset X-Pingback
+	 Header set Cache-Control "no-transform"
+	   Header unset ETag
+Header set Strict-Transport-Security "max-age=16070400; includeSubDomains"
+
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteCond %{SCRIPT_FILENAME} -d [OR]
+    RewriteCond %{SCRIPT_FILENAME} -f
+    RewriteRule "(^|/)\." - [F]
+</IfModule>
+
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>
+
+<Files ~ “insert_data.php$”>
+Order allow,deny
+Deny from all
+</Files>
+
+
+
+<Files box.php>
+order allow,deny
+Deny from all
+</Files>
+
+<Files header.php>
+order allow,deny
+Deny from all
+</Files>
+
+<Files topbar.php>
+order allow,deny
+Deny from all
+</Files>
+
+
+<Files menu.php>
+order allow,deny
+Deny from all
+</Files>
+
+<Files footertext.php>
+order allow,deny
+Deny from all
+</Files>
+
+<Files footer.php>
+order allow,deny
+Deny from all
+</Files>
+
+
+
+
+<FilesMatch "\.(ini|psd|log|sh)$">
+Order allow,deny
+Deny from all
+
+</FilesMatch>
+
+# Deny access to filenames starting with dot(.)
+<FilesMatch "^\.">
+Order allow,deny
+Deny from all
+</FilesMatch>
+
+
+
+
+
+
+
+
+
+
+

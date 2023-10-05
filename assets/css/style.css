@@ -1,0 +1,459 @@
+.alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+#villages-units-datatable tbody tr:hover {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+
+}
+
+#villages-units-datatable tbody tr:hover td.class2021 {
+  color: #FFF !important;
+  background-color: #15bed2 !important;
+
+}
+
+#ttable-datatable tbody tr:hover {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+
+}
+
+#ttable-datatable tbody tr:hover td.class2021 {
+  color: #FFF !important;
+  background-color: #15bed2 !important;
+
+}
+
+
+#ReportPCA-Village-datatable tbody tr:hover {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+
+}
+
+#ReportPCA-Village-datatable tbody tr:hover td.class2021 {
+  color: #FFF !important;
+  background-color: #15bed2 !important;
+
+}
+
+
+
+.table-hover tbody tr:hover {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+  cursor: pointer !important;
+}
+
+
+#circulars-units-datatable tbody tr:hover td.classcolor a i {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+  cursor: pointer !important;
+}
+
+#circulars-units-datatable tbody tr:hover {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+  cursor: pointer !important;
+}
+
+#documents-units-datatable tbody tr:hover td.classcolor a i {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+  cursor: pointer !important;
+}
+
+#documents-units-datatable tbody tr:hover {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+  cursor: pointer !important;
+}
+
+#linked-datatable tbody tr:hover td a i {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+  cursor: pointer !important;
+}
+
+#linked-datatable tbody tr:hover {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+  cursor: pointer !important;
+}
+
+#jigardata-datatable tbody tr:hover td a i {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+  cursor: pointer !important;
+}
+
+#jigardata-datatable tbody tr:hover {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+  cursor: pointer !important;
+}
+
+
+#jigardata-datatable tbody tr:hover.selected {
+  color: #FFF !important;
+  background-color: #15bed2 !important;
+  cursor: pointer !important;
+}
+
+
+
+a.breadcrumbs {
+  color: #010064 !important;
+  text-decoration: none;
+  background-color: transparent;
+}
+
+.table-hover tbody tr:hover td.class2021 {
+  color: #FFF !important;
+  background-color: #15bed2 !important;
+  cursor: pointer !important;
+}
+
+.table-hover tbody tr td.action,
+th.action {
+  width: 300px;
+}
+
+.select2-container .select2-selection--single {
+  background-color: #fff !important;
+  border: 1px solid #ced4da !important;
+  height: 38px !important;
+  outline: 0 !important;
+}
+
+#circulars-units-datatable tbody td.wrap {
+  white-space: normal;
+}
+
+#documents-units-datatable tbody td.wrap {
+  white-space: normal;
+}
+
+tbody td.wrap {
+  white-space: normal !important;
+}
+
+.dropdown-item:focus,
+.dropdown-item:hover {
+  color: #FFF !important;
+  text-decoration: none;
+  background-color: #fe6271 !important;
+}
+
+
+table.dataTable.dt-checkboxes-select tbody tr,
+table.dataTable thead .dt-checkboxes-select-all {
+  cursor: pointer;
+}
+
+table.dataTable thead .dt-checkboxes-select-all {
+  text-align: center;
+}
+
+div.dataTables_wrapper span.select-info,
+div.dataTables_wrapper span.select-item {
+  margin-left: 0.5em;
+}
+
+@media screen and (max-width: 640px) {
+
+  div.dataTables_wrapper span.select-info,
+  div.dataTables_wrapper span.select-item {
+    margin-left: 0;
+    display: block;
+  }
+}
+
+table.dataTable tbody>tr.selected,
+table.dataTable tbody>tr>.selected {
+  background-color: #15bed2 !important;
+  color: #FFF !important;
+
+}
+
+table.dataTable tbody>tr.selected td,
+table.dataTable tbody>tr>.selected td {
+  border-color: #15bed2;
+}
+
+.dropcap,
+.dropcap-circle,
+.dropcap-square {
+  display: block !important;
+  float: left !important;
+  line-height: 16px !important;
+  margin-right: 6px !important;
+  text-shadow: none !important;
+  font-size: 1.5em;
+}
+
+.dropcap1,
+.dropcap-circle,
+.dropcap-square {
+  display: block !important;
+  line-height: 16px !important;
+  margin-right: 6px !important;
+  text-shadow: none !important;
+  font-size: 1.5em;
+}
+
+.select2-container-multi {
+  display: none !important;
+}
+
+.nav-tabs .nav-link.active {
+  color: #fe6271 !important;
+  font-weight: bold !important;
+}
+
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #15bed2;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #fe6271;
+}
+
+
+
+.dataTable::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Track */
+.dataTable::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+/* Handle */
+.dataTable::-webkit-scrollbar-thumb {
+  background: #15bed2;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.dataTable::-webkit-scrollbar-thumb:hover {
+  background: #fe6271;
+}
+
+.disablemanual {
+  opacity: .65;
+}
+
+/*.table-hover tbody tr td span.switchery {
+    color: #fe6271 !important;
+   
+}
+.table-hover tbody tr:hover td span.switchery
+{
+        color: #FFF !important;
+    background-color:#15bed2 !important;
+    cursor: pointer !important;
+}*/
+.let {
+  border: 1px solid !important;
+  border-color: grey !important;
+  padding: 1%;
+}
+
+.chha {
+  width: auto;
+  font-size: initial;
+  border-color: gray !important;
+  margin: 0 !important;
+}
+
+.letmrg {
+  border: 1px solid !important;
+  border-color: grey !important;
+  padding: 1%;
+}
+
+.chhamrg {
+  width: auto;
+  font-size: initial;
+  border-color: gray !important;
+}
+
+.letmrgp {
+  border: 1px solid !important;
+  border-color: grey !important;
+  padding: 1%;
+}
+
+.chhamrgp {
+  width: auto;
+  font-size: initial;
+  border-color: gray !important;
+}
+
+.dropify-wrapper {
+  height: 100px !important;
+}
+
+span.fontres {
+  font-size: 2rem;
+}
+
+.wid {
+  min-width: 920px !important;
+  margin: auto;
+}
+
+@media only screen and (max-width: 1500px) and (min-width: 960px) {
+  .wid {
+    min-width: 580px !important;
+    margin: auto;
+  }
+
+}
+
+@media only screen and (max-width: 959px) and (min-width: 520px) {
+  .wid {
+    min-width: 295px !important;
+    margin: auto;
+  }
+
+  span.fontres {
+    font-size: 1.6rem;
+  }
+
+}
+
+@media only screen and (max-width: 519px) {
+  .wid {
+    min-width: 95px !important;
+    margin: auto;
+  }
+
+  span.fontres {
+    font-size: 4vw;
+  }
+
+}
+
+.dropify-wrapper {
+  height: 100% !important;
+}
+
+.boxborder {
+  border-top: 1px solid gray;
+  padding: 5px 0 5px 0;
+  /* border-bottom: 1px solid gray;*/
+}
+
+.trhead {
+  background-color: #45b0e2;
+  color: white;
+  vertical-align: middle;
+}
+
+.trleftalign {
+  text-align: left;
+
+}
+
+
+.trinspam {
+  color: #797979
+}
+
+.trinstrong {
+  color: #c04585;
+}
+
+.trinstrong1 {
+  color: #15bfd3;
+}
+
+.table-hover tbody tr:hover td strong span.trinspam {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+  cursor: pointer !important;
+}
+
+.table-hover tbody tr:hover td strong.trinstrong1 {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+  cursor: pointer !important;
+}
+
+.table-hover tbody tr:hover td strong span.trinstrong {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+  cursor: pointer !important;
+}
+
+.table-hover tbody tr:hover td strong.trinstrong {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+  cursor: pointer !important;
+}
+
+.table-hover tbody tr:hover td strong span.trinstrong1 {
+  color: #FFF !important;
+  background-color: #fe6271 !important;
+  cursor: pointer !important;
+}
+
+.table-hover tbody tr.incompleted:hover {
+  background: #aba000 !important;
+  color: white !important;
+}
+
+.incompleted {
+  background: #c04585 !important;
+  color: white !important;
+}
+
+.ms-container {
+  width: 350px !important;
+}
+
+/*@media (min-width: 1201px)
+{
+.modal-xl {
+    max-width: 1600px !important;
+}
+  
+}*/
+.dataTables_processing {
+  background-color: #fe6271 !important;
+  color: white;
+}
+
+.jigs {
+  white-space: inherit;
+}
+
+.captcha-input {
+  /* background: #FFF url(./../../assets/captcha.php) repeat-y left center; */
+  padding-left: 85px;
+}
