@@ -1,0 +1,328 @@
+<div id="con-close-modal-add123" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form enctype="multipart/form-data" class="form-horizontal group-border-dashed" data-parsley-validate
+                novalidate data-parsley-trigger="keyup" id="adduser">
+                <input type="hidden" name="formname" id="formname" value="adduserdata">
+                <input type="hidden" name="admin_type" id="admin_type" value="2">
+
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-white">ADD USER</h5>
+
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xl-12">
+
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label">User Type</label>
+
+                                <div class="col-md-9 pt-2">
+
+
+                                    <select data-toggle="select1" required id="userType" name="userType"
+                                        onchange="updateDropdown(this)">
+                                        <option value="">Select User Type</option>
+                                        <?php
+
+                                        if ($_SESSION['login_type'] == "0") { ?>
+                                        <option value="1">ORGI User</option>
+                                        <option value="2">DCO Admin</option>
+
+
+                                        <?php } ?>
+                                        <?php
+
+                                        if ($_SESSION['login_type'] == "2") { ?>
+
+                                        <option value="3" Selected="Selected">DCO User</option>
+
+
+
+                                        <?php } ?>
+
+
+                                    </select>
+                                    <script>
+                                        function updateDropdown(selectElement) {
+                                            var userType = selectElement.value;
+                                            var stateSelect = document.getElementById("addSTID2021");
+
+                                            if (userType == "1") {
+                                                stateSelect.removeAttribute("data-parsley-required", "false");
+                                                stateSelect.disabled = true;
+                                                $(stateSelect).parsley().reset();
+                                                $("#addSTID2021").prop("disabled", true).val("").prop("required", false).trigger("change");
+                                            } else {
+                                                stateSelect.setAttribute("data-parsley-required", "true");
+                                                stateSelect.disabled = false;
+                                                $(stateSelect).parsley().reset();
+                                                $("#addSTID2021").prop("disabled", false).prop("required", true);
+                                            }
+                                        }
+                                    </script>
+
+                                </div>
+
+                            </div>
+                            <!-- if($rows['assignlist']==$element['STID']) -->
+
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label">State / UT Name</label>
+                                <div class="col-md-9 pt-2">
+                                    <!-- <select data-toggle="select2" required id="addSTID2021" name="addSTID2021" 
+                                    > -->
+                                    <!-- Code to hide this value is required when state/ut name is selected -->
+                                    <select data-toggle="select2" <?php if ($_GET['come']=='comefromdocadd' ) { ?>
+                                        disabled
+                                        <?php } ?> required id="addSTID2021" name="addSTID2021"
+                                        onchange="return get_dist_select_data(this,'
+                                        <?php echo $passvalue; ?>');">
+
+                                        <option value="">Select State / UT Name</option>
+
+
+                                        <?php foreach ($sql_data_all as $key => $element) { ?>
+
+                                        <?php if ($rows['assignlist'] == $element['STID']) { ?>
+                                        <option value="<?php echo $element['STID']; ?>" Selected="Selected" <?php } ?>>
+                                            <?php echo $element['STName']; ?>
+                                        </option>
+
+                                        <?php if ($_SESSION['login_type'] == "0") { ?>
+
+                                        <option value="<?php echo $element['STID']; ?>">
+                                            <?php echo $element['STName']; ?>
+                                        </option>
+                                        <?php } ?>
+
+
+
+                                        <?php } ?>
+
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                            <!-- <div class="form-group row">
+                                <label class="col-md-3 col-form-label">Login ID</label>
+                                
+                                <div class="col-md-3">
+                                    <input class="form-control" type="text" id="addusername" name="addusername" value=""
+                                        placeholder="Enter Login ID"data-parsley-pattern="^[a-zA-Z0-9-\s]+$" data-parsley-pattern-message="User ID can contain only alphabets and spaces." data-parsley-minlength="5" data-parsley-maxlength="16" style="width: 328%;" required>
+                                </div>
+                            </div> -->
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label">Officer's Name</label>
+
+                                <div class="col-md-3">
+                                    <input class="form-control" type="text" id="username" name="username" value=""
+                                        placeholder="Enter Officer's  Name" data-parsley-pattern="^[a-zA-Z.\s]+$"
+                                        data-parsley-pattern-message="Officer's Name can contain only alphabets and spaces."
+                                        data-parsley-minlength="3" data-parsley-maxlength="25" style="width: 328%;"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label">Designation</label>
+
+                                <div class="col-md-3">
+                                    <input class="form-control" type="text" id="adddesignation" name="adddesignation"
+                                        value="" placeholder="Enter Officer's Designation"
+                                        data-parsley-pattern="^[^<>]+$"
+                                        data-parsley-pattern-message="Designation can contain only alphabets and spaces."
+                                        data-parsley-minlength="3" data-parsley-maxlength="25" style="width: 328%;"
+                                        required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label">Mobile Number</label>
+                                <div class="col-md-3">
+                                    <input class="form-control" type="number" id="addmobile" name="addmobile" value=""
+                                        placeholder="Enter Mobile Number" data-parsley-minlength="1"
+                                        data-parsley-maxlength="10" onkeypress="return validate(event)"
+                                        data-parsley-pattern="^[6-9][0-9]{9}$"
+                                        data-parsley-pattern-message="Invalid Mobile Number  OR  Mobile Number length should be 10"
+                                        style="width: 328%;" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label">Email</label>
+
+                                <div class="col-md-3">
+                                    <input class="form-control" type="text" id="addemail" name="addemail" value=""
+                                        placeholder="Enter Email " data-parsley-minlength="3"
+                                        data-parsley-pattern="^[a-z](?:[a-z0-9_.-]*[a-z0-9])?$"
+                                        data-parsley-pattern-message="Email ID is invalid" required> <br>
+
+                                </div>
+
+                                <div class="col-md-1 col-form-label">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="email1" name="emailType"
+                                            value="@nic.in" checked>
+                                        <label class="form-check-label" for="email1">@nic.in</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="email2" name="emailType"
+                                            value="@gov.in">
+                                        <label class="form-check-label" for="email2">@gov.in</label>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label">Password</label>
+                                <div class="col-md-9">
+                                    <div style="z-index: 9999;text-align: end; margin: 0px 10px -30px 0px;">
+                                        <i class="fas fa-eye showpass" style="cursor: pointer;"></i>
+                                    </div>
+                                    <input type="password" autocomplete="new-password" class="form-control"
+                                        name="addpassword" data-parsley-length="[8, 16]" data-parsley-uppercase="1"
+                                        data-parsley-lowercase="1" data-parsley-number="1" data-parsley-special="1"
+                                        data-parsley-pattern="^(?=[^\W_])(?!.*[\W_ ]$).*$"
+                                        data-parsley-pattern-message="Password should not begin or end with special characters or spaces."
+                                        id="addpassword" required placeholder="Enter Password" />
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label">Confirm Password</label>
+                                <div class="col-md-9" style="position:relative;">
+                                    <input class="form-control" autocomplete="off" type="password"
+                                        data-parsley-equalto="#addpassword" data-parsley-required="true" id="ncpassword"
+                                        name="ncpassword" value="" data-parsley-length="[8, 16]"
+                                        placeholder="Enter Confirm password" required>
+                                    <div style="z-index: 9999;
+                        width: fit-content;
+                        
+                        margin: 0 10px 0px 0px;
+                        position:absolute;
+                        left: 93%;
+                        top: 10px;">
+                                        <i class="fas fa-eye showpass2" style="cursor: pointer;"></i>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </div><!-- end col -->
+
+                    </div>
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect closepop" data-dismiss="modal"
+                        onclick="refreshPage()">Cancel</button>
+                    <button type="submit" name="submit" class="btn btn-info waves-effect waves-light">Save</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<!-- Cancel button refresh -->
+<script>
+    function refreshPage() {
+        location.reload();
+    }
+</script>
+
+<div id="resetcon-close-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form enctype="multipart/form-data" class="form-horizontal group-border-dashed parsley-examples"
+                id="resetupdateusers">
+
+                <input type="hidden" name="userids" id="userids" value="">
+
+                <div class="modal-header bg-primary">
+                    <!-- reset password functionallt eye icon resolved by shashi** -->
+                    <h5 class="modal-title text-white">Reset Password</h5>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label">New Password</label>
+                                <div class="col-md-9" style="position:relative;">
+                                    <input class="form-control" type="password" data-parsley-required="true"
+                                        id="npassword" autocomplete="off" name="npassword" value=""
+                                        data-parsley-length="[8, 16]" data-parsley-uppercase="1"
+                                        data-parsley-lowercase="1" data-parsley-number="1" data-parsley-special="1"
+                                        placeholder="Enter password" required>
+
+                                    <div style="z-index: 9999;
+            width: fit-content;
+            
+            margin: 0 10px 0px 0px;
+            position:absolute;
+            left: 93%;
+            top: 10px;">
+                                        <i class="fas fa-eye showpass1" style="cursor: pointer;"></i>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="form-group row">
+                                <!-- reset password functionallt eye icon resolved by shashi** -->
+
+                                <label class="col-md-3 col-form-label">Confirm Password</label>
+                                <div class="col-md-9" style="position:relative;">
+                                    <input class="form-control" autocomplete="off" type="password"
+                                        data-parsley-equalto="#npassword" data-parsley-required="true" id="cpassword"
+                                        name="cncpassword" value="" data-parsley-length="[8, 16]"
+                                        placeholder="Enter Confirm password" required>
+                                    <div style="z-index: 9999;
+                        width: fit-content;
+                        
+                        margin: 0 10px 0px 0px;
+                        position:absolute;
+                        left: 93%;
+                        top: 10px;">
+                                        <i class="fas fa-eye showpass3" style="cursor: pointer;"></i>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div><!-- end col -->
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect closepop" data-dismiss="modal"
+                        onclick="resetModal()">Cancel</button>
+                    <button type="submit" name="submit" class="btn btn-info waves-effect waves-light">Reset</button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+
+<script>

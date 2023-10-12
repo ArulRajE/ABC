@@ -6519,8 +6519,7 @@ else
 
 }
 
-function createnew(createfrom) {
-
+function createnew(createfrom, stid) {
 var seleted = $('#applyon').val();
 var flagof = $('#flagof').val();
  $('.add_button_name').attr('disabled', true);  
@@ -6943,12 +6942,10 @@ else
     }).done(function (result) {
 
          var finalresult = result.split("|");
-          
-
-                $('#addnewdocument').modal('show'); 
-                $('#comefromcheck').val(finalresult[2]);
-                $('#clickpopup').val(createfrom);
-
+         $('#addnewdocument').modal('show'); 
+         $('#comefromcheck').val(finalresult[2]);
+         $('#clickpopup').val(createfrom);
+         
                 if(finalresult[2]=='State')
                 {
                     $('#view1').css("display", "none");
@@ -6980,7 +6977,7 @@ else
                                 else
                                 {
                                     $("select[name*='vStateStatus[]'] option[value='TOWN']").remove();    
-$("select[name*='vStateStatus[]']").append(`<option value="TOWN">
+                                    $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
                                       Town
                                   </option>`);
                                   
@@ -7012,6 +7009,7 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
                 // $("#name2021").attr("placeholder", ""+finalresult[2]+" Name");
                  if(seleted=='State')
                         {
+                            
                             $("#maintitle").html("Create New - "+finalresult[2]+" / UT");
                             $("#comespan").html("[Create New - "+finalresult[2]+"  / UT]");
                             $("#addlable").html("Enter "+finalresult[2]+" / UT");
@@ -7022,6 +7020,7 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
                         {
                             if(createfrom=='Addition')
                             {
+                                
                             $("#maintitle").html("Add New Village(s)");
                             $("#comespan").html("[Add New Village(s)]");
                             $("#addlable").html("Enter Village");
@@ -7033,6 +7032,7 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
                             }
                             else
                             {
+                                
                                  $("#maintitle").html("Create New - "+finalresult[2]+"");
                             $("#comespan").html("[Create New - "+finalresult[2]+"]");
                             $("#addlable").html("Enter "+finalresult[2]+"");
@@ -7233,7 +7233,7 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
 
                                 $("#statenew1").append($('<option>', {
                             value: '',
-                            text: 'Select State / UT',
+                            text: 'Select State1 / UT',
                             }));
 
                             $(JSON.parse(finalresult[8])).each(function () {
@@ -7243,6 +7243,9 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
                             text: this.Name,
                             }));
 
+                            });
+                            $( "#statenew1" ).change(function() {
+                                $('.add_button_name').attr('disabled', true);  
                             });
                         //  JC_38
 
@@ -7280,11 +7283,12 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
                             }  
                             if(finalresult[7]!='')
                             {
+                                
                              $("#fromstate1").children().remove();
 
                                 $("#fromstate1").append($('<option>', {
                             value: '',
-                            text: 'Select State / UT',
+                            text: 'Select State2 / UT',
                             }));
 
                             $(JSON.parse(finalresult[7])).each(function () {
@@ -7360,6 +7364,7 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
                                   
                             if(finalresult[2]=='State')
                             {
+                                
                                  $("#selected_come").append($('<option>', {
                             value: '',
                             text: 'Select '+finalresult[2]+' / UT',
@@ -7384,11 +7389,13 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
                             });
                                  if($('#flagof').val()=='true')
                                 {
+                                    
                                     $('#selected_come').val(fstids).trigger('change');
                                 }
                                 else
                                 {
-                                    $('#selected_come').val('').trigger('change');
+
+                                    $('#selected_come').val(stid).trigger('change');
                                 }
                             
 
@@ -7580,7 +7587,7 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
 
                                 $("#statenew1").append($('<option>', {
                                 value: '',
-                                text: 'Select State / UT',
+                                text: 'Select State3 / UT',
                                 }));
 
                                 $(JSON.parse(finalresult[8])).each(function () {
@@ -7626,7 +7633,7 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
 
                                 $("#fromstate1").append($('<option>', {
                             value: '',
-                            text: 'Select State / UT',
+                            text: 'Select State4 / UT',
                             }));
 
                             $(JSON.parse(finalresult[7])).each(function () {
@@ -8096,7 +8103,7 @@ $("#maintitlesub").html("Submerge "+finalresult[2]+"");
                 $("#stategetsub").children().remove();
                  $("#stategetsub").append($('<option>', {
                 value: '',
-                text: 'Select State / UT',
+                text: 'Select State5 / UT',
                 }));
                
                 $(JSON.parse(finalresult[0])).each(function () {
@@ -8405,12 +8412,12 @@ function get_dist_select_data(data, DTIDS) {
     return false;
 }
 
-function getselecteddocumentredirect(dataval,comefromdoc,doctype) {
+function getselecteddocumentredirect(dataval,comefromdoc,doctype, stid) {
 
          if(comefromdoc!='')
         {
           
-            window.location.href = "adddocument?idsdoc="+dataval+"&come="+comefromdoc+"&doctype="+doctype; 
+            window.location.href = "adddocument?idsdoc="+dataval+"&come="+comefromdoc+"&doctype="+doctype+"&stid="+stid; 
         }
        
 }

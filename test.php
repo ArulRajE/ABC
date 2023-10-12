@@ -1,4 +1,5 @@
 <?php
+die(phpinfo());
 include('include/db_conn.php');
 include('include/function.php');
 // Database dbection
