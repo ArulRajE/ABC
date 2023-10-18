@@ -4779,7 +4779,6 @@ function get_village_popup(data) {
 }
 function get_district_popup_distdata_add(data, clickpopup, no) {
   var seleted = $("#applyon").val();
-
   if (
     (clickpopup == "Create" ||
       clickpopup == "Merge" ||
@@ -4863,7 +4862,6 @@ function get_district_popup_distdata_add(data, clickpopup, no) {
           $(".ACNN" + finalresult[3] + "").css({ "margin-left": "" });
         }
       } else {
-        console.log('ar else');
         $("#id2021" + finalresult[3] + "")
           .children()
           .remove();
@@ -4910,9 +4908,23 @@ function get_district_popup_distdata_add(data, clickpopup, no) {
     });
   }
   // JC_104 Modified by Arul for district refresh in M/PM
-  // else if(clickpopup == "Merge" && data.value === "" && seleted == "District"){
-    
-  // }
+   else if(clickpopup == "Merge" && data.value === "" && seleted == "District"){
+    $("#id2021" + no + "")
+          .children()
+          .remove();
+        $("#id2021" + no + "").append(
+          $("<option>", {
+            value: "",
+            text: "Select District",
+          })
+        );
+        $("#id2021" + no + "")
+        .val("")
+        .trigger("change");
+        $("#action" + no + "")
+        .val("")
+        .trigger("change");
+   }
 }
 
 function get_district_popupto_ii(data, clickpopup, i) {
