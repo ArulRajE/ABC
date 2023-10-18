@@ -194,7 +194,7 @@ $result = pg_query_params($db,$qu,$array2 );
                                         
                                         <td class="wrap"><?php echo htmlspecialchars($data['docdescription']); ?></td>
                                         <td><?php if($data['docstatus']==0){ ?>
-                                                <span class="badge badge-purple" data-id="<?php echo $data['docids']; ?>" onclick="return getselecteddocumentredirect(<?php echo $data['docids']; ?>,'comefromdoc','',<?php echo $data['Short_ST']; ?>);" >Pending - Only Document Uploaded</span>
+                                                <span class="badge badge-purple" data-id="<?php echo $data['docids']; ?>" onclick="return getselecteddocumentredirect(<?php echo $data['docids']; ?>,'comefromdoc','');" >Pending - Only Document Uploaded</span>
                                                 <?php } else if($data['docstatus']==2){ ?>
                                             <span class="badge badge-warning" style="cursor: not-allowed">Partially Incomplete</span>
                                         <?php } else { ?>

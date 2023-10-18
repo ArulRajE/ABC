@@ -437,12 +437,13 @@ $rowaction = pg_fetch_all($resultaction);
                                                                     <div class="col-md-12 row">
 
                                                                         <div class="col-sm-12 col-md-6 col-lg-6 pl-0 pt-2 col-xl-4">
-                                                                            <button type="button"  onclick="createnew('Create', <?php echo $_GET['stid']; ?>)" name="createnew" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Create" >Create New</button>
+
+                                                                            <button type="button"  onclick="createnew('Create')" name="createnew" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Create" >Create New</button>
 
                                                                         </div>
                                                                         <div class="col-sm-12 col-md-6 col-lg-6 pl-0 pt-2 col-xl-4">
                                                                             
-                                                                            <button type="button" onclick="createnew('Merge',<?php echo $_GET['stid']; ?>)" name="mergenew" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Mergebt">Merge / Partially Merge</button>
+                                                                            <button type="button" onclick="createnew('Merge')" name="mergenew" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Mergebt">Merge / Partially Merge</button>
 
                                                                         </div>
                                                                         <div class=" col-sm-12 col-md-6 col-lg-6 pl-0 pt-2 col-xl-4">
@@ -988,6 +989,7 @@ $(function() {
      
 
     $(addButton).click(function(){
+
         if (x < maxField) {
           
              if(x==1)
@@ -1007,6 +1009,7 @@ $(function() {
 
  var seleted = $('#applyon').val();
 var clickpopup = $('#clickpopup').val();
+
   var fieldHTML =
         '<div class="row boxborder" id="row_'+x+'" ><input type="hidden" name="ostate[]" id="ostate'+x+'" value=""><div class="form-group col-md-3 fromstate ST pl-1 pr-1 mb-0" style="display:none;"><label style="display:none;" class="col-md-12 pl-1 pr-1 fromstate">Select State / UT</label><div style="display:none;" class="col-md-12 pl-1 pr-1 fromstate"><select id="fromstate'+x+'" class="form-select fromstate" onchange="return get_district_popup_distdata_add(this,\''+clickpopup+'\','+x+');" name="fromstate[]"></select></div></div><div class="form-group col-md-3 pl-1 pr-1 mb-0 districtstatus DT"><label id="districtstatus" class="col-md-12 pl-1 pr-1 districtstatus">Select District</label><div  id="districtstatusdrop" class="col-md-12 districtstatusdrop districtstatus pl-1 pr-1"><select class="form-select districtstatus" id="districtget_'+x+'" onchange="return get_district_popup(this,\''+clickpopup+'\');" name="districtget[]"></select></div></div><div class="form-group col-md-3 mb-0 sddistrictstatus SD1 pl-1 pr-1"><label id="sddistrictstatus" class="col-md-12 pl-1 pr-1 sddistrictstatus">Select Sub-District</label><div id="sddistrictstatusdrop" class="col-md-12 pl-1 pr-1 sddistrictstatus"><select id="sddistrictget_'+x+'" onchange="return get_sub_district_popup_new(this,\''+clickpopup+'\','+x+');" name="sddistrictget[]" class="form-select sddistrictstatus"><option value="">Select Sub-District</option></select></div></div><div class="form-group col-md-3 mb-0 SD pl-1 pr-1"><label class="col-md-12 addlable3 pl-1 pr-1">Select Sub-District</label><div class ="col-md-12 pl-1 pr-1"  id="did2021'+x+'" ><select class="form-select namefrom selected_come" onchange="return get_fromvalue1(this.value,'+x+')" required name = "namefrom[]" id="id2021'+x+'"></select></div></div><div class="form-group col-md-3 mb-0 AC ACNN'+x+' pl-1 pr-1"><div class = "col-md-12 pl-1 pr-1"><label> Action </label></div><div class = "col-md-12  pl-1 pr-1"><select class="form-select" id="action'+x+'" onchange="return actionoremove(this.value,'+x+')" required name = "action[]" ><option value = "">Action</option></select></div></div><div class="form-group col-md-3 mb-0 FAC pl-1 pr-1" style="display:none" ><div class = "col-md-12 pl-1 pr-1"><label> New Status of <?php echo $_SESSION['activeyears']; ?> </label></div><div class = "col-md-12 pl-1 pr-1"><select class="form-select FAC" name = "fstatus[]" id="fstatus'+x+'"><option value="">Select Status</option><option value="ST">State</option><option value="UT">Union Territory</option></select></div></div><div class = "col-md-1 pt-2 '
            if(seleted=='Village / Town'){

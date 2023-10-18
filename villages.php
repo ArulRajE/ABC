@@ -322,29 +322,342 @@ function s2ab(s) {
                                        
                                                     ?>
                                     <tr>
+                                         <!-- Modified by sahana Split_Action_Administrative_Units 0310 Defect_JC_38-->  
                                         <!-- modified for "pointer" value will change the cursor to a hand icon-->
-                                        <td style=><?php if($data['STID2011']==$STIDDATA[7] && $data['DTID2011']==$STIDDATA[4] && $data['SDID2011']==$STIDDATA[1]){ echo $data['MDDS_VT'.$_SESSION['logindetails']['baseyear'].'']; } else { echo ""; } ?></td>
-                                        <td style=><?php  if($data['STID2011']==$STIDDATA[7] && $data['DTID2011']==$STIDDATA[4] && $data['SDID2011']==$STIDDATA[1]){ echo $data['VTName'.$_SESSION['logindetails']['baseyear'].'']; } else { echo ""; } ?></td>
-                                        <td style=><?php if($data['STID2011']==$STIDDATA[7] && $data['DTID2011']==$STIDDATA[4] && $data['SDID2011']==$STIDDATA[1]){ echo $data['Level'.$_SESSION['logindetails']['baseyear'].'']; } else { echo ""; } ?></td>
-                                        <td style=><?php if($data['STID2011']==$STIDDATA[7] && $data['DTID2011']==$STIDDATA[4] && $data['SDID2011']==$STIDDATA[1]){ echo $sta_baseyear; } else { echo ""; } ?></td>
-                                        <td style=><?php if($data['STID2011']==$STIDDATA[7] && $data['DTID2011']==$STIDDATA[4] && $data['SDID2011']==$STIDDATA[1]){ echo $data['Pop'.$_SESSION['logindetails']['baseyear'].'']; } else { echo ""; } ?></td>
+                                        <td style=><?php 
+
+                                        // if($data['STID2011']==$STIDDATA[7] && $data['DTID2011']==$STIDDATA[4] && $data['SDID2011']==$STIDDATA[1])
+                                        // { 
+                                        //     echo $data['MDDS_VT'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        // } 
+                                        // else 
+                                        // {
+                                        //      echo ""; 
+                                        // } 
+
+                                        if(($data['STID2011']==$data['STID']) && ($data['DTID2011']==$data['DTID']) && ($data['SDID2011']==$data['SDID']))
+                                        { 
+                                            echo $data['MDDS_VT'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        } 
+                                        else if(($STIDDATA[1]==$data['DTID2011']) && ($STIDDATA[1]!=$data['SDID2011']))
+                                        {
+                                            echo $data['MDDS_VT'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        } 
+                                        else if ($STIDDATA[1]!=$data['SDID'] && $data['DTID2011']==$data['DTID']) //2709 for meger of sub dis DTID2011
+                                        {
+                                            echo $data['MDDS_VT'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        }
+                                        else 
+                                        {
+                                             echo ""; 
+                                        } 
+
+                                    ?></td>
+                                        
+                                        
+                                    <td style=><?php  
+
+                                        // if($data['STID2011']==$STIDDATA[7] && $data['DTID2011']==$STIDDATA[4] && $data['SDID2011']==$STIDDATA[1])
+                                        // { 
+                                        //     echo $data['VTName'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        // } 
+                                        // else 
+                                        // { 
+                                        //     echo ""; 
+                                        // } 
+
+                                        if(($data['STID2011']==$data['STID']) && ($data['DTID2011']==$data['DTID']) && ($data['SDID2011']==$data['SDID']))
+                                        { 
+                                            echo $data['VTName'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        } 
+                                        else if(($STIDDATA[1]==$data['DTID2011']) && ($STIDDATA[1]!=$data['SDID2011']))
+                                        {
+                                            echo $data['VTName'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        }
+                                        else if ($STIDDATA[1]!=$data['SDID'] && $data['DTID2011']==$data['DTID']) //2709 for meger of sub dis DTID2011
+                                        {
+                                            echo $data['VTName'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        }
+                                        else 
+                                        { 
+                                            echo ""; 
+                                        } 
+
+                                    ?></td>
+                                        
+                                        
+                                    <td style=><?php 
+                                        // if($data['STID2011']==$STIDDATA[7] && $data['DTID2011']==$STIDDATA[4] && $data['SDID2011']==$STIDDATA[1])
+                                        // { 
+                                        //     echo $data['Level'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        // } 
+                                        // else 
+                                        // { 
+                                        //     echo ""; 
+                                        // } 
+
+                                        if(($data['STID2011']==$data['STID']) && ($data['DTID2011']==$data['DTID']) && ($data['SDID2011']==$data['SDID']))
+                                        { 
+                                            echo $data['Level'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        } 
+                                        else if(($STIDDATA[1]==$data['DTID2011']) && ($STIDDATA[1]!=$data['SDID2011']))
+                                        {
+                                            echo $data['Level'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        }
+                                        else if ($STIDDATA[1]!=$data['SDID'] && $data['DTID2011']==$data['DTID']) //2709 for meger of sub dis DTID2011
+                                        {
+                                            echo $data['Level'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        }
+                                        else 
+                                        { 
+                                            echo ""; 
+                                        } 
+                                    ?></td>
+                                    
+                                    
+                                    <td style=><?php 
+                                        // if($data['STID2011']==$STIDDATA[7] && $data['DTID2011']==$STIDDATA[4] && $data['SDID2011']==$STIDDATA[1])
+                                        // { 
+                                        //     echo $sta_baseyear; 
+                                        // } 
+                                        // else 
+                                        // { 
+                                        //     echo ""; 
+                                        // } 
+
+                                        if(($data['STID2011']==$data['STID']) && ($data['DTID2011']==$data['DTID']) && ($data['SDID2011']==$data['SDID']))
+                                        { 
+                                            echo $sta_baseyear; 
+                                        } 
+                                        else if(($STIDDATA[1]==$data['DTID2011']) && ($STIDDATA[1]!=$data['SDID2011']))
+                                        {
+                                            echo $sta_baseyear; 
+                                        }
+                                        else if ($STIDDATA[1]!=$data['SDID'] && $data['DTID2011']==$data['DTID']) //2709 for meger of sub dis DTID2011
+                                        {
+                                            echo $sta_baseyear; 
+                                        }
+                                        else 
+                                        { 
+                                            echo ""; 
+                                        } 
+                                    ?></td>
+                                    
+                                    
+                                    <td style=><?php 
+                                        // if($data['STID2011']==$STIDDATA[7] && $data['DTID2011']==$STIDDATA[4] && $data['SDID2011']==$STIDDATA[1])
+                                        // { 
+                                        //     echo $data['Pop'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        // } 
+                                        // else 
+                                        // { 
+                                        //     echo ""; 
+                                        // } 
+
+                                        if(($data['STID2011']==$data['STID']) && ($data['DTID2011']==$data['DTID']) && ($data['SDID2011']==$data['SDID']))
+                                        { 
+                                            echo $data['Pop'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        } 
+                                        else if(($STIDDATA[1]==$data['DTID2011']))
+                                        {
+                                            echo $data['Pop'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        }
+                                        else if ($STIDDATA[1]!=$data['SDID'] && $data['DTID2011']==$data['DTID']) //2709 for meger of sub dis DTID2011
+                                        {
+                                            echo $data['Pop'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        }
+                                        else 
+                                        { 
+                                            echo ""; 
+                                        } 
+                                    ?></td>
+                                       
+                                       
                                         <!-- <td><?php // echo (int)$data['Wards'.$_SESSION['logindetails']['baseyear'].'']; ?></td> -->
-                                        <td class="class2021" style=><?php if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID']){ echo $data['MDDS_VT']; } else if($STIDDATA[1]==$data['SDID']) {
-                                           echo $data['MDDS_VT'];
-                                        } else { echo ''; } ?></td>
-                                        <td class="class2021" style=><?php if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID']){ echo $data['VTName']; } else if($STIDDATA[1]==$data['SDID']) {
-                                           echo $data['VTName'];
-                                        } else { echo ''; } ?></td>
-                                        <td class="class2021" style=><?php if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID']){ echo $data['Level']; } else if($STIDDATA[1]==$data['SDID']) {
-                                           echo $data['Level'];
-                                        } else { echo ''; } ?></td>
-                                       <td class="class2021" style=><?php if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID']){ echo $sta; } else if($STIDDATA[1]==$data['SDID']) {
-                                           echo $sta;
-                                        } else { echo ''; } ?></td>
-                                        <td class="class2021" style=><?php if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID']){ echo $data['Pop']; } else if($STIDDATA[1]==$data['SDID']) {
-                                           echo $data['Pop'];
-                                        } else { echo ''; } ?></td>
+
+                                        <!-- Modified by sahana Split_Action_Administrative_Units 0310 Defect_JC_38-->  
+
+                                         <td class="class2021" style=><?php 
+                                            // if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'])
+                                            // { 
+                                            //     echo $data['MDDS_VT']; 
+                                            // } 
+                                            // else if($STIDDATA[1]==$data['SDID']) 
+                                            // {
+                                            // echo $data['MDDS_VT'];
+                                            // } 
+                                            // else 
+                                            // { 
+                                            //     echo ''; 
+                                            // } 
+
+                                            // if($STIDDATA[7]!=$data['STID'])
+                                            // { 
+                                            //     echo $data['MDDS_VT']; 
+                                            // } 
+                                            // else if($STIDDATA[7]==$data['STID'])
+                                            // {
+                                            // echo $data['MDDS_VT'];
+                                            // } 
+                                            // else 
+                                            // { 
+                                            //     echo ''; 
+                                            // } 
+
+                                            if(($STIDDATA[7]==$data['STID']) && ($STIDDATA[4]==$data['DTID']) && ($STIDDATA[1]==$data['SDID']))
+                                            { 
+                                                echo $data['MDDS_VT']; 
+                                            } 
+                                            else if(($STIDDATA[7]!=$data['STID']))
+                                            {
+                                                echo $data['MDDS_VT'];
+                                            }
+                                            else if(($STIDDATA[4]!=$data['DTID']))
+                                            {
+                                                echo $data['MDDS_VT'];
+                                            }
+                                            else 
+                                            { 
+                                                echo ''; 
+                                            } 
+                                        ?></td>
+
+
+                                        <td class="class2021" style=><?php 
+                                            // if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'])
+                                            // {
+                                            //     echo $data['VTName']; 
+                                            // } 
+                                            // else if($STIDDATA[1]==$data['SDID']) 
+                                            // {
+                                            // echo $data['VTName'];
+                                            // } 
+                                            // else 
+                                            // { 
+                                            //     echo ''; 
+                                            // } 
+                                            if(($STIDDATA[7]==$data['STID']) && ($STIDDATA[4]==$data['DTID']) && ($STIDDATA[1]==$data['SDID']))
+                                            { 
+                                                echo $data['VTName']; 
+                                            } 
+                                            else if(($STIDDATA[7]!=$data['STID']))
+                                            {
+                                                echo $data['VTName']; 
+                                            }
+                                            else if(($STIDDATA[4]!=$data['DTID']))
+                                            {
+                                                echo $data['VTName']; 
+                                            }
+                                            else 
+                                            { 
+                                                echo ''; 
+                                            } 
+                                        ?></td>
+
+
+                                        <td class="class2021" style=><?php 
+                                            // if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'])
+                                            // { 
+                                            //     echo $data['Level']; 
+                                            // } 
+                                            // else if($STIDDATA[1]==$data['SDID']) 
+                                            // {
+                                            // echo $data['Level'];
+                                            // } 
+                                            // else 
+                                            // { 
+                                            //     echo ''; 
+                                            // } 
+
+                                            if(($STIDDATA[7]==$data['STID']) && ($STIDDATA[4]==$data['DTID']) && ($STIDDATA[1]==$data['SDID']))
+                                            { 
+                                                echo $data['Level']; 
+                                            } 
+                                            else if(($STIDDATA[7]!=$data['STID']))
+                                            {
+                                                echo $data['Level']; 
+                                            }
+                                            else if(($STIDDATA[4]!=$data['DTID']))
+                                            {
+                                                echo $data['Level']; 
+                                            }
+                                            else 
+                                            { 
+                                                echo ''; 
+                                            } 
+                                        ?></td>
+
+
+                                       <td class="class2021" style=><?php 
+                                            // if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'])
+                                            // { 
+                                            // echo $sta; 
+                                            // } 
+                                            // else if($STIDDATA[1]==$data['SDID']) 
+                                            // {
+                                            // echo $sta;
+                                            // } 
+                                            // else 
+                                            // { 
+                                            //     echo ''; 
+                                            // }
+                                            if(($STIDDATA[7]==$data['STID']) && ($STIDDATA[4]==$data['DTID']) && ($STIDDATA[1]==$data['SDID']))
+                                            { 
+                                                echo $sta; 
+                                            } 
+                                            else if(($STIDDATA[7]!=$data['STID']))
+                                            {
+                                                echo $sta; 
+                                            }
+                                            else if(($STIDDATA[4]!=$data['DTID']))
+                                            {
+                                                echo $sta; 
+                                            }
+                                            else 
+                                            { 
+                                                echo ''; 
+                                            } 
+                                        ?></td>
+
+
+                                        <td class="class2021" style=><?php 
+                                            // if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'])
+                                            // { 
+                                            //     echo $data['Pop']; 
+                                            // } 
+                                            // else if($STIDDATA[1]==$data['SDID']) 
+                                            // {
+                                            // echo $data['Pop'];
+                                            // } 
+                                            // else 
+                                            // { 
+                                            //     echo ''; 
+                                            // } 
+
+                                            if(($STIDDATA[7]==$data['STID']) && ($STIDDATA[4]==$data['DTID']) && ($STIDDATA[1]==$data['SDID']))
+                                            { 
+                                                echo $data['Pop']; 
+                                            } 
+                                            else if(($STIDDATA[7]!=$data['STID']))
+                                            {
+                                                echo $data['Pop']; 
+                                            }
+                                            else if(($STIDDATA[4]!=$data['DTID']))
+                                            {
+                                                echo $data['Pop']; 
+                                            }
+                                            else 
+                                            { 
+                                                echo ''; 
+                                            } 
+
+                                        ?></td>
+
+
+
                                         <!-- <td class="class2021"><?php //echo (int)$data['Wards']; ?></td> -->
+
+
                                         <td class="class2021" >
                                         <?php if($data['fromids']!=null){ ?><span class="badge badge-purple" style = "cursor:pointer; background-color:#fbca35;"    data-todo='<?php echo json_encode($data); ?>'>Incomplete</span><?php } ?></td>
 
@@ -400,7 +713,8 @@ function s2ab(s) {
                                             </div>
                                         </td>*/?>
                                        <td class="class2021">
-                                        <input type="checkbox" class="checkbox" data-vtname="<?php echo $data['VTName']; ?>">
+                                        <input type="checkbox" id="myCheckbox" style = "cursor:pointer">
+                                        <!-- data-vtname="<?php //echo $data['VTName']; ?> -->
                                        </td>
 
                                     </tr>
@@ -932,31 +1246,21 @@ $('select').select2({
 });
 
 //modified by sahana to check the checkbox for uploading map
-var checkboxes = document.querySelectorAll(".checkbox");
-
+var checkboxes = document.querySelectorAll("input[id='myCheckbox']");
 checkboxes.forEach(function(checkbox) {
-    checkbox.addEventListener("click", function() {
-        var vtName = checkbox.getAttribute("data-vtname");
-        var isLastRowCheckbox = checkbox.hasAttribute("data-lastrow");
+    checkbox.addEventListener("click", function(event) {
+        var row = checkbox.closest("tr");
+        var stName = row.querySelector("td:nth-child(7)").textContent;
 
-        if (isLastRowCheckbox && checkbox.checked) {
-            alert("Map Uploaded Successfully For " + vtName);
-        } else {
-            var allCheckboxesChecked = true;
-
-            checkboxes.forEach(function(cb) {
-                if (cb !== checkbox && !cb.checked) {
-                    allCheckboxesChecked = false;
-                }
-            });
-
-            if (allCheckboxesChecked) {
-                alert("All Village(s)/Town(s) map have been uploaded successfully.");
-                window.location.href = "subdistricts.php";
-            } else {
-                alert("Map Uploaded Successfully For " + vtName);
-            }
-        }
+        Swal.fire({
+            type: checkbox.checked ? "success" : "error",
+            title: "Verification",
+            text: checkbox.checked
+                ? "I have verified that as per the uploaded document (notification), " + stName + " administrative units have been updated in the map"
+                : "I have verified that as per the uploaded document (notification), " + stName + " administrative units have NOT been updated in the map",
+            confirmButtonText: "Agree",
+        });
+        event.stopPropagation();
     });
 });
 </script>

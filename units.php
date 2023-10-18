@@ -493,7 +493,7 @@ function s2ab(s) {
                                                 <?php  } ?>
                                             </div>
                                         </td>*/ ?>
-                                        <td><input type = "checkbox" id="myCheckbox"></td>
+                                        <td><input type = "checkbox" id="myCheckbox" style ="cursor:pointer"></td>
                                     </tr>
                                     <?php } 
                                                 ?>
@@ -526,14 +526,23 @@ function s2ab(s) {
 </div>
 <script>
 //modified by sahana map checkbox
-    var checkbox = document.getElementById("myCheckbox");
-    checkbox.addEventListener("click", function() {
-        if (checkbox.checked) {
-            alert("Map uploaded successfully!");
-        } else {
-            alert("Checkbox is unchecked!");
-        }
+var checkboxes = document.querySelectorAll("input[id='myCheckbox']");
+checkboxes.forEach(function(checkbox) {
+    checkbox.addEventListener("click", function(event) {
+        var row = checkbox.closest("tr");
+        var stName = row.querySelector("td:nth-child(8)").textContent;
+
+        Swal.fire({
+            type: checkbox.checked ? "success" : "error",
+            title: "Verification",
+            text: checkbox.checked
+                ? "I have verified that as per the uploaded document (notification), " + stName + " administrative units have been updated in the map"
+                : "I have verified that as per the uploaded document (notification), " + stName + " administrative units have NOT been updated in the map",
+            confirmButtonText: "Agree",
+        });
+        event.stopPropagation();
     });
+});
 </script>
 
 <?php // include ("rightsidebar.php"); ?>

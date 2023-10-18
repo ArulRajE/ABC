@@ -277,45 +277,216 @@ function s2ab(s) {
                                 </thead>
                                 <tbody>
                                     <?php while ($data = pg_fetch_array($result)) { 
-  $fla=false;                                                 
- if (in_array($data['DTID'], $arraydata))
- {
-      $fla=true;  
- }
-
+                                        $fla=false;                                                 
+                                        if (in_array($data['DTID'], $arraydata))
+                                        {
+                                            $fla=true;  
+                                        }
                                         ?>
-                                    <tr id="<?php echo $data['DTID']."*****".$data['DTID'.$_SESSION['logindetails']['baseyear'].'']; ?>" <?php if($fla){ ?>class="incompleted"<?php  } ?>>
 
-                                        <td><?php if($data['STID2011']==$data['STID']){
-
+                                        <!-- Modified by sahana Split_Action_Administrative_Units 0310 Defect_JC_38-->
+                                        <tr id="<?php echo $data['DTID']."*****".$data['DTID'.$_SESSION['logindetails']['baseyear'].'']; ?>" <?php if($fla){ ?>class="incompleted"<?php  } ?>>
+                                        <td><?php 
+                                        if($data['STID2011']==$data['STID'])
+                                        {
                                           echo $data['MDDS_DT'.$_SESSION['logindetails']['baseyear'].''];  
-                                        } else if($STIDDATA[1]!=$data['STID2011']) { echo '';  } else { echo $data['MDDS_DT'.$_SESSION['logindetails']['baseyear'].''];  } ?></td>
-                                        <td><?php if($data['STID2011']==$data['STID']){ 
+                                        } 
+                                        else if($STIDDATA[1]!=$data['STID2011']) 
+                                        { 
+                                            echo '';  
+                                        } 
+                                        else if(($STIDDATA[1]==$data['STID2011']))
+                                        {
+                                            echo $data['MDDS_DT'.$_SESSION['logindetails']['baseyear'].''];  
+                                        }
+                                        else 
+                                        { 
+                                            echo $data['MDDS_DT'.$_SESSION['logindetails']['baseyear'].''];  
+                                        } 
+                                        ?></td>
+
+
+                                        <td><?php 
+                                        if($data['STID2011']==$data['STID'])
+                                        { 
                                             echo $data['DTName'.$_SESSION['logindetails']['baseyear'].''];
-                                             } else if($STIDDATA[1]!=$data['STID2011']) { echo '';  } else { echo $data['DTName'.$_SESSION['logindetails']['baseyear'].'']; } ?></td>
-                                        <td><?php if($data['STID2011']==$data['STID']){ 
+                                        } 
+                                        else if($STIDDATA[1]!=$data['STID2011']) 
+                                        { 
+                                            echo '';  
+                                        } 
+                                        else if(($STIDDATA[1]==$data['STID2011']))
+                                        {
+                                            echo $data['DTName'.$_SESSION['logindetails']['baseyear'].''];
+                                        }
+                                        else 
+                                        { 
+                                            echo $data['DTName'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        } 
+                                        ?></td>
+
+
+                                        <td><?php 
+                                        if($data['STID2011']==$data['STID'])
+                                        { 
                                             echo $data['SubDistricts'.$_SESSION['logindetails']['baseyear'].'']; 
-                                        } else if($STIDDATA[1]!=$data['STID2011']) { echo '';  } else { echo $data['SubDistricts'.$_SESSION['logindetails']['baseyear'].'']; } ?></td>
-                                        <td><?php if($data['STID2011']==$data['STID']){ 
+                                        } 
+                                        else if($STIDDATA[1]!=$data['STID2011']) 
+                                        {
+                                            echo '';  
+                                        } 
+                                        else if(($STIDDATA[1]==$data['STID2011']))
+                                        {
+                                            echo $data['SubDistricts'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        }
+                                        else { 
+                                            echo $data['SubDistricts'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        } 
+                                        ?></td>
+
+
+                                        <td><?php 
+                                        if($data['STID2011']==$data['STID'])
+                                        { 
                                             echo $data['Villages'.$_SESSION['logindetails']['baseyear'].'']; 
-                                        } else if($STIDDATA[1]!=$data['STID2011']) { echo '';  } else { echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  } ?></td>
-                                        <td><?php if($data['STID2011']==$data['STID']){  echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; } else if($STIDDATA[1]!=$data['STID2011']) { echo '';  } else { echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; } ?></td>
-                                       <?php /* <td><?php if($data['STID2011']==$data['STID']){  echo $data['Wards'.$_SESSION['logindetails']['baseyear'].'']; } else if($STIDDATA[1]!=$data['STID2011']) { echo '';  } else { echo $data['Wards'.$_SESSION['logindetails']['baseyear'].'']; } ?></td> */ ?>
-                                        <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021"><?php if($data['STID2011']==$data['STID']){ echo $data['MDDS_DT']; } else if($STIDDATA[1]==$data['STID']) {
+                                        } 
+                                        else if($STIDDATA[1]!=$data['STID2011']) 
+                                        { 
+                                            echo '';  
+                                        } 
+                                        else if(($STIDDATA[1]==$data['STID2011']))
+                                        {
+                                            echo $data['Villages'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        }
+                                        else { 
+                                            echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
+                                        } 
+                                        ?></td>
+
+
+                                        <td><?php 
+                                        if($data['STID2011']==$data['STID'])
+                                        {  
+                                            echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        } 
+                                        else if($STIDDATA[1]!=$data['STID2011']) 
+                                        {
+                                             echo '';  
+                                        } 
+                                        else if(($STIDDATA[1]==$data['STID2011']))
+                                        {
+                                            echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        }
+                                        else 
+                                        {
+                                             echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        } 
+                                        ?></td>
+
+                                    
+                                    <?php  /* <td><?php if($data['STID2011']==$data['STID']){  echo $data['Wards'.$_SESSION['logindetails']['baseyear'].'']; } else if($STIDDATA[1]!=$data['STID2011']) { echo '';  } else { echo $data['Wards'.$_SESSION['logindetails']['baseyear'].'']; } ?></td> */ ?>
+                                       
+                                       
+                                    <!-- Modified by sahana Split_Action_Administrative_Units 0310 Defect_JC_38-->  
+                                    <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021">
+                                       <?php 
+                                       if($data['STID2011']==$data['STID'])
+                                        { 
+                                            echo $data['MDDS_DT']; 
+                                        } 
+                                        else if($STIDDATA[1]==$data['STID']) 
+                                        {
                                            echo $data['MDDS_DT'];
-                                        } else { echo ''; } ?></td>
-                                        <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021"><?php if($data['STID2011']==$data['STID']){ echo $data['DTName']; } else if($STIDDATA[1]==$data['STID']) {
-                                           echo $data['DTName'];
-                                        } else { echo ''; } ?></td>
-                                        <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021"><?php if($data['STID2011']==$data['STID']){ echo $data['SubDistricts']; } else if($STIDDATA[1]==$data['STID']) {
-                                           echo $data['SubDistricts'];
-                                        } else { echo ''; } ?></td>
-                                        <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021"><?php if($data['STID2011']==$data['STID']){ echo $data['Villages']; } else if($STIDDATA[1]==$data['STID']) {
-                                           echo $data['Villages'];
-                                        } else { echo ''; } ?></td>
-                                        <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021"><?php if($data['STID2011']==$data['STID']){ echo $data['Towns']; } else if($STIDDATA[1]==$data['STID']) {
-                                           echo $data['Towns'];
-                                        } else { echo ''; } ?></td>
+                                        } 
+                                        else if ($STIDDATA[1]!=$data['STID'] && $data['STID2011']==$data['STID'])
+                                        {
+                                            echo $data['MDDS_DT'];
+                                        }
+                                        else 
+                                        { 
+                                            echo ''; 
+                                        } 
+                                        ?></td>
+                                        <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021">
+                                        <?php 
+                                        if($data['STID2011']==$data['STID'])
+                                        { 
+                                            echo $data['DTName']; 
+                                        }
+                                        else if($STIDDATA[1]==$data['STID']) 
+                                        {
+                                           
+                                            echo $data['DTName'];
+                                        } 
+                                        else if ($STIDDATA[1]!=$data['STID'] && $data['STID2011']==$data['STID'])
+                                        {
+                                            echo $data['DTName'];
+                                        }
+                                        else 
+                                        { 
+                                            echo ''; 
+                                        } 
+                                        ?></td>
+                                        <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021">
+                                        <?php 
+                                        if($data['STID2011']==$data['STID'])
+                                        { 
+                                            echo $data['SubDistricts']; 
+                                        } 
+                                        else if($STIDDATA[1]==$data['STID']) 
+                                        {
+                                            echo $data['SubDistricts'];
+                                        } 
+                                        else if ($STIDDATA[1]!=$data['STID'] && $data['STID2011']==$data['STID'])
+                                        {
+                                            echo $data['SubDistricts'];
+                                        }
+                                        else 
+                                        { 
+                                            echo ''; 
+                                        } 
+                                        ?></td>
+                                        <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021">
+                                        <?php 
+                                        if($data['STID2011']==$data['STID'])
+                                        { 
+                                            echo $data['Villages']; 
+                                        } 
+                                        else if($STIDDATA[1]==$data['STID']) 
+                                        {
+                                           
+                                            echo $data['Villages'];
+                                        } 
+                                        else if ($STIDDATA[1]!=$data['STID'] && $data['STID2011']==$data['STID'])
+                                        {
+                                            echo $data['Villages'];
+                                        }
+                                        else 
+                                        { 
+                                            echo ''; 
+                                        } 
+                                        ?></td>
+                                        <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021">
+                                        <?php 
+                                        if($data['STID2011']==$data['STID'])
+                                        { 
+                                            echo $data['Towns']; 
+                                        } 
+                                        else if($STIDDATA[1]==$data['STID']) 
+                                        {
+                                           
+                                            echo $data['Towns'];
+                                        } 
+                                        else if ($STIDDATA[1]!=$data['STID'] && $data['STID2011']==$data['STID'])
+                                        {
+                                            echo $data['Towns'];
+                                        }
+                                        else 
+                                        { 
+                                            echo ''; 
+                                        } 
+                                        ?></td>
+
                                        <?php /* <td class="class2021"><?php if($data['STID2011']==$data['STID']){ echo $data['Wards']; } else if($STIDDATA[1]==$data['STID']) {
                                            echo $data['Wards'];
                                         } else { echo ''; } ?></td> */?>
@@ -379,7 +550,7 @@ function s2ab(s) {
                                                 </ul>
                                             </div>
                                         </td>*/ ?>
-                                         <td><input type = "checkbox" id="myCheckbox"></td>
+                                         <td><input type = "checkbox" id="myCheckbox" style = "cursor:pointer"></td>
                                     </tr>
                                     <?php } ?>
                                 </tbody>
@@ -399,14 +570,23 @@ function s2ab(s) {
     </div> <!-- end content -->
     <script>
 //modified by sahana map checkbox
-    var checkbox = document.getElementById("myCheckbox");
-    checkbox.addEventListener("click", function() {
-        if (checkbox.checked) {
-            alert("Map uploaded successfully!");
-        } else {
-            alert("Checkbox is unchecked!");
-        }
+var checkboxes = document.querySelectorAll("input[id='myCheckbox']");
+checkboxes.forEach(function(checkbox) {
+    checkbox.addEventListener("click", function(event) {
+        var row = checkbox.closest("tr");
+        var stName = row.querySelector("td:nth-child(7)").textContent;
+
+        Swal.fire({
+            type: checkbox.checked ? "success" : "error",
+            title: "Verification",
+            text: checkbox.checked
+                ? "I have verified that as per the uploaded document (notification), " + stName + " administrative units have been updated in the map"
+                : "I have verified that as per the uploaded document (notification), " + stName + " administrative units have NOT been updated in the map",
+            confirmButtonText: "Agree",
+        });
+        event.stopPropagation();
     });
+});
 </script>
 
 
