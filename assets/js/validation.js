@@ -1835,6 +1835,8 @@ function get_to_data(value, i) {
         $("#toStatus_1").val(finalresult[3]);
       }
     });
+    // JC_11 Modified by Arul for disable add M/PM
+    $('.add_button').prop('disabled', true);
   } else if (
     value.value != "" &&
     $("#clickpopup").val() == "Rename" &&
@@ -1926,13 +1928,11 @@ function get_to_data(value, i) {
   }
   // JC_104 Modified by Arul for Refresh Status
   else if($("#clickpopup").val() == "Merge" &&
-    $("#comefromcheck").val() == "State" &&  value.value === ""){
+    $("#comefromcheck").val() == "State" &&  value.value == ""){
     $("#Statusyear_1").val('').trigger("change");
     $("#toStatus_1").val('');
-    $('.add_button').prop('disabled', true);
+    $('.add_button').prop('disabled', false);
     }
-   
-    
   
   // Ends...
 }
@@ -8271,20 +8271,21 @@ $(".Statusyear").change(function () {
   var value = $(this).val();
   var idindex = this.id;
   var i = idindex.split("_");
+  
+  // JC_11 Comment by Arul for add button disable
+  //var fromaction = document.getElementsByName("namefrom[]");
 
-  var fromaction = document.getElementsByName("namefrom[]");
-
-  if (value != "" && fromaction.length == 1) {
-    $(".add_button").attr("disabled", true);
-
-    $(".add_button_name").attr("disabled", false);
-  } else {
-    //$('#oremove1').attr('disabled', true);
-    //    $('.field_wrapper').empty();
-    $(".add_button").attr("disabled", false);
-    $(".add_button_name").attr("disabled", true);
-  }
-
+  // if (value != "" && fromaction.length == 1) {
+  //   $(".add_button").attr("disabled", true);
+    
+  //   $(".add_button_name").attr("disabled", false);
+  // } else {
+  //   //$('#oremove1').attr('disabled', true);
+  //   //    $('.field_wrapper').empty();
+  //   $(".add_button").attr("disabled", false);
+  //   $(".add_button_name").attr("disabled", true);
+  // }
+  // Ends..
   // var fromaction = $('select[name="namefrom[]"] option:selected').map(function () {
   //                  if(this.value!='')
   //                  {
