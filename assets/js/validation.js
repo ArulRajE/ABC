@@ -1509,7 +1509,7 @@ function get_fromvalue1(value, i) {
   var partiallyids1 = $("#partiallyids1").val();
   if (value == "") {
     $(".add_button").attr("disabled", true);
-  }
+  } 
   if (
     value != "" &&
     $("#clickpopup").val() == "Create" &&
@@ -1790,6 +1790,22 @@ function get_fromvalue1(value, i) {
       // $("#statenew1").val(tstids).trigger('change');
     }
   }
+  // JC_104 Modified by arul for action refresh in district M/PM
+  if(value == "" &&
+  $("#clickpopup").val() == "Merge"){
+  if($("#comefromcheck").val() == "District"){
+        $("#action" + i + "")
+        .val("")
+        .trigger("change");
+   } else if($("#comefromcheck").val() == "State"){
+    $("#action" + i + "")
+        .val("")
+        .trigger("change");
+        $("#fstatus" + i + "")
+        .val("")
+        .trigger("change");
+  }
+  }
 }
 
 function get_to_data(value, i) {
@@ -1810,7 +1826,7 @@ function get_to_data(value, i) {
         value.value +
         "&i=" +
         i,
-    }).done(function (result) {
+      }).done(function (result) {
       var finalresult = result.split("|");
       //   console.log(finalresult);
 
@@ -1909,13 +1925,15 @@ function get_to_data(value, i) {
     });
   }
   // JC_104 Modified by Arul for Refresh Status
-  else {
-    if($("#clickpopup").val() == "Merge" &&
+  else if($("#clickpopup").val() == "Merge" &&
     $("#comefromcheck").val() == "State" &&  value.value === ""){
     $("#Statusyear_1").val('').trigger("change");
     $("#toStatus_1").val('');
+    $('.add_button').prop('disabled', true);
     }
-  }
+   
+    
+  
   // Ends...
 }
 
@@ -2090,6 +2108,7 @@ function get_sub_district_popup_list(data) {
 }
 
 function get_district_popup_sublist(data) {
+  
   var seleted = $("#applyon").val();
   var clickpopup = $("#submergedata #clickpopup").val();
 
@@ -2257,6 +2276,7 @@ function get_district_popup_sublist(data) {
 }
 
 function get_district_popup_list(data) {
+  
   var seleted = $("#applyon").val();
   var clickpopup = $("#submergedata #clickpopup").val();
 
@@ -4778,6 +4798,7 @@ function get_village_popup(data) {
   return false;
 }
 function get_district_popup_distdata_add(data, clickpopup, no) {
+
   var seleted = $("#applyon").val();
   if (
     (clickpopup == "Create" ||
@@ -4929,7 +4950,6 @@ function get_district_popup_distdata_add(data, clickpopup, no) {
 
 function get_district_popupto_ii(data, clickpopup, i) {
   var seleted = $("#applyon").val();
-
   if (
     (clickpopup == "Create" ||
       clickpopup == "Addition" ||
