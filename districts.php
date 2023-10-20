@@ -278,7 +278,7 @@ function s2ab(s) {
                                 <tbody>
                                     <?php while ($data = pg_fetch_array($result)) { 
                                         $fla=false;                                                 
-                                        if (in_array($data['DTID'], $arraydata))
+                                        if (in_array($data['DTID'], $arraydata) || $data['fromids']!=null)
                                         {
                                             $fla=true;  
                                         }
