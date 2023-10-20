@@ -8272,20 +8272,17 @@ $(".Statusyear").change(function () {
   var idindex = this.id;
   var i = idindex.split("_");
   
-  // JC_11 Comment by Arul for add button disable
-  //var fromaction = document.getElementsByName("namefrom[]");
-
-  // if (value != "" && fromaction.length == 1) {
-  //   $(".add_button").attr("disabled", true);
+  var fromaction = document.getElementsByName("namefrom[]");
+  if (value != "" && $('#fromstate1').val() !="" && $('#applyon').val() == "State" && $('#clickpopup').val() == "Create") { // Modified by Arul for JC_11
+    $(".add_button").attr("disabled", true);
     
-  //   $(".add_button_name").attr("disabled", false);
-  // } else {
-  //   //$('#oremove1').attr('disabled', true);
-  //   //    $('.field_wrapper').empty();
-  //   $(".add_button").attr("disabled", false);
-  //   $(".add_button_name").attr("disabled", true);
-  // }
-  // Ends..
+    $(".add_button_name").attr("disabled", false);
+  } else {
+    //$('#oremove1').attr('disabled', true);
+    //    $('.field_wrapper').empty();
+    $(".add_button").attr("disabled", false);
+    $(".add_button_name").attr("disabled", true);
+  }
   // var fromaction = $('select[name="namefrom[]"] option:selected').map(function () {
   //                  if(this.value!='')
   //                  {
