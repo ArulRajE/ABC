@@ -7755,6 +7755,8 @@ function getselecteddocument(dataval, comefromdoc) {
         $("#docidssub").val(res[1]);
         $("#dtstname").val(res[3]);
         $("#selectstid").val(res[4]);
+        $("#tstids").val(res[4]);
+
         $("#viewerlast").css("display", "block");
         $("#pdf").css("display", "block");
 
@@ -8271,6 +8273,10 @@ $(".Statusyear").change(function () {
   var value = $(this).val();
   var idindex = this.id;
   var i = idindex.split("_");
+  
+  if (value != "") {
+    $(this).parsley().removeError('required', {updateClass: true});
+  }
   
   var fromaction = document.getElementsByName("namefrom[]");
   if (value != "" && $('#fromstate1').val() !="" && $('#applyon').val() == "State" && $('#clickpopup').val() == "Create") { // Modified by Arul for JC_11
