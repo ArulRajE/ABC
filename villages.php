@@ -233,7 +233,7 @@ function s2ab(s) {
 }
 </script>                             
 
-                            <table id="villages-units-datatable" class="table table-hover table-striped table-bordered"
+                            <table id="villages-units-datatable" class="table  table-striped table-bordered"
                                 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead>
                                     <tr>
@@ -276,11 +276,6 @@ function s2ab(s) {
                                         //  echo "<pre>";
                                         // print_r($STIDDATA);
                                         //  print_r($data);
-                                        $fla=false;                                                 
-                                        if ($data['fromids']!=null)
-                                        {
-                                            $fla=true;  
-                                        }
                                      
                                         if(trim($data['Level'])=='VILLAGE' || trim($data['Level'])=='village' || trim($data['Level'])=='Village')
                                         {
@@ -326,7 +321,7 @@ function s2ab(s) {
                                         }
                                        
                                                     ?>
-                                    <tr <?php if($fla){ ?>class="incompleted"<?php  } ?>>
+                                    <tr>
                                          <!-- Modified by sahana Split_Action_Administrative_Units 0310 Defect_JC_38-->  
                                         <!-- modified for "pointer" value will change the cursor to a hand icon-->
                                         <td style=><?php 
@@ -482,7 +477,7 @@ function s2ab(s) {
 
                                         <!-- Modified by sahana Split_Action_Administrative_Units 0310 Defect_JC_38-->  
 
-                                         <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021" style=><?php 
+                                         <td class="class2021" style=><?php 
                                             // if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'])
                                             // { 
                                             //     echo $data['MDDS_VT']; 
@@ -528,7 +523,7 @@ function s2ab(s) {
                                         ?></td>
 
 
-                                        <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021" style=><?php 
+                                        <td class="class2021" style=><?php 
                                             // if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'])
                                             // {
                                             //     echo $data['VTName']; 
@@ -560,7 +555,7 @@ function s2ab(s) {
                                         ?></td>
 
 
-                                        <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021" style=><?php 
+                                        <td class="class2021" style=><?php 
                                             // if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'])
                                             // { 
                                             //     echo $data['Level']; 
@@ -593,7 +588,7 @@ function s2ab(s) {
                                         ?></td>
 
 
-                                       <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021" style=><?php 
+                                       <td class="class2021" style=><?php 
                                             // if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'])
                                             // { 
                                             // echo $sta; 
@@ -625,7 +620,7 @@ function s2ab(s) {
                                         ?></td>
 
 
-                                        <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021" style=><?php 
+                                        <td class="class2021" style=><?php 
                                             // if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'])
                                             // { 
                                             //     echo $data['Pop']; 
@@ -663,7 +658,7 @@ function s2ab(s) {
                                         <!-- <td class="class2021"><?php //echo (int)$data['Wards']; ?></td> -->
 
 
-                                        <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021" >
+                                        <td class="class2021" >
                                         <?php if($data['fromids']!=null){ ?><span class="badge badge-purple" style = "cursor:pointer; background-color:#fbca35;"    data-todo='<?php echo json_encode($data); ?>'>Incomplete</span><?php } ?></td>
 
                                         <?php /*<td class="class2021 <?php if((int)$data['linkeddocument21']!=0 && ($action == "" || in_array($data['STID'], $action) || in_array($data['DTID'], $action) || in_array($data['SDID'], $action))) { ?> btnlinked <?php } ?>"
@@ -717,7 +712,7 @@ function s2ab(s) {
                                                 </ul>
                                             </div>
                                         </td>*/?>
-                                       <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021">
+                                       <td class="class2021">
                                         <input type="checkbox" id="myCheckbox" style = "cursor:pointer">
                                         <!-- data-vtname="<?php //echo $data['VTName']; ?> -->
                                        </td>

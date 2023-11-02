@@ -289,7 +289,7 @@ function s2ab(s) {
                                         // print_r($STIDDATA);
                                         // print_r($data);
                                          $fla=false;                                                 
-                                        if (in_array($data['SDID'], $arraydata) || $data['fromids']!=null)
+                                        if (in_array($data['SDID'], $arraydata))
                                         {
                                             $fla=true;  
                                         }

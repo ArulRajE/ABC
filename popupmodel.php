@@ -209,7 +209,7 @@
                                                     <div class="form-group col-md-3 stnew ST pl-1 pr-1" style="display:none">
                                                         <label class="col-md-12 stnew pl-1 pr-1" id="stnew" style="display:none">Select State / UT</label>
                                                         <div class="col-md-12 pl-1 pr-1 stnew" style="display:none">
-                                                            <select id="statenew1" name="statenew[]" class="stnew" onchange="return get_district_popupto(this,'Create');">
+                                                            <select id="statenew1" name="statenew[]" class="stnew" onchange="return get_district_popupto(this,'Create',2);">
                                                                 <option value="">Select State / UT</option>   
                                                             </select>
                                                     
