@@ -1928,8 +1928,8 @@ function get_to_data(value, i) {
 
 
         // JC_11 Modified by Arul for disable add M/PM
-        DisableRow(rn);
-       // $('.add_button').prop('disabled', true);
+       // DisableRow(rn);
+        $('.add_button').prop('disabled', true);
         // Ends... 
 
 
@@ -2023,8 +2023,8 @@ function get_to_data(value, i) {
     else if ($("#clickpopup").val() == "Merge" && $("#comefromcheck").val() == "State" && value.value == "") {
         $("#Statusyear_1").val('').trigger("change");
         $("#toStatus_1").val('');
-        EnableRow(rn);
-        //$('.add_button').prop('disabled', false);
+        //EnableRow(rn);
+        $('.add_button').prop('disabled', false);
     }
 
     // Ends...
@@ -3310,6 +3310,7 @@ function get_district_popup(data, clickpopup) {
 
 
 function get_sub_district_popup_new(data, clickpopup, i) {
+    console.log('ar');
     var seleted = $('#applyon').val();
     var clickpopup = $('#clickpopup').val();
 
@@ -5280,7 +5281,7 @@ function get_district_popupto(data, clickpopup, i) {
     var seleted = $('#applyon').val();
     var clickpopup = $('#clickpopup').val();
     var rn = $('#rowno').val();
-    var mul = data.id.split('_');
+
     if ((clickpopup == 'Create' || clickpopup == 'Merge' || clickpopup == 'Partiallysm' || clickpopup == 'Addition' || clickpopup == 'Rename' || clickpopup == 'Deletion' || clickpopup == 'Reshuffle') && data.value != '') {
 
 
@@ -18420,43 +18421,25 @@ $(function () {
 });
 // JC_11
 function DisableRow(rn) {
-    if(rn==1)
-    {
-                $("#ms-selected_come [class*=ms-elem-selectable]").addClass("disabled");
-                $("#ms-selected_come [class*=ms-elem-selection]").addClass("disabled");
-                $('#row_1').find('input, textarea, button, select').attr('disabled','disabled');   
-    }
-    else
-    {
-                $("#ms-id2021"+rn+" [class*=ms-elem-selectable]").addClass("disabled");
-                $("#ms-id2021"+rn+" [class*=ms-elem-selection]").addClass("disabled");
-                 $('#row_1').find('input, textarea, button, select').attr('disabled','disabled'); 
-                $('#row_'+rn+'').find('input, textarea, button, select').attr('disabled','disabled');
-    }
+    $("#ms-selected_come [class*=ms-elem-selectable]").addClass("disabled");
+    $("#ms-selected_come [class*=ms-elem-selection]").addClass("disabled");
+    $("#ms-id2021" + rn + " [class*=ms-elem-selectable]").addClass("drnsabled");
+    $("#ms-id2021" + rn + " [class*=ms-elem-selection]").addClass("disabled");
+    $('#row_' + rn + '').find('input, textarea, button, select').attr('disabled', 'disabled');
     $(".add_button").prop("disabled", true);
 }
 function EnableRow(rn) {
-    if(rn==1)
-                       {
-                        $('#row_1').find('input, textarea, button, select').removeAttr('disabled','disabled');   
-                         $("#ms-selected_come [class*=ms-elem-selectable]").removeClass("disabled");
-                        $("#ms-selected_come [class*=ms-elem-selection]").removeClass("disabled");
-                       }
-                        else
-                        {
-                             $("#ms-id2021"+rn+" [class*=ms-elem-selectable]").removeClass("disabled");
-                        $("#ms-id2021"+rn+" [class*=ms-elem-selection]").removeClass("disabled");
-                        // if(x==2)
-                        // {
-                        // $('#row_1').find('input, textarea, button, select').removeAttr('disabled','disabled');     
-                        // }
-                        $('#row_'+rn+'').find('input, textarea, button, select').removeAttr('disabled','disabled'); 
-                        }
-    if ($('#action' + rn + '').val() == '' || $('#action' + rn + '').val() == 'undefined' || $('#action' + rn + '').val() == null) {
-        $(".add_button").prop("disabled", true);
+    $("#ms-selected_come [class*=ms-elem-selectable]").addClass("disabled");
+    $("#ms-selected_come [class*=ms-elem-selection]").addClass("disabled");
+    $("#ms-id2021" + rn + " [class*=ms-elem-selectable]").removeClass("drnsabled");
+    $("#ms-id2021" + rn + " [class*=ms-elem-selection]").removeClass("disabled");
+    $('#row_' + rn + '').find('input, textarea, button, select').removeAttr('disabled', 'disabled');
+    if ($('#action' + rn + '').val() != '') {
+
+        $(".add_button").prop("disabled", false);
     }
     else {
-        $(".add_button").prop("disabled", false);
+        $(".add_button").prop("disabled", true);
     }
 }
 
