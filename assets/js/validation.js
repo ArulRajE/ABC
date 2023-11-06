@@ -8506,6 +8506,7 @@ $(".newnamecheck").keyup(function () {
 $("#name2021").keyup(function () {
     var value = $(this).val();
     var come = $('#comefromcheck').val();
+    var rn = $('#rowno').val();
     if (come == 'District' || come == 'Sub-District' || come == 'Village / Town') {
 
 
@@ -8523,92 +8524,16 @@ $("#name2021").keyup(function () {
 
 
         }).get();
-
-
-
-
-
-
-
-        var fromaction1 = $('select[name="action[]"]').map(function () {
-            if (this.value == 'Full Merge') {
-                return this.value;
-            }
-
-        }).get();
-
         //  alert(fromaction.length);
-
-
-        if (value != '' && value.length > 0 && fromaction.length > 1) {
-
-
-            if (fromaction1.length >= 1) {
-                $('.add_button').attr('disabled', false);
-                $('.add_button_name').attr('disabled', true);
-            }
-            else {
-
-                if (come == 'District') {
-                    $('.add_button').attr('disabled', false);
-                    $('.add_button_name').attr('disabled', true);
-                }
-
-                else {
-
-                    $('#row_1').find('input, textarea, button, select').attr('disabled', 'disabled');
-                    $("#ms-selected_come [class*=ms-elem-selectable]").addClass("disabled");
-                    $("#ms-selected_come [class*=ms-elem-selection]").addClass("disabled");
-                    $('.add_button').attr('disabled', false);
-                    $('.add_button_name').attr('disabled', true);
-                }
-
-
-            }
+        if (value != '' && value.length > 0 && fromaction.length >= 1 && $('#action' + rn +'').val() != '') {
+            DisableRow(rn);
+            $('.add_button_name').attr('disabled', false);
         }
 
         else {
 
-
-            if (value != '' && fromaction.length == 1 && fromaction1.length == 0) {
-
-                if (action.length == 1) {
-
-                    $('.add_button').attr('disabled', true);
-                    $('.add_button_name').attr('disabled', false);
-                    $('#row_1').find('input, textarea, button, select').attr('disabled', 'disabled');
-                    $("#ms-selected_come [class*=ms-elem-selectable]").addClass("disabled");
-                    $("#ms-selected_come [class*=ms-elem-selection]").addClass("disabled");
-
-                }
-                else {
-                    //  $('.add_button').attr('disabled', false);
-                    $('.add_button_name').attr('disabled', true);
-
-
-
-                }
-
-
-
-            }
-            else {
-
-                if (come == 'Village / Town' && $('#clickpopup').val() == 'Addition') {
-                    $('.add_button').attr('disabled', true);
-                    $('.add_button_name').attr('disabled', false);
-                }
-                else {
-
-                    $('#row_1').find('input, textarea, button, select').removeAttr('disabled', 'disabled');
-                    $('.add_button').attr('disabled', false);
-                    $('.add_button_name').attr('disabled', true);
-                    $("#ms-selected_come [class*=ms-elem-selectable]").removeClass("disabled");
-                    $("#ms-selected_come [class*=ms-elem-selection]").removeClass("disabled");
-                }
-
-
-            }
+            EnableRow(rn);
+            $('.add_button_name').attr('disabled', true);
         }
     }
 
@@ -8753,15 +8678,17 @@ $('.Statusyear').change(function () {
     var value = $(this).val();
     var idindex = this.id;
     var i = idindex.split('_');
+    var rn = $('#rowno').val();
 
 
     var fromaction = document.getElementsByName('namefrom[]');
 
     // Modified by Arul for JC_11
     if ($('#applyon').val() == "State" && $('#clickpopup').val() == "Create") {
+        
         if (value != "") {
 
-            $('.add_button').attr('disabled', true);
+            DisableRow(rn);
 
 
             $('.add_button_name').attr('disabled', false);
@@ -8769,7 +8696,7 @@ $('.Statusyear').change(function () {
         else {
             //$('#oremove1').attr('disabled', true);
             //    $('.field_wrapper').empty();
-            $('.add_button').attr('disabled', false);
+            EnableRow(rn);
             $('.add_button_name').attr('disabled', true);
         }
     }
