@@ -1874,8 +1874,28 @@ function get_fromvalue1(value, i) {
             $('#statenew1').val(tstids).trigger('change');
             // $("#statenew1").val(tstids).trigger('change');
         }
+        //JC_11 
+    //     if($('#comefromcheck').val() == 'Sub-District'){
+    //     $('select[name^="namefrom"]').change(function () {
+    //         var rn = $('#rowno').val();
+    //         var value = $(this).val();
+    //         //var action = '#action'+ rn + '';
+
+    //         var action = $('#action'+rn+'').val();
+    //         console.log('val',value);
+    //         console.log('ac',action);
+    //         if(value != ''){
+    //             $('.add_button').prop('disabled', false);
+    //             console.log(1);
+    //         } else {
+    //             console.log(2);
+    //             $('.add_button').prop('disabled', true);
+    //         }
+    //     });
+    // }
 
     }
+    
 
     // JC_104 Modified by arul for action refresh in district M/PM
     if (value == "" &&
@@ -3344,13 +3364,13 @@ function get_sub_district_popup_new(data, clickpopup, i) {
     });
 
     //JC_11
-    var sd = $('select[name="namefrom' + i + '[]"] option:selected').map(function () {
-        if (this.value != '') {
-            return this.value;
-        }
+    // var sd = $('select[name="namefrom' + i + '[]"] option:selected').map(function () {
+    //     if (this.value != '') {
+    //         return this.value;
+    //     }
     
-    }).get();
-    console.log('sd',);
+    // }).get();
+    // console.log('sd',);
     //      var jigs = $('select[name="namefrom[]"] option:selected').map(function () {
     //     if(this.value!='')
     //     {
@@ -3373,11 +3393,12 @@ function get_sub_district_popup_new(data, clickpopup, i) {
 
 
 
-
     if ($("#sddistrictget_" + i + "").val() != '') {
-        if(sd.length > 0){
-            $('.add_button').prop('disabled', true);
-        }
+        // if(sd.length > 0){
+        //     $('.add_button').prop('disabled', true);
+        // } else {
+        //     $('.add_button').prop('disabled', false);
+        // }
         $.ajax({
             type: "POST",
             url: "insert_data.php",
@@ -5546,11 +5567,11 @@ function get_district_popupto(data, clickpopup, i) {
 
         $(".add_button").prop("disabled", false);
     }
-    if ((clickpopup === "Merge" || clickpopup === "Reshuffle") && data.value !== "" &&
+    if ((clickpopup === "Merge") && data.value !== "" &&
         (seleted === "District" || seleted === "Village / Town" || seleted === "Sub-District")) {
         DisableRow(rn);
 
-    } else if ((clickpopup === "Merge" || clickpopup === "Reshuffle") && data.value == "" &&
+    } else if ((clickpopup === "Merge") && data.value == "" &&
         (seleted === "District" || seleted === "Village / Town" || seleted === "Sub-District")) {
         EnableRow(rn);
     }
@@ -7026,6 +7047,7 @@ function createnew(createfrom) {
                     //code changed by bheema
                     {
                         $('select[name="namefrom[]"]').change(function () {
+                            
                             var i = 1;
                             var finalresult = [];
                             if ($(this).val() != '') {
@@ -8674,6 +8696,7 @@ $('.actiondata').change(function () {
 
     }).get();
     // JC_11
+    var seleted = $('#applyon').val();
     var sd = $('select[name="namefrom[]"] option:selected').map(function () {
         if (this.value != '') {
             return this.value;
@@ -8685,19 +8708,28 @@ $('.actiondata').change(function () {
         $('.add_button_name').attr('disabled', true);
         $('.field_wrapper_name').html('');
     }
-
     var toaction = document.getElementsByName('newname[]');
-
+    if(seleted == "Village / Town"){
     if (value != '' && toaction.length == 1 && sd.length > 0){ 
 
         $('.add_button').attr('disabled', false);
         $('.add_button_name').attr('disabled', true);
     }
     else {
-
         $('.add_button').attr('disabled', true);
         $('.add_button_name').attr('disabled', false);
     }
+} else {
+    if (value != '' && toaction.length == 1){ 
+
+        $('.add_button').attr('disabled', false);
+        $('.add_button_name').attr('disabled', true);
+    }
+    else {
+        $('.add_button').attr('disabled', true);
+        $('.add_button_name').attr('disabled', false);
+    }
+}
     return false;
 });
 
