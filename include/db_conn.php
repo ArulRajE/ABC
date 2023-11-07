@@ -1,6 +1,6 @@
 <?php 
 
-    $db = pg_connect("host=10.161.33.97 port=5432 dbname=26_10 user=postgres password=ROOT");
+    $db = pg_connect("host=10.161.33.97 port=5432 dbname=jc_arul user=postgres password=ROOT");
 //    $db = pg_connect("host=10.20.21.50 port=5432 dbname=jc_arul user=postgres password=Dccgnr@2021");
  //  $db = pg_connect("host=localhost port=5432 dbname=jcnew user=map_rgi password=Orgi@1121");
 
@@ -10,7 +10,7 @@ $support_maill = "support@gmail.com";
 $databaseinfo = array(
     'user' => 'postgres',
     'pass' => 'ROOT',
-    'db'   => '26_10',
+    'db'   => 'jc_arul',
     'host' => '10.161.33.97'
 );
 

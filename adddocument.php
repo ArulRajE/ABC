@@ -953,7 +953,6 @@ $(function() {
     var x = 1;
     var y = 0;
 
-
  var x1 = 1;
     var y1 = 0;
 
@@ -1020,6 +1019,7 @@ $(function() {
             x++;
             // JC_11
             $('#rowno').val(x);
+
  var seleted = $('#applyon').val();
 var clickpopup = $('#clickpopup').val();
 
@@ -2232,6 +2232,11 @@ var status = $('#oremovenew'+i[1]+'').is(":checked");
             
 
     }); 
+    //JC_11
+    $('.closepopup').click(function(){
+        x = 1;
+        $('#rowno').val(x);
+    });
 
 
 

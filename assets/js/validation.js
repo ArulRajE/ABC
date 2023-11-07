@@ -1895,8 +1895,8 @@ function get_fromvalue1(value, i) {
     }
     // Ends...
     // JC_11 Modified by arul for add M/PM
-    if($("#action" + i + "")
-    .val("") != null){
+    if ($("#action" + i + "")
+        .val("") != null) {
         $(".add_button").prop("disabled", true);
     }
     // Ends...
@@ -1929,7 +1929,7 @@ function get_to_data(value, i) {
 
         // JC_11 Modified by Arul for disable add M/PM
         DisableRow(rn);
-       // $('.add_button').prop('disabled', true);
+        // $('.add_button').prop('disabled', true);
         // Ends... 
 
 
@@ -2990,27 +2990,25 @@ function get_district_popup(data, clickpopup) {
                     // // ends here 
 
                     // code changed for split bheema
-                    // Comment for JC_11 by Arul
-                    // if (finalresult[3] == 'Reshuffle') {
-                    //     $('#action1,#actiona2').val('Reshuffle').trigger('change');    
-                    // }
-                    // else if (finalresult[3] == 'Create') {
-                    //     $('#action1,#actiona2').val('Split').trigger('change');    
-                    // }
-                    // else {
-                    //     $('#action1,#actiona2').val('').trigger('change');
-                    // }
+                    if (finalresult[3] == 'Reshuffle') {
+                        $('#action1,#actiona2').val('Reshuffle').trigger('change');
+                    }
+                    else if (finalresult[3] == 'Create') {
+                        $('#action1,#actiona2').val('Split').trigger('change');
+                    }
+                    else {
+                        $('#action1,#actiona2').val('').trigger('change');
+                    }
 
-                    // if ($('#partiallyids1').val() == '') {
-                    //     $('#statenew1').val('').trigger('change');
-                    // }
-                    // // ends here jc_02
-                    // else
-                    // // partially split & merge autoselect JC_02
-                    // {
-                    //     $('#action1,#actiona2').val('Partially Split & Merge').trigger('change');
-                    // }
-                    // Ends...
+                    if ($('#partiallyids1').val() == '') {
+                        $('#statenew1').val('').trigger('change');
+                    }
+                    // ends here jc_02
+                    else
+                    // partially split & merge autoselect JC_02
+                    {
+                        $('#action1,#actiona2').val('Partially Split & Merge').trigger('change');
+                    }
                     //  //Bheema
                     //     $('select[name="namefrom[]"]').change(function(){
                     //         var i=1;
@@ -3345,8 +3343,14 @@ function get_sub_district_popup_new(data, clickpopup, i) {
 
     });
 
-
-
+    //JC_11
+    var sd = $('select[name="namefrom' + i + '[]"] option:selected').map(function () {
+        if (this.value != '') {
+            return this.value;
+        }
+    
+    }).get();
+    console.log('sd',);
     //      var jigs = $('select[name="namefrom[]"] option:selected').map(function () {
     //     if(this.value!='')
     //     {
@@ -3371,6 +3375,9 @@ function get_sub_district_popup_new(data, clickpopup, i) {
 
 
     if ($("#sddistrictget_" + i + "").val() != '') {
+        if(sd.length > 0){
+            $('.add_button').prop('disabled', true);
+        }
         $.ajax({
             type: "POST",
             url: "insert_data.php",
@@ -3678,6 +3685,7 @@ function get_sub_district_popup_new(data, clickpopup, i) {
                 //     }
                 //    });
 
+                
 
                 //code changed by srikanth//
                 if ($('#flagof').val() == 'true') {
@@ -3788,24 +3796,36 @@ function get_sub_district_popup_new(data, clickpopup, i) {
 
 
             });
-            // Commented for JC_11 By Arul
-            // if (clickpopup == 'Reshuffle') {
-            //     $('#action' + i + '').val('Reshuffle').trigger('change');
-            // }
-            // else if (clickpopup == 'Create') {
+            if (clickpopup == 'Reshuffle') {
+                $('#action' + i + '').val('Reshuffle').trigger('change');
+            }
+            else if (clickpopup == 'Create') {
 
-            //     $('#action' + i + '').val('Split').trigger('change');
-            // }
-            // else
+                $('#action' + i + '').val('Split').trigger('change');
+            }
+            else
             // jc_02 Partially Split & Merge autoselect
-            // {
-            //     $('#action' + i + '').val('Partially Split & Merge').trigger('change');
-            // }
+            {
+                $('#action' + i + '').val('Partially Split & Merge').trigger('change');
+            }
             // jc_02 ends here
+            //JC_11
+            $('select[name^="namefrom"]').change(function () {
+                var rn = $('#rowno').val();
+                var value = $(this).val();
+                //var action = '#action'+ rn + '';
 
- 
+                var action = $('#action'+rn+'').val();
+                console.log('val',value);
+                console.log('ac',action);
+                if(value.length > 0 && action != null){
+                    $('.add_button').prop('disabled', false);
+                } else {
+                    $('.add_button').prop('disabled', true);
+                }
+            });
+
         });
-       
 
     }
     else {
@@ -3821,7 +3841,7 @@ function get_sub_district_popup_new(data, clickpopup, i) {
 
         $('#action' + i + '').val('').trigger('change');
         // JC_11 Modified by Arul
-        if($('#action' + i + '').val() != null){
+        if ($('#action' + i + '').val() != null) {
             $('.add_button').attr('disabled', true);
         }
         // Ends...
@@ -5279,7 +5299,15 @@ function get_district_popupto_ii(data, clickpopup, i) {
 function get_district_popupto(data, clickpopup, i) {
     var seleted = $('#applyon').val();
     var clickpopup = $('#clickpopup').val();
+    //JC_11
     var rn = $('#rowno').val();
+    var sd = $('select[name="namefrom[]"] option:selected').map(function () {
+        if (this.value != '') {
+            return this.value;
+        }
+    
+    }).get();
+    // 
     var mul = data.id.split('_');
     if ((clickpopup == 'Create' || clickpopup == 'Merge' || clickpopup == 'Partiallysm' || clickpopup == 'Addition' || clickpopup == 'Rename' || clickpopup == 'Deletion' || clickpopup == 'Reshuffle') && data.value != '') {
 
@@ -5514,7 +5542,7 @@ function get_district_popupto(data, clickpopup, i) {
     }
 
     // JC_11 Modified by Arul for M/pm Add Button
-    if ($('#action1').val() != '') {
+    if ($('#action1').val() != '' && sd.length > 0) {
 
         $(".add_button").prop("disabled", false);
     }
@@ -8525,7 +8553,7 @@ $("#name2021").keyup(function () {
 
         }).get();
         //  alert(fromaction.length);
-        if (value != '' && value.length > 0 && fromaction.length >= 1 && $('#action' + rn +'').val() != '') {
+        if (value != '' && value.length > 0 && fromaction.length >= 1 && $('#action' + rn + '').val() != '') {
             DisableRow(rn);
             $('.add_button_name').attr('disabled', false);
         }
@@ -8639,29 +8667,30 @@ function checkdataoftext(val, r) {
 
 $('.actiondata').change(function () {
     var value = $(this).val();
-
     var fromaction1 = $('select[name="action[]"]').map(function () {
         if (this.value == 'Full Merge') {
             return this.value;
         }
 
     }).get();
+    // JC_11
+    var sd = $('select[name="namefrom[]"] option:selected').map(function () {
+        if (this.value != '') {
+            return this.value;
+        }
+    
+    }).get();
     if (fromaction1.length >= 1) {
         $('.add_button').attr('disabled', false);
-
         $('.add_button_name').attr('disabled', true);
         $('.field_wrapper_name').html('');
     }
 
     var toaction = document.getElementsByName('newname[]');
 
-
-
-
-    if (value != '' && toaction.length == 1) {
+    if (value != '' && toaction.length == 1 && sd.length > 0){ 
 
         $('.add_button').attr('disabled', false);
-
         $('.add_button_name').attr('disabled', true);
     }
     else {
@@ -8685,7 +8714,7 @@ $('.Statusyear').change(function () {
 
     // Modified by Arul for JC_11
     if ($('#applyon').val() == "State" && $('#clickpopup').val() == "Create") {
-        
+
         if (value != "") {
 
             DisableRow(rn);
@@ -18347,39 +18376,35 @@ $(function () {
 });
 // JC_11
 function DisableRow(rn) {
-    if(rn==1)
-    {
-                $("#ms-selected_come [class*=ms-elem-selectable]").addClass("disabled");
-                $("#ms-selected_come [class*=ms-elem-selection]").addClass("disabled");
-                $('#row_1').find('input, textarea, button, select').attr('disabled','disabled');   
+    if (rn == 1) {
+        $("#ms-selected_come [class*=ms-elem-selectable]").addClass("disabled");
+        $("#ms-selected_come [class*=ms-elem-selection]").addClass("disabled");
+        $('#row_1').find('input, textarea, button, select').attr('disabled', 'disabled');
     }
-    else
-    {
-                $("#ms-id2021"+rn+" [class*=ms-elem-selectable]").addClass("disabled");
-                $("#ms-id2021"+rn+" [class*=ms-elem-selection]").addClass("disabled");
-                 $('#row_1').find('input, textarea, button, select').attr('disabled','disabled'); 
-                $('#row_'+rn+'').find('input, textarea, button, select').attr('disabled','disabled');
+    else {
+        $("#ms-id2021" + rn + " [class*=ms-elem-selectable]").addClass("disabled");
+        $("#ms-id2021" + rn + " [class*=ms-elem-selection]").addClass("disabled");
+        $('#row_1').find('input, textarea, button, select').attr('disabled', 'disabled');
+        $('#row_' + rn + '').find('input, textarea, button, select').attr('disabled', 'disabled');
     }
     $(".add_button").prop("disabled", true);
 }
 function EnableRow(rn) {
-    if(rn==1)
-                       {
-                        $('#row_1').find('input, textarea, button, select').removeAttr('disabled','disabled');   
-                         $("#ms-selected_come [class*=ms-elem-selectable]").removeClass("disabled");
-                        $("#ms-selected_come [class*=ms-elem-selection]").removeClass("disabled");
-                       }
-                        else
-                        {
-                             $("#ms-id2021"+rn+" [class*=ms-elem-selectable]").removeClass("disabled");
-                        $("#ms-id2021"+rn+" [class*=ms-elem-selection]").removeClass("disabled");
-                        // if(x==2)
-                        // {
-                        // $('#row_1').find('input, textarea, button, select').removeAttr('disabled','disabled');     
-                        // }
-                        $('#row_'+rn+'').find('input, textarea, button, select').removeAttr('disabled','disabled'); 
-                        }
-    if ($('#action' + rn + '').val() == '' || $('#action' + rn + '').val() == 'undefined' || $('#action' + rn + '').val() == null) {
+    if (rn == 1) {
+        $('#row_1').find('input, textarea, button, select').removeAttr('disabled', 'disabled');
+        $("#ms-selected_come [class*=ms-elem-selectable]").removeClass("disabled");
+        $("#ms-selected_come [class*=ms-elem-selection]").removeClass("disabled");
+    }
+    else {
+        $("#ms-id2021" + rn + " [class*=ms-elem-selectable]").removeClass("disabled");
+        $("#ms-id2021" + rn + " [class*=ms-elem-selection]").removeClass("disabled");
+        // if(x==2)
+        // {
+        // $('#row_1').find('input, textarea, button, select').removeAttr('disabled','disabled');     
+        // }
+        $('#row_' + rn + '').find('input, textarea, button, select').removeAttr('disabled', 'disabled');
+    }
+    if ($('#action' + rn + '').val() == '' || $('#action' + rn + '').val() == null) {
         $(".add_button").prop("disabled", true);
     }
     else {
