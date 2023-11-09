@@ -3232,48 +3232,6 @@ else if($_POST['formname']=='getdocalreadyuploadlist_doc' ) {
 		) temp
 		EOT;
 
-		//modified by gowthami issue related to allignment in reuse table 
-		$table = <<<EOT
-		(
-			select *,
-			(select REPLACE(array_to_string(array_agg( 
-				CASE
-				WHEN LENGTH(doc_reuse_desc) <= 40 THEN '<br>' || regexp_replace(to_char(createddatetime at time zone 'utc' at time zone 'Asia/Kolkata', 'dd-mm-yyyy HH24:MI:SS'), '(.{10})', '\\1<br>', 'g')
-				WHEN LENGTH(doc_reuse_desc) <= 50 THEN '<br><br>' || regexp_replace(to_char(createddatetime at time zone 'utc' at time zone 'Asia/Kolkata', 'dd-mm-yyyy HH24:MI:SS'), '(.{10})', '\\1<br>', 'g')
-				WHEN LENGTH(doc_reuse_desc) <= 60 THEN '<br><br><br>' || regexp_replace(to_char(createddatetime at time zone 'utc' at time zone 'Asia/Kolkata', 'dd-mm-yyyy HH24:MI:SS'), '(.{10})', '\\1<br>', 'g')
-				WHEN LENGTH(doc_reuse_desc) <= 70 THEN '<br><br><br><br>' || regexp_replace(to_char(createddatetime at time zone 'utc' at time zone 'Asia/Kolkata', 'dd-mm-yyyy HH24:MI:SS'), '(.{10})', '\\1<br>', 'g')
-				WHEN LENGTH(doc_reuse_desc) <= 80 THEN '<br><br><br><br><br>' || regexp_replace(to_char(createddatetime at time zone 'utc' at time zone 'Asia/Kolkata', 'dd-mm-yyyy HH24:MI:SS'), '(.{10})', '\\1<br>', 'g')
-				ELSE '<br><br><br>' || regexp_replace(to_char(createddatetime at time zone 'utc' at time zone 'Asia/Kolkata', 'dd-mm-yyyy HH24:MI:SS'), '(.{10})', '\\1<br>', 'g')
-				END
-			),',') , ',', '<hr color="black">') AS reusedate
-			from "reuse_document$ye" where "reuse_document$ye"."docids"="documentdata$ye"."docids"),
-			
-		  (select REPLACE(array_to_string(array_agg(
-				CASE
-				WHEN LENGTH(doc_reuse_desc) <= 10 THEN '<br><br><br>' || regexp_replace(doc_reuse_desc, '(.{10})', '\\1<br>', 'g')
-				WHEN LENGTH(doc_reuse_desc) <= 20 THEN '<br><br>' || regexp_replace(doc_reuse_desc, '(.{10})', '\\1<br>', 'g')
-					WHEN LENGTH(doc_reuse_desc) <= 30 THEN '<br>' || regexp_replace(doc_reuse_desc, '(.{10})', '\\1<br>', 'g')
-					ELSE regexp_replace(doc_reuse_desc,'(.{10})', '\\1<br>', 'g')
-				END
-			), ','), ',', '<hr color="black">') AS doc_reuse_desc
-			from "reuse_document$ye" where "reuse_document$ye"."docids"="documentdata$ye"."docids"),
-		
-			(select REPLACE(array_to_string(array_agg(
-				CASE
-					WHEN LENGTH(doc_reuse_desc) <= 40 THEN '<br><br><br>' || regexp_replace(created_by, '(.{10})', '\\1<br>', 'g')
-					WHEN LENGTH(doc_reuse_desc) <= 50 THEN '<br><br><br><br>' || regexp_replace(created_by, '(.{10})', '\\1<br>', 'g')
-					WHEN LENGTH(doc_reuse_desc) <= 60 THEN '<br><br><br><br><br>' || regexp_replace(created_by, '(.{10})', '\\1<br>', 'g')
-					WHEN LENGTH(doc_reuse_desc) <= 70 THEN '<br><br><br><br><br><br>' || regexp_replace(created_by, '(.{10})', '\\1<br>', 'g')
-					WHEN LENGTH(doc_reuse_desc) <= 80 THEN '<br><br><br><br><br><br><br>' || regexp_replace(created_by, '(.{10})', '\\1<br>', 'g')
-					ELSE '<br>' || regexp_replace(created_by, '(.{10})', '\\1<br>', 'g')
-					END
-			) ,','), ',', '<hr color="black">') AS allemail   
-			from "reuse_document$ye" where "reuse_document$ye"."docids"="documentdata$ye"."docids") 
-			
-			from documentdata$ye $cond
-		) temp
-		EOT;
-
 			   $primaryKey='docids' ; 
 			   $columns=array(
                 array( 'db'=> '"docids"','db1'=> 'docids','dt' => 0),
@@ -3861,13 +3819,7 @@ else if($_POST['formname']=='getdataofpopupsub_vtlist')
 				}
 			}
 
-
-			// code changed by Bheema for ASC the Village Names
-			$query = 'SELECT "VTID" as "id", CONCAT_WS(\' - \', "VTName", "MDDS_VT") as "Name"
-    FROM "vt'.$_SESSION['activeyears'].'"
-    WHERE is_deleted = $1 '.$where.'
-    ORDER BY "Name" ASC';
-
+			 $query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT")  as "Name" from "vt'.$_SESSION['activeyears'].'" where is_deleted=$1 '.$where.' order by "VTID" ASC';
 			// concat("VTName",\' - \',"MDDS_VT")
 			$resultstatelk = pg_query_params($db, $query,$arraydata); // total count
 			$datacount = pg_num_rows($resultstatelk); // total count
@@ -4576,7 +4528,7 @@ else if($_POST['formname']=='getdataofpopupsubvillagenew')
 				{
 
 					$array = array($_POST['fstids'],$_POST['fdtids'],$_POST['datavalue'],1);
-					$query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "SDID" = Any(string_to_array($3::text, \',\'::text)::bigint[]) and is_deleted=$4 order by "VTName" ASC'; // code changed by bheema for villager level NAmes ASC order
+					$query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "SDID" = Any(string_to_array($3::text, \',\'::text)::bigint[]) and is_deleted=$4 order by "VTID" ASC';
 				
 				}
 
@@ -5660,8 +5612,8 @@ else if($_POST['formname']=='finaladddoc')
 	 				pg_query_params($db,'update documentdata'.$_SESSION['activeyears'].' set "doc_reuse"=$1 where docids=$2',$array);
 
 					
-					 $arrar1=array($_POST['reusedocids'],$_SESSION['login_email'],$_SESSION['doc_reuse_desc']);
-	 				// $arrar1=array($_POST['reusedocids'],$_SESSION['login_id'],$_SESSION['doc_reuse_desc']);
+
+	 				$arrar1=array($_POST['reusedocids'],$_SESSION['login_id'],$_SESSION['doc_reuse_desc']);
 	 				pg_query_params($db,'insert into reuse_document'.$_SESSION['activeyears'].' ("docids","created_by","doc_reuse_desc") VALUES ($1,$2,$3)',$arrar1);
 
 	 		}
@@ -5878,15 +5830,14 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 					if($retdata['oremovenewarray']==1)
 					{
 					$stnameupdate = "update st".$_SESSION['activeyears']." set \"STName\"=$1,\"Status\"=$2 where \"STID\"=$3";		
-					pg_query_params($db,$stnameupdate,array($retdata['newnamecheck'][0]),ucwords($retdata['StateStatus'][0]),$retdata['newnamem'][0]);	
-				//	pg_query_params($db,$stnameupdate,array(ucwords(strtolower($retdata['newnamecheck'][0])),ucwords(strtoupper($retdata['StateStatus'][0])),$retdata['newnamem'][0]));	
+
+					pg_query_params($db,$stnameupdate,array(ucwords(strtolower($retdata['newnamecheck'][0])),ucwords(strtoupper($retdata['StateStatus'][0])),$retdata['newnamem'][0]));	
 					}
 					else
 					{
 						$stnameupdate = "update st".$_SESSION['activeyears']." set \"Status\"=$1 where \"STID\"=$2";		
-						pg_query_params($db,$stnameupdate,array($retdata['StateStatus'][0]),$retdata['newnamem'][0]);
 
-					//pg_query_params($db,$stnameupdate,array(ucwords(strtoupper($retdata['StateStatus'][0])),$retdata['newnamem'][0]));
+					pg_query_params($db,$stnameupdate,array(ucwords(strtoupper($retdata['StateStatus'][0])),$retdata['newnamem'][0]));
 					}
 
 
@@ -5972,7 +5923,7 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 
 								$stnameupdate = "update st".$_SESSION['activeyears']." set \"STName\"=$1,\"Status\"=$2 where \"STID\"=$3";		
 
-								pg_query_params($db,$stnameupdate,array($finaldata['newnamecheck'][0], ucwords(strtoupper($finaldata['StateStatus'][0])),$finaldata['newnamem'][0]));	
+								pg_query_params($db,$stnameupdate,array(ucwords(strtolower($finaldata['newnamecheck'][0])),ucwords(strtoupper($finaldata['StateStatus'][0])),$finaldata['newnamem'][0]));	
 								}
 								else
 								{
@@ -6487,7 +6438,7 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 
 						 $stnameupdate = "update dt".$_SESSION['activeyears']." set \"DTName\"=$1 where \"DTID\"=$2";		
 
-						pg_query_params($db,$stnameupdate,array(($retdata['newnamecheck'][0]),$retdata['newnamem'][0]));	
+						pg_query_params($db,$stnameupdate,array(ucwords(strtolower(htmlspecialchars($retdata['newnamecheck'][0]))),$retdata['newnamem'][0]));	
 						}
 
  						// SWAMI JIGAR
@@ -6696,7 +6647,7 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 						{
 						 $stnameupdate = "update dt".$_SESSION['activeyears']." set \"DTName\"=$1 where \"DTID\"=$2";		
 
-						pg_query_params($db,$stnameupdate,array(($finaldata['newnamecheck'][0]),$finaldata['newnamem'][0]));	
+						pg_query_params($db,$stnameupdate,array(ucwords(strtolower(htmlspecialchars($finaldata['newnamecheck'][0]))),$finaldata['newnamem'][0]));	
 						}
 
 
@@ -7143,7 +7094,7 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 					{
 					$stnameupdate = "update sd".$_SESSION['activeyears']." set \"SDName\"=$1 where \"SDID\"=$2";		
 
-					pg_query_params($db,$stnameupdate,array($retdata['newnamecheck'][0],$retdata['newnamem'][0]));	
+					pg_query_params($db,$stnameupdate,array(ucwords(strtolower($retdata['newnamecheck'][0])),$retdata['newnamem'][0]));	
 					}
 					$aaaa=array($retdata['newnamem'][0],1,$comestr);
 					// print_r($aaaa);
@@ -7340,7 +7291,7 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 					{
 					$stnameupdate = "update sd".$_SESSION['activeyears']." set \"SDName\"=$1 where \"SDID\"=$2";		
 
-					pg_query_params($db,$stnameupdate,array($finaldata['newnamecheck'][0],$finaldata['newnamem'][0]));	
+					pg_query_params($db,$stnameupdate,array(ucwords(strtolower($finaldata['newnamecheck'][0])),$finaldata['newnamem'][0]));	
 					}
 
 						//  echo $finaldata['newnamem'][0];
@@ -8044,7 +7995,7 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 										{
 										$stnameupdate = 'update vt'.$_SESSION['activeyears'].' set "VTName"=$1,"Level"=$2,"Status"=$3 where vt'.$_SESSION['activeyears'].'."VTID"=$4';		
 
-										pg_query_params($db,$stnameupdate,array($finaldata['newnamecheck'][0],ucwords(strtoupper($finaldata['vStateStatus'][0])),ucwords(strtoupper($finaldata['vstatus'][0])),$finaldata['newnamem'][0]));	
+										pg_query_params($db,$stnameupdate,array(ucwords(strtolower($finaldata['newnamecheck'][0])),ucwords(strtoupper($finaldata['vStateStatus'][0])),ucwords(strtoupper($finaldata['vstatus'][0])),$finaldata['newnamem'][0]));	
 										}
 										else
 										{
@@ -8477,8 +8428,7 @@ else if($_POST['clickbutton']=='Rename')
 		 			{
 						$nameof=$nameor[$i];
 		 			}
-		 			//$updatequery .="('".ucwords(strtolower($nameof))."','".ucwords(strtoupper($finaldata['StateStatus'][$i]))."',".$finaldata['newnamem'][$i]."),";
-		 			$updatequery .="('".($nameof)."','".ucwords(strtoupper($finaldata['StateStatus'][$i]))."',".$finaldata['newnamem'][$i]."),";
+		 			$updatequery .="('".ucwords(strtolower($nameof))."','".ucwords(strtoupper($finaldata['StateStatus'][$i]))."',".$finaldata['newnamem'][$i]."),";
 
 
 
@@ -8625,7 +8575,7 @@ else if($_POST['clickbutton']=='Rename')
 		 		for($i=0;$i<count($finaldata['newnamem']);$i++)
 		 		{
 
-		 			$updatequery .="('".$finaldata['newnamecheck'][$i]."',".$finaldata['newnamem'][$i].",".$finaldata['statenew'][$i]."),";
+		 			$updatequery .="('".ucwords(strtolower($finaldata['newnamecheck'][$i]))."',".$finaldata['newnamem'][$i].",".$finaldata['statenew'][$i]."),";
 
 		 			$sqlo='Select "STIDR","DTIDR" from dt'.$_SESSION['activeyears'].' WHERE "DTID"=$1 AND is_deleted=$2';
 					$sqlold = pg_query_params($db,$sqlo,array($finaldata['newnamem'][$i],1));
@@ -8730,7 +8680,7 @@ else if($_POST['clickbutton']=='Rename')
 
 		 		for($i=0;$i<count($finaldata['newnamem']);$i++)
 		 		{
-		 			$updatequery .="('".$finaldata['newnamecheck'][$i]."',".$finaldata['newnamem'][$i].",".$finaldata['statenew'][$i].",".$finaldata['districtnew'][$i]."),";
+		 			$updatequery .="('".ucwords(strtolower($finaldata['newnamecheck'][$i]))."',".$finaldata['newnamem'][$i].",".$finaldata['statenew'][$i].",".$finaldata['districtnew'][$i]."),";
 
 		 			$sqlo='Select "STIDR","DTIDR","SDIDR" from sd'.$_SESSION['activeyears'].' WHERE "SDID"=$1 AND is_deleted=$2';
 					$sqlold = pg_query_params($db,$sqlo,array($finaldata['newnamem'][$i],1));
@@ -8978,7 +8928,7 @@ else if($_POST['clickbutton']=='Rename')
 
 		 			if($finaldata['newnamecheck'][$i]!='')
 		 			{
-		 					$updatequery .="('".$finaldata['newnamecheck'][$i]."','".ucwords(strtoupper($finaldata['vStateStatus'][$i]))."','".ucwords(strtoupper($finaldata['vstatus'][$i]))."',".$finaldata['newnamem'][$i].",".$finaldata['statenew'][$i].",".$finaldata['districtnew'][$i].",".$finaldata['sddistrictnew'][$i]."),";
+		 					$updatequery .="('".ucwords(strtolower($finaldata['newnamecheck'][$i]))."','".ucwords(strtoupper($finaldata['vStateStatus'][$i]))."','".ucwords(strtoupper($finaldata['vstatus'][$i]))."',".$finaldata['newnamem'][$i].",".$finaldata['statenew'][$i].",".$finaldata['districtnew'][$i].",".$finaldata['sddistrictnew'][$i]."),";
 		 			}
 		 			else
 		 			{
@@ -9232,7 +9182,7 @@ else if($_POST['clickbutton']=='Deletion'){
 
 		 			if($finaldata['newnamecheck'][$i]!='')
 		 			{
-		 					$updatequery .="('".$finaldata['newnamecheck'][$i]."','".ucwords(strtoupper($finaldata['vStateStatus'][$i]))."','".ucwords(strtoupper($finaldata['vstatus'][$i]))."',".$finaldata['newnamem'][$i].",".$finaldata['statenew'][$i].",".$finaldata['districtnew'][$i].",".$finaldata['sddistrictnew'][$i]."),";
+		 					$updatequery .="('".ucwords(strtolower($finaldata['newnamecheck'][$i]))."','".ucwords(strtoupper($finaldata['vStateStatus'][$i]))."','".ucwords(strtoupper($finaldata['vstatus'][$i]))."',".$finaldata['newnamem'][$i].",".$finaldata['statenew'][$i].",".$finaldata['districtnew'][$i].",".$finaldata['sddistrictnew'][$i]."),";
 		 			}
 		 			else
 		 			{
@@ -9655,7 +9605,7 @@ else
 									
 											$arrayofn=array();
 
-											$arrayofn=array($stidup[0],$idsof,$retdata['newname'][0],implode(',',$retdata['fromstate']),implode(',',$retdata['namefrom']),'new',$_SESSION['login_id']);
+											$arrayofn=array($stidup[0],$idsof,ucwords(strtolower($retdata['newname'][0])),implode(',',$retdata['fromstate']),implode(',',$retdata['namefrom']),'new',$_SESSION['login_id']);
 
 											$state ='insert into dt'.$_SESSION['activeyears'].' ("STID","DTID","DTName","STIDR","DTIDR","flagofcreate","createdby") values ($1,$2,$3,$4,$5,$6,$7) returning "DTID"';
 										
@@ -9949,7 +9899,7 @@ else
 									$sqlda = pg_fetch_array($sqlold);
 
 										
-										$stateconcate = array($stidup[$j],$idsof,$retdata['newname'][$j],$sqlda['STIDR'],$sqlda['DTIDR'],'new',$_SESSION['login_id']);
+										$stateconcate = array($stidup[$j],$idsof,ucwords(strtolower($retdata['newname'][$j])),$sqlda['STIDR'],$sqlda['DTIDR'],'new',$_SESSION['login_id']);
 
 										// "(".$stidup[$j].",".$idsof.",'".ucwords(strtolower($retdata['newname'][$j]))."','".$sqlda['STIDR']."','".$sqlda['DTIDR']."','new',".$_SESSION['login_id'].")";
 
@@ -10450,7 +10400,7 @@ else
 									$sqlda = pg_fetch_array($sqlold);
 								
 
-							$stateconcate = array($finaldata['statenew'][$j],$finaldata['districtnew'][$j],$idsof,$finaldata['newname'][$j],$sqlda['STIDR'],$sqlda['DTIDR'],$sqlda['SDIDR'],'new',$_SESSION['login_id']);
+							$stateconcate = array($finaldata['statenew'][$j],$finaldata['districtnew'][$j],$idsof,ucwords(strtolower($finaldata['newname'][$j])),$sqlda['STIDR'],$sqlda['DTIDR'],$sqlda['SDIDR'],'new',$_SESSION['login_id']);
 							$state ='insert into sd'.$_SESSION['activeyears'].' ("STID","DTID","SDID","SDName","STIDR","DTIDR","SDIDR","flagofcreate","createdby") values ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning "SDID"';
 						pg_query_params($db,$state,$stateconcate);
 
@@ -10718,23 +10668,28 @@ else
 
 						$frcomment='';
 						
-						// many to one subdistricts flow forread and remarks solved by shashi
-						$frcomment = '';
-						if ( isset($retdata['action']) && is_array($retdata['action'] )&& isset($retdata['namefromtext'])) {
-							$namefromtextt = explode(',', $retdata['namefromtext']);
-							$frcommentt = '';
-							for ($a = 0; $a < count($namefromtextt); $a++) {
-								$frcommentt .= ' ' . $namefromtextt[$a] . ' (' . $retdata['action'][$a] . ');';
-							}
-						}
+						// if(isset($retdata['statenewarray']))
+						// {
+						// $statenewarray = explode(',',$retdata['statenewarray']);
+						// }
+
+						// if(isset($retdata['districtnewarray']))
+						// {
+						// $districtnewarray = explode(',',$retdata['districtnewarray']);
+						// }
+
 						$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarray[0].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarray[0].'; ';
-							$frcomment .= '<strong style="color:blue;"><u>Sub District:</u></strong> ' . $retdata['newname'][0] . ' Created from ' . $frcommentt . ' ';
-							$frcomment .= ' <strong style="color:#45b0e2;"><u>Town:</u></strong> - ; <strong style="color:#15bed2;"><u>Village:</u></strong> - ;';
-												$frcomment1='';
-												$frcomment1 .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarray[0].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarray[0].'; ';
-												$frcomment1 .='<strong style="color:blue;"><u>Sub District:</u></strong> '. $frcommentt.' & Create New '.$retdata['newname'][0].';';
-												$frcomment1 .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> - ; <strong style="color:#15bed2;"><u>Village:</u></strong> - ;';
-						// till here  
+						// $frcomment .='<strong style="color:blue;"><u>Sub District:</u></strong> '.$retdata['newname'][0].' Created from '.$retdata['namefromtext'].';';
+						// subdistrict level remarks (many to one) 
+						$frcomment .='<strong style="color:blue;"><u>Sub District:</u></strong> '.$retdata['newname'][0].' Created from '.$retdata['namefromtext'].' ('.$retdata['action'][0].');';
+						$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> - ; <strong style="color:#15bed2;"><u>Village:</u></strong> - ;';
+
+						
+						$frcomment1='';
+
+						$frcomment1 .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarrayfrom[0].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarrayfrom[0].'; ';
+						$frcomment1 .='<strong style="color:blue;"><u>Sub District:</u></strong> '.$retdata['namefromtext'].' '.$retdata['action'][0].' & Create New '.$retdata['newname'][0].';';
+						$frcomment1 .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> - ; <strong style="color:#15bed2;"><u>Village:</u></strong> - ;';
 
 						
 
@@ -10955,7 +10910,7 @@ else
 
 
 
-							$stateconcate = array($retdata['statenew'][$j],$retdata['districtnew'][$j],$idsof,$retdata['newname'][$j],$sqlda['STIDR'],$sqlda['DTIDR'],$sqlda['SDIDR'],'new',$_SESSION['login_id']);
+							$stateconcate = array($retdata['statenew'][$j],$retdata['districtnew'][$j],$idsof,ucwords(strtolower($retdata['newname'][$j])),$sqlda['STIDR'],$sqlda['DTIDR'],$sqlda['SDIDR'],'new',$_SESSION['login_id']);
 
 
  						$state ='insert into sd'.$_SESSION['activeyears'].' ("STID","DTID","SDID","SDName","STIDR","DTIDR","SDIDR","flagofcreate","createdby") values ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning "SDID"';
@@ -11252,456 +11207,438 @@ else
 	{
 
 
-		$dataofremove = explode(',',$finaldata['origremove']);
-		$removearraysd = array();
-		
-		if($finaldata['flag']=='namefrom')
-		{
-
-				if(isset($finaldata['statenewarray']))
-				{
-				$statenewarray = explode(',',$finaldata['statenewarray']);
-				}
-
-				if(isset($finaldata['districtnewarray']))
-				{
-				$districtnewarray = explode(',',$finaldata['districtnewarray']);
-				}
-
-				if(isset($finaldata['sddistrictnewarray']))
-				{
-				$sddistrictnewarray = explode(',',$finaldata['sddistrictnewarray']);
-				}
-
-
-					if(isset($finaldata['statenewarrayfrom']))
-						{
-						$statenewarrayfrom = explode(',',$finaldata['statenewarrayfrom']);
-						}
-
-						if(isset($finaldata['districtnewarrayfrom']))
-						{
-						$districtnewarrayfrom = explode(',',$finaldata['districtnewarrayfrom']);
-						}
-
-						if(isset($finaldata['sddistrictnewarrayfrom']))
-						{
-						$sddistrictnewarrayfrom = explode(',',$finaldata['sddistrictnewarrayfrom']);
-						}
-
-
-				$sql = 'SELECT vt'.$_SESSION['activeyears'].'."ID" FROM vt'.$_SESSION['activeyears'].' ORDER BY vt'.$_SESSION['activeyears'].'."ID" DESC LIMIT 1';
-
-								$idsquery = pg_query_params($db,$sql,array());
-
-								if(pg_numrows($idsquery)>0)
-								{
-
-									$idsquerydata = pg_fetch_array($idsquery);
-
-								
-								}
-
-								$id = $idsquerydata['ID'] + 1;
-								$id = str_pad($id, 6, '0', STR_PAD_LEFT);
-								
-								$idsof = $finaldata['sddistrictnew'][0]."".$id;
-
-				$st=array_merge($finaldata['fromstate'],$finaldata['statenew']);
-				$dt=array_merge($finaldata['districtget'],$finaldata['districtnew']);
-				$sd=array_merge($finaldata['sddistrictget'],$finaldata['sddistrictnew']);
-
-				// $vt=array_merge($finaldata['namefrom'],array($idsof));
-
-				$ii = explode(',',$finaldata['ind']);
-				$linkDTarray = array();
-				$forread = '';
-				$forread1 = '';
-				$linkst='';
+			$dataofremove = explode(',',$finaldata['origremove']);
+			$removearraysd = array();
 			
-				$vt= array();
-				$vtf= array();
-				$allvt=array();
-				for($o=0;$o<count($finaldata['action']);$o++)
-				{
+			if($finaldata['flag']=='namefrom')
+			{
 
-
-					
-
-					if($ii[$o]==1 && $finaldata['action'][$o]=='Split')
+					if(isset($finaldata['statenewarray']))
 					{
-						
-							for($j=0;$j<count($finaldata['namefrom']);$j++)
+					$statenewarray = explode(',',$finaldata['statenewarray']);
+					}
+
+					if(isset($finaldata['districtnewarray']))
+					{
+					$districtnewarray = explode(',',$finaldata['districtnewarray']);
+					}
+
+					if(isset($finaldata['sddistrictnewarray']))
+					{
+					$sddistrictnewarray = explode(',',$finaldata['sddistrictnewarray']);
+					}
+
+
+						if(isset($finaldata['statenewarrayfrom']))
 							{
+							$statenewarrayfrom = explode(',',$finaldata['statenewarrayfrom']);
+							}
 
-								$sqlo1='Select "STIDR","DTIDR","SDIDR","VTIDR" from vt'.$_SESSION['activeyears'].' WHERE "VTID"=$1 AND is_deleted=$2';
-								$sqlold1 = pg_query_params($db,$sqlo1,array($finaldata['namefrom'][$j],1));
-								$sqlda1 = pg_fetch_array($sqlold1);
+							if(isset($finaldata['districtnewarrayfrom']))
+							{
+							$districtnewarrayfrom = explode(',',$finaldata['districtnewarrayfrom']);
+							}
+
+							if(isset($finaldata['sddistrictnewarrayfrom']))
+							{
+							$sddistrictnewarrayfrom = explode(',',$finaldata['sddistrictnewarrayfrom']);
+							}
+
+
+					$sql = 'SELECT vt'.$_SESSION['activeyears'].'."ID" FROM vt'.$_SESSION['activeyears'].' ORDER BY vt'.$_SESSION['activeyears'].'."ID" DESC LIMIT 1';
+
+									$idsquery = pg_query_params($db,$sql,array());
+
+									if(pg_numrows($idsquery)>0)
+									{
+
+										$idsquerydata = pg_fetch_array($idsquery);
+
+									
+									}
+
+									$id = $idsquerydata['ID'] + 1;
+									$id = str_pad($id, 6, '0', STR_PAD_LEFT);
+									
+									$idsof = $finaldata['sddistrictnew'][0]."".$id;
+
+					$st=array_merge($finaldata['fromstate'],$finaldata['statenew']);
+					$dt=array_merge($finaldata['districtget'],$finaldata['districtnew']);
+					$sd=array_merge($finaldata['sddistrictget'],$finaldata['sddistrictnew']);
+
+					// $vt=array_merge($finaldata['namefrom'],array($idsof));
+
+					$ii = explode(',',$finaldata['ind']);
+					$linkDTarray = array();
+					$forread = '';
+					$forread1 = '';
+					$linkst='';
+				
+					$vt= array();
+					$vtf= array();
+					$allvt=array();
+					for($o=0;$o<count($finaldata['action']);$o++)
+					{
+
+
+						
+
+						if($ii[$o]==1 && $finaldata['action'][$o]=='Split')
+						{
+							
+								for($j=0;$j<count($finaldata['namefrom']);$j++)
+								{
+
+									$sqlo1='Select "STIDR","DTIDR","SDIDR","VTIDR" from vt'.$_SESSION['activeyears'].' WHERE "VTID"=$1 AND is_deleted=$2';
+									$sqlold1 = pg_query_params($db,$sqlo1,array($finaldata['namefrom'][$j],1));
+									$sqlda1 = pg_fetch_array($sqlold1);
 
 
 
-								$frcomment='';
-								$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarray[0].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarray[0].'; <strong style="color:blue;"><u>Sub District:</u></strong> '.$sddistrictnewarray[0].'; ';
+									$frcomment='';
+									$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarray[0].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarray[0].'; <strong style="color:blue;"><u>Sub District:</u></strong> '.$sddistrictnewarray[0].'; ';
+									
+									
+									if($finaldata['vStateStatus'][0]=='VILLAGE')
+									{
+									// village create level remarks code resolved by shashi
+									$frcomment .='<strong style="color:#15bed2;"><u>Village:</u></strong> : '.$finaldata['newname'][0].'('.$finaldata['vstatus'][0].') Created from '.$finaldata['namefromtext'].' ;';
+									}
+									else
+									{
+											// village create level remarks code resolved by shashi
+											$frcomment .='<strong style="color:#45b0e2;"><u>Town:</u></strong> : '.$finaldata['newname'][0].' ('.$finaldata['vstatus'][0].')  Created from '.$finaldata['namefromtext'].' ;';
+									
+									}
+
+									$frcomment1='';
 								
-						// village level remarks split and full merge code modified by shahsi		
-					$namefromtextt = explode(',',$finaldata['namefromtext']);
-					// if ($finaldata['vStateStatus'][0] == 'VILLAGE') {
-						// village create level remarks code resolved by shashi
-						// $frcomment .= '<strong style="color:#15bed2;"><u>Village:</u></strong> : ' . $finaldata['newname'][0] . '(' . $finaldata['vstatus'][0] . ') Created from ' . $frcommentt . ' ;';
-					// } else {
-						// village create level remarks code resolved by shashi
-						// $frcomment .= '<strong style="color:#45b0e2;"><u>Town:</u></strong> : ' . $finaldata['newname'][0] . ' (' . $finaldata['vstatus'][0] . ')  Created from ' .$frcommentt. ' ;';
-					
-						$frcommentt = '';
-					if (isset($finaldata['action']) && is_array($finaldata['action']) && isset($finaldata['namefromtext'])) {
-						$namefromtextt = explode(',', $finaldata['namefromtext']);
-					
-						for ($a = 0; $a < count($namefromtextt); $a++) {
-							$frcommentt .= ' ' . $namefromtextt[$a] . ' (' . $finaldata['action'][$a] . ')';
-						}
-					}
-					if ($finaldata['vStateStatus'][0] == 'VILLAGE') {
-						// village create level remarks code resolved by shashi
-						$frcomment .= '<strong style="color:#15bed2;"><u>Village:</u></strong> : ' . $finaldata['newname'][0] . '(' . $finaldata['vstatus'][0] . ') Created from ' . $frcommentt . ' ;';
-					} else {
-						// village create level remarks code resolved by shashi
-						$frcomment .= '<strong style="color:#45b0e2;"><u>Town:</u></strong> : ' . $finaldata['newname'][0] . ' (' . $finaldata['vstatus'][0] . ')  Created from ' .$frcommentt. ' ;';
-						// $frcomment .= '<strong style="color:#15bed2;"><u>Village:</u></strong> : ' . $finaldata['newname'][0] . '(' . $finaldata['vstatus'][0] . ') Created from ' . $frcommentt . ' ;';
-					}
-					// else {
-					// 	$frcomment .= '<strong style="color:#45b0e2;"><u>Town:</u></strong> : ' . $finaldata['newname'][0] . ' (' . $finaldata['vstatus'][0] . ')  Created from ' .$frcommentt. ' ;';
-					// }
-					
-				// }
+									$frcomment1 .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarrayfrom[$o].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarrayfrom[$o].'; <strong style="color:blue;"><u>Sub District:</u></strong> '.$sddistrictnewarrayfrom[$o].';';
+								
+									if($finaldata['vStateStatus'][0]=='VILLAGE')
+									{
+											// village create level remarks code resolved by shashi
+									
+										$frcomment1 .='<strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].' &  Created '.implode(',',$finaldata['newname']).' ('.$finaldata['vstatus'][0].');';
+									}
+									else
+									{
+											// village create level remarks code resolved by shashi
+											$frcomment1 .='<strong style="color:#45b0e2;"><u>Town:</u></strong> : '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].' &  Created '.implode(',',$finaldata['newname']).' ('.$finaldata['vstatus'][0].');';
+									
+									}
+						
+
+
+								// $forread[$j] = array($finaldata['namefrom'][$j],$finaldata['action'][$o],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']);
+
+
+									 $insertforread = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)';
+
+
+						$result = pg_query_params($db,$insertforread,array($finaldata['namefrom'][$j],$finaldata['action'][$o],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']));
+
+
+								// $forread1[$j]=array($finaldata['namefrom'][$j],$finaldata['action'][$o],$finaldata['namefrom'][$j],$finaldata['docids'],$finaldata['comefromcheck'],$frcomment1,'MAIN',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j],$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']);
+
+
+								 $insertforread1 = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)';
+
+					pg_query_params($db,$insertforread1,array($finaldata['namefrom'][$j],$finaldata['action'][$o],$finaldata['namefrom'][$j],$finaldata['docids'],$finaldata['comefromcheck'],$frcomment1,'MAIN',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j],$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']));
+
+
+								// $linkst[$j]=array($finaldata['docids'],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j]);
+
+								 $insertlinkst = 'insert into documentlink'.$_SESSION['activeyears'].' (docids,linkstids,linkdtids,linksdids,linkvtids) VALUES ($1,$2,$3,$4,$5)';
+								$resultst = pg_query_params($db,$insertlinkst,array($finaldata['docids'],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j]));
+
+								
+								}
+
 			
-								$frcomment1='';
-							
-								$frcomment1 .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarrayfrom[$o].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarrayfrom[$o].'; <strong style="color:blue;"><u>Sub District:</u></strong> '.$sddistrictnewarrayfrom[$o].';';
-							
-								if($finaldata['vStateStatus'][0]=='VILLAGE')
-								{
-										// village create level remarks code resolved by shashi
-								
-									$frcomment1 .='<strong style="color:#15bed2;"><u>Village:</u></strong> '.$frcommentt.' &  Created '.implode(',',$finaldata['newname']).' ('.$finaldata['vstatus'][0].');';
-								}
-								else
-								{
-										// village create level remarks code resolved by shashi
-										$frcomment1 .='<strong style="color:#45b0e2;"><u>Town:</u></strong> : '.$frcommentt.' &  Created '.implode(',',$finaldata['newname']).' ('.$finaldata['vstatus'][0].');';
-								
-								}
-					
-//till here
+				
+				
+							$vt = array_merge($vt,$finaldata['namefrom']);
+						}
+						else if($ii[$o]!=1 && $finaldata['action'][$o]=='Split')
+						{
 
-							// $forread[$j] = array($finaldata['namefrom'][$j],$finaldata['action'][$o],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']);
+							for($j=0;$j<count($finaldata['namefrom'.$ii[$o].'']);$j++)
+								{
+
+									$sqlo1='Select "STIDR","DTIDR","SDIDR","VTIDR" from vt'.$_SESSION['activeyears'].' WHERE "VTID"=$1 AND is_deleted=$2';
+									$sqlold1 = pg_query_params($db,$sqlo1,array($finaldata['namefrom'.$ii[$o].''][$j],1));
+									$sqlda1 = pg_fetch_array($sqlold1);
+
+
+									// $frcomment='';
+									// $frcomment1='';
+
+									// $frcomment='New '.$finaldata['applyon'].'(s) '.$finaldata['newname'][0].' Created From '.$finaldata['namefromtext'].' '.$finaldata['applyon'].'(s)';
+
+									// $frcomment1=''.$finaldata['namefromtext'].' '.$finaldata['applyon'].'(s) '.$finaldata['action'][$o].' &  Create '.$finaldata['newname'][0].'';
+
+									$frcomment='';
+									$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarray[0].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarray[0].'; <strong style="color:blue;"><u>Sub District:</u></strong> '.$sddistrictnewarray[0].'; ';
+									
+									
+									if($finaldata['vStateStatus'][0]=='VILLAGE')
+									{
+									// village create level remarks code resolved by shashi
+									$frcomment .='<strong style="color:#15bed2;"><u>Village:</u></strong> : '.$finaldata['newname'][0].' ('.$finaldata['vstatus'][0].') Created from '.$finaldata['namefromtext'].' ;';
+									}
+									else
+									{
+											// village create level remarks code resolved by shashi
+										$frcomment .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['newname'][0].' ('.$finaldata['vstatus'][0].') Created from '.$finaldata['namefromtext'].' ;';
+									
+									}
+
+
+
+									$frcomment1='';
+								
+									$frcomment1 .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarrayfrom[$o].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarrayfrom[$o].'; <strong style="color:blue;"><u>Sub District:</u></strong> '.$sddistrictnewarrayfrom[$o].'; ';
+									
+									if($finaldata['vStateStatus'][0]=='VILLAGE')
+									{
+									// village create level remarks code resolved by shashi
+									$frcomment1 .='<strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].' &  Created '.implode(',',$finaldata['newname']).' ('.$finaldata['vstatus'][0].');';
+									}
+									else
+									{
+											// village create level remarks code resolved by shashi
+										$frcomment1 .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].' &  Created '.implode(',',$finaldata['newname']).'('.$finaldata['vstatus'][0].');';
+									
+									}
+
+
+
+
+
+								// $forread[$j]= array($finaldata['namefrom'.$ii[$o].''][$j],$finaldata['action'][$o],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']);
+
+										 $insertforread = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)';
+								$result = pg_query_params($db,$insertforread,array($finaldata['namefrom'.$ii[$o].''][$j],$finaldata['action'][$o],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']));
+
+								// $forread1[$j]= array($finaldata['namefrom'.$ii[$o].''][$j],$finaldata['action'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$finaldata['docids'],$finaldata['comefromcheck'],$frcomment1,'MAIN',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']);
+
+								 $insertforread1 = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)';
+
+					pg_query_params($db,$insertforread1,array($finaldata['namefrom'.$ii[$o].''][$j],$finaldata['action'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$finaldata['docids'],$finaldata['comefromcheck'],$frcomment1,'MAIN',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']));
+
+								// $linkst[$j]=array($finaldata['docids'],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j]);
+
+								 $insertlinkst = 'insert into documentlink'.$_SESSION['activeyears'].' (docids,linkstids,linkdtids,linksdids,linkvtids) VALUES ($1,$2,$3,$4,$5)';
+							$resultst = pg_query_params($db,$insertlinkst,array($finaldata['docids'],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j]));
+
+								}
+
+							$vt = array_merge($vt,$finaldata['namefrom'.$ii[$o].'']);
+						}
+						else
+						{
+							if($ii[$o]==1 && $finaldata['action'][$o]=='Full Merge')
+							{
+								for($j=0;$j<count($finaldata['namefrom']);$j++)
+								{
+
+										$sqlo1='Select "STIDR","DTIDR","SDIDR","VTIDR" from vt'.$_SESSION['activeyears'].' WHERE "VTID"=$1 AND is_deleted=$2';
+									$sqlold1 = pg_query_params($db,$sqlo1,array($finaldata['namefrom'][$j],1));
+									$sqlda1 = pg_fetch_array($sqlold1);
+
+									// $frcomment='';
+									
+									// $frcomment='New '.$finaldata['applyon'].'(s) '.$finaldata['newname'][0].' Created From '.$finaldata['namefromtext'].' '.$finaldata['applyon'].'(s)';
+
+
+									$frcomment='';
+								$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarray[0].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarray[0].'; <strong style="color:blue;"><u>Sub District:</u></strong> '.$sddistrictnewarray[0].'; ';
+									
+									
+									
+									if($finaldata['vStateStatus'][0]=='VILLAGE')
+									{
+								
+									$frcomment .='<strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['newname'][0].' Created from '.$finaldata['namefromtext'].';';
+									}
+									else
+									{
+										$frcomment .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['newname'][0].' Created from '.$finaldata['namefromtext'].';';
+									
+									}
+
+									
+
+
+								 // $forread[$j]= array($finaldata['namefrom'][$j],$finaldata['action'][$o],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']);
+
+								  $insertforread = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)';
+								$result = pg_query_params($db,$insertforread,array($finaldata['namefrom'][$j],$finaldata['action'][$o],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']));
+
+								// $linkst[$j] = array($finaldata['docids'],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j]);
+
+								  $insertlinkst = 'insert into documentlink'.$_SESSION['activeyears'].' (docids,linkstids,linkdtids,linksdids,linkvtids) VALUES ($1,$2,$3,$4,$5)';
+							$resultst = pg_query_params($db,$insertlinkst,array($finaldata['docids'],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j]));
+
+								}
+
+								$vtf = array_merge($vtf,$finaldata['namefrom']);
+							}
+							else
+							{
+								for($j=0;$j<count($finaldata['namefrom'.$ii[$o].'']);$j++)
+								{
+
+										$sqlo1='Select "STIDR","DTIDR","SDIDR","VTIDR" from vt'.$_SESSION['activeyears'].' WHERE "VTID"=$1 AND is_deleted=$2';
+									$sqlold1 = pg_query_params($db,$sqlo1,array($finaldata['namefrom'.$ii[$o].''][$j],1));
+									$sqlda1 = pg_fetch_array($sqlold1);
+
+									// $frcomment='';
+									
+									// $frcomment='New '.$finaldata['applyon'].'(s) '.$finaldata['newname'][0].' Created From '.$finaldata['namefromtext'].' '.$finaldata['applyon'].'(s)';
+
+
+									$frcomment='';
+									$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarray[0].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarray[0].'; <strong style="color:blue;"><u>Sub District:</u></strong> '.$sddistrictnewarray[0].'; ';
+									
+									
+									
+									if($finaldata['vStateStatus'][0]=='VILLAGE')
+									{
+								
+									$frcomment .='<strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['newname'][0].' Created From '.$finaldata['namefromtext'].';';
+									}
+									else
+									{
+										$frcomment .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['newname'][0].' Created From '.$finaldata['namefromtext'].';';
+									
+									}
+
+
+
+								// $forread[$j]= array($finaldata['namefrom'.$ii[$o].''][$j],$finaldata['action'][$o],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']);
 
 
 								 $insertforread = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)';
-
-
-					$result = pg_query_params($db,$insertforread,array($finaldata['namefrom'][$j],$finaldata['action'][$o],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']));
-
-
-							// $forread1[$j]=array($finaldata['namefrom'][$j],$finaldata['action'][$o],$finaldata['namefrom'][$j],$finaldata['docids'],$finaldata['comefromcheck'],$frcomment1,'MAIN',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j],$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']);
-
-
-							 $insertforread1 = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)';
-
-				pg_query_params($db,$insertforread1,array($finaldata['namefrom'][$j],$finaldata['action'][$o],$finaldata['namefrom'][$j],$finaldata['docids'],$finaldata['comefromcheck'],$frcomment1,'MAIN',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j],$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']));
-
-
-							// $linkst[$j]=array($finaldata['docids'],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j]);
-
-							 $insertlinkst = 'insert into documentlink'.$_SESSION['activeyears'].' (docids,linkstids,linkdtids,linksdids,linkvtids) VALUES ($1,$2,$3,$4,$5)';
-							$resultst = pg_query_params($db,$insertlinkst,array($finaldata['docids'],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j]));
-
-							
-							}
-
-		
-			
-			
-						$vt = array_merge($vt,$finaldata['namefrom']);
-					}
-					else if($ii[$o]!=1 && $finaldata['action'][$o]=='Split')
-					{
-
-						for($j=0;$j<count($finaldata['namefrom'.$ii[$o].'']);$j++)
-							{
-
-								$sqlo1='Select "STIDR","DTIDR","SDIDR","VTIDR" from vt'.$_SESSION['activeyears'].' WHERE "VTID"=$1 AND is_deleted=$2';
-								$sqlold1 = pg_query_params($db,$sqlo1,array($finaldata['namefrom'.$ii[$o].''][$j],1));
-								$sqlda1 = pg_fetch_array($sqlold1);
-
-
-								// $frcomment='';
-								// $frcomment1='';
-
-								// $frcomment='New '.$finaldata['applyon'].'(s) '.$finaldata['newname'][0].' Created From '.$finaldata['namefromtext'].' '.$finaldata['applyon'].'(s)';
-
-								// $frcomment1=''.$finaldata['namefromtext'].' '.$finaldata['applyon'].'(s) '.$finaldata['action'][$o].' &  Create '.$finaldata['newname'][0].'';
-
-								$frcomment='';
-								$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarray[0].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarray[0].'; <strong style="color:blue;"><u>Sub District:</u></strong> '.$sddistrictnewarray[0].'; ';
-								
-								
-								if($finaldata['vStateStatus'][0]=='VILLAGE')
-								{
-								// village create level remarks code resolved by shashi
-								$frcomment .='<strong style="color:#15bed2;"><u>Village:</u></strong> : '.$finaldata['newname'][0].' ('.$finaldata['vstatus'][0].') Created from '.$frcommentt.' ;';
-								}
-								else
-								{
-										// village create level remarks code resolved by shashi
-									$frcomment .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['newname'][0].' ('.$finaldata['vstatus'][0].') Created from '.$frcommentt.' ;';
-								
-								}
-
-
-
-								$frcomment1='';
-							
-								$frcomment1 .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarrayfrom[$o].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarrayfrom[$o].'; <strong style="color:blue;"><u>Sub District:</u></strong> '.$sddistrictnewarrayfrom[$o].'; ';
-								
-								if($finaldata['vStateStatus'][0]=='VILLAGE')
-								{
-								// village create level remarks code resolved by shashi
-								$frcomment1 .='<strong style="color:#15bed2;"><u>Village:</u></strong> '.$frcommentt.' &  Created '.implode(',',$finaldata['newname']).' ('.$finaldata['vstatus'][0].');';
-								}
-								else
-								{
-										// village create level remarks code resolved by shashi
-									$frcomment1 .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$frcommentt.' &  Created '.implode(',',$finaldata['newname']).'('.$finaldata['vstatus'][0].');';
-								
-								}
-
-
-
-
-
-							// $forread[$j]= array($finaldata['namefrom'.$ii[$o].''][$j],$finaldata['action'][$o],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']);
-
-									 $insertforread = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)';
 							$result = pg_query_params($db,$insertforread,array($finaldata['namefrom'.$ii[$o].''][$j],$finaldata['action'][$o],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']));
 
-							// $forread1[$j]= array($finaldata['namefrom'.$ii[$o].''][$j],$finaldata['action'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$finaldata['docids'],$finaldata['comefromcheck'],$frcomment1,'MAIN',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']);
-
-							 $insertforread1 = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)';
-
-				pg_query_params($db,$insertforread1,array($finaldata['namefrom'.$ii[$o].''][$j],$finaldata['action'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$finaldata['docids'],$finaldata['comefromcheck'],$frcomment1,'MAIN',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']));
 
 							// $linkst[$j]=array($finaldata['docids'],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j]);
 
 							 $insertlinkst = 'insert into documentlink'.$_SESSION['activeyears'].' (docids,linkstids,linkdtids,linksdids,linkvtids) VALUES ($1,$2,$3,$4,$5)';
-						$resultst = pg_query_params($db,$insertlinkst,array($finaldata['docids'],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j]));
+							$resultst = pg_query_params($db,$insertlinkst,array($finaldata['docids'],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j]));
 
+
+								}
+
+								$vtf = array_merge($vtf,$finaldata['namefrom'.$ii[$o].'']);
 							}
 
-						$vt = array_merge($vt,$finaldata['namefrom'.$ii[$o].'']);
-					}
-					else
-					{
-						if($ii[$o]==1 && $finaldata['action'][$o]=='Full Merge')
-						{
-							for($j=0;$j<count($finaldata['namefrom']);$j++)
-							{
 
-									$sqlo1='Select "STIDR","DTIDR","SDIDR","VTIDR" from vt'.$_SESSION['activeyears'].' WHERE "VTID"=$1 AND is_deleted=$2';
-								$sqlold1 = pg_query_params($db,$sqlo1,array($finaldata['namefrom'][$j],1));
-								$sqlda1 = pg_fetch_array($sqlold1);
-
-								// $frcomment='';
-								
-								// $frcomment='New '.$finaldata['applyon'].'(s) '.$finaldata['newname'][0].' Created From '.$finaldata['namefromtext'].' '.$finaldata['applyon'].'(s)';
-
-
-								$frcomment='';
-							$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarray[0].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarray[0].'; <strong style="color:blue;"><u>Sub District:</u></strong> '.$sddistrictnewarray[0].'; ';
-								
-								
-								
-								if($finaldata['vStateStatus'][0]=='VILLAGE')
-								{
 							
-								$frcomment .='<strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['newname'][0].' Created from '.$frcommentt.';';
-								}
-								else
-								{
-									$frcomment .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['newname'][0].' Created from '.$frcommentt.';';
-								
-								}
-
-								
-
-
-							 // $forread[$j]= array($finaldata['namefrom'][$j],$finaldata['action'][$o],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']);
-
-							  $insertforread = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)';
-							$result = pg_query_params($db,$insertforread,array($finaldata['namefrom'][$j],$finaldata['action'][$o],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']));
-
-							// $linkst[$j] = array($finaldata['docids'],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j]);
-
-							  $insertlinkst = 'insert into documentlink'.$_SESSION['activeyears'].' (docids,linkstids,linkdtids,linksdids,linkvtids) VALUES ($1,$2,$3,$4,$5)';
-						$resultst = pg_query_params($db,$insertlinkst,array($finaldata['docids'],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'][$j]));
-
-							}
-
-							$vtf = array_merge($vtf,$finaldata['namefrom']);
 						}
+			
+						
+						if($o>=1)
+						{
+							
+								$allvt = array_merge($allvt,$finaldata['namefrom'.$ii[$o].'']);
+						}	
 						else
 						{
-							for($j=0;$j<count($finaldata['namefrom'.$ii[$o].'']);$j++)
-							{
-
-									$sqlo1='Select "STIDR","DTIDR","SDIDR","VTIDR" from vt'.$_SESSION['activeyears'].' WHERE "VTID"=$1 AND is_deleted=$2';
-								$sqlold1 = pg_query_params($db,$sqlo1,array($finaldata['namefrom'.$ii[$o].''][$j],1));
-								$sqlda1 = pg_fetch_array($sqlold1);
-
-								// $frcomment='';
-								
-								// $frcomment='New '.$finaldata['applyon'].'(s) '.$finaldata['newname'][0].' Created From '.$finaldata['namefromtext'].' '.$finaldata['applyon'].'(s)';
-
-
-								$frcomment='';
-								$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarray[0].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarray[0].'; <strong style="color:blue;"><u>Sub District:</u></strong> '.$sddistrictnewarray[0].'; ';
-								
-								
-								
-								if($finaldata['vStateStatus'][0]=='VILLAGE')
-								{
 							
-								$frcomment .='<strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['newname'][0].' Created From '.$frcommentt.';';
-								}
-								else
-								{
-									$frcomment .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['newname'][0].' Created From '.$frcommentt.';';
-								
-								}
-
-
-
-							// $forread[$j]= array($finaldata['namefrom'.$ii[$o].''][$j],$finaldata['action'][$o],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']);
-
-
-							 $insertforread = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)';
-						$result = pg_query_params($db,$insertforread,array($finaldata['namefrom'.$ii[$o].''][$j],$finaldata['action'][$o],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,$sqlda1['STIDR'],$sqlda1['DTIDR'],$sqlda1['SDIDR'],$sqlda1['VTIDR'],$_SESSION['login_id']));
-
-
-						// $linkst[$j]=array($finaldata['docids'],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j]);
-
-						 $insertlinkst = 'insert into documentlink'.$_SESSION['activeyears'].' (docids,linkstids,linkdtids,linksdids,linkvtids) VALUES ($1,$2,$3,$4,$5)';
-						$resultst = pg_query_params($db,$insertlinkst,array($finaldata['docids'],$finaldata['fromstate'][$o],$finaldata['districtget'][$o],$finaldata['sddistrictget'][$o],$finaldata['namefrom'.$ii[$o].''][$j]));
-
-
-							}
-
-							$vtf = array_merge($vtf,$finaldata['namefrom'.$ii[$o].'']);
+							$allvt = array_merge($allvt,$finaldata['namefrom']);
 						}
 
-
-						
 					}
-		
+
+				
+				 // 	print_r($frcomment1);
+					// echo "+++++++++++++++++++++".$frcomment1;
+					// exit;
+					 $sqlo='Select "STIDR","DTIDR","SDIDR","VTIDR" from vt'.$_SESSION['activeyears'].' WHERE "VTID" = Any(string_to_array($1::text, \',\'::text)::NUMERIC[]) AND is_deleted=$2';
+
+					$sqlold = pg_query_params($db,$sqlo,array(implode(',',$allvt),1));
+					$sqlda = pg_fetch_all($sqlold);
+
+					 $stateconcate =array($finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,ucwords(strtolower($finaldata['newname'][0])),$finaldata['vStateStatus'][0],$finaldata['vstatus'][0],'new',$_SESSION['login_id'],implode(',',array_column($sqlda, 'STIDR')),implode(',',array_column($sqlda, 'DTIDR')),implode(',',array_column($sqlda, 'SDIDR')),implode(',',array_column($sqlda, 'VTIDR')));
 					
-					if($o>=1)
+
+
+					 $state ='insert into vt'.$_SESSION['activeyears'].' ("STID","DTID","SDID","VTID","VTName","Level","Status","flagofcreate","createdby","STIDR","DTIDR","SDIDR","VTIDR") values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) returning "VTID"';
+					
+					$result = pg_query_params($db,$state,$stateconcate);
+					$fch = pg_fetch_all($result);
+
+				
+					// $forreadqueryappend = rtrim($forread, ',');
+					// $forreadqueryappend1 = rtrim($forread1, ',');
+
+					
+					// $linkstfinal = rtrim($linkst, ',');
+
+
+			
+				
+
+					 
+					  
+				
+					$insertlinkst1 = 'insert into documentlink'.$_SESSION['activeyears'].' (docids,linkstids,linkdtids,linksdids,linkvtids) VALUES ($1,$2,$3,$4,$5)';
+			
+
+					$resultst1 = pg_query_params($db,$insertlinkst1,array($finaldata['docids'],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof));
+
+
+				
+					$resultst_rows = pg_affected_rows($resultst);
+
+
+					if($resultst_rows!=0)
 					{
-						
-							$allvt = array_merge($allvt,$finaldata['namefrom'.$ii[$o].'']);
-					}	
+
+					pg_query_params($db,'update documentdata'.$_SESSION['activeyears'].' set docstatus=$1 where docids=$2',array(1,$finaldata['docids']));
+
+				
+					if(count($vtf)>0)
+					{
+					pg_query_params($db,'update vt'.$_SESSION['activeyears'].' set "is_deleted"=$1 where "VTID" = Any(string_to_array($2::text, \',\'::text)::NUMERIC[])',array(0,implode(',',$vtf)));	
+					}
+					// if($forreadqueryappend1!='')
+					// {
+					// 	 $insertforread1 = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES '.$forreadqueryappend1.'';
+
+					// pg_query($db,$insertforread1);
+					// }
+					
+
+					if($finaldata['partiallyids1']!='')
+					{
+
+					pg_query_params($db,'update partiallydata'.$_SESSION['activeyears'].' set "pstatus"=$1 where partiallyids=$2',array(1,$finaldata['partiallyids1']));	
+					}
+
+
+					// $finalqueryvt = 'insert into forreaddata2021 ("frfromids","frfromaction","frtoids","frdocids","frcomefrom",
+					// 		"frcomment","is_final","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR")
+					// 		(select "frfromids","frfromaction","frtoids","frdocids","frcomefrom",
+					// 		"frcomment","is_final","comeaction",vt21."STIDR"::integer AS "STIDR11",vt21."DTIDR"::integer AS "DTIDR11",vt21."SDIDR"::BIGINT AS "SDIDR11",vt21."VTIDR"::NUMERIC AS "VTIDR11",vt21."STID",vt21."DTID",vt21."SDID",vt21."VTID",vt21."STIDR"::integer,vt21."DTIDR"::integer,vt21."SDIDR"::BIGINT,vt21."VTIDR"::NUMERIC from vt2021 as vt21 
+					// 		LEFT JOIN (select * from forreaddata2021 where "frtoids"='.$idsof.' ORDER BY "frids" DESC limit 1) as fr21 ON fr21."frtoids"=vt21."VTID" and fr21."frfromids"=vt21."VTIDR" 
+					// 		where vt21."VTID"='.$idsof.' AND vt21."is_deleted"=1
+					// 		)';
+					// 		pg_query($db,$finalqueryvt);
+
+
+					$task = "addfinish";
+					}
 					else
 					{
-						
-						$allvt = array_merge($allvt,$finaldata['namefrom']);
+					$task = "error";
 					}
 
-				}
 
-			
-			 // 	print_r($frcomment1);
-				// echo "+++++++++++++++++++++".$frcomment1;
-				// exit;
-				 $sqlo='Select "STIDR","DTIDR","SDIDR","VTIDR" from vt'.$_SESSION['activeyears'].' WHERE "VTID" = Any(string_to_array($1::text, \',\'::text)::NUMERIC[]) AND is_deleted=$2';
-
-				$sqlold = pg_query_params($db,$sqlo,array(implode(',',$allvt),1));
-				$sqlda = pg_fetch_all($sqlold);
-
-				 $stateconcate =array($finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,ucwords(strtolower($finaldata['newname'][0])),$finaldata['vStateStatus'][0],$finaldata['vstatus'][0],'new',$_SESSION['login_id'],implode(',',array_column($sqlda, 'STIDR')),implode(',',array_column($sqlda, 'DTIDR')),implode(',',array_column($sqlda, 'SDIDR')),implode(',',array_column($sqlda, 'VTIDR')));
-				
-
-
-				 $state ='insert into vt'.$_SESSION['activeyears'].' ("STID","DTID","SDID","VTID","VTName","Level","Status","flagofcreate","createdby","STIDR","DTIDR","SDIDR","VTIDR") values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) returning "VTID"';
-				
-				$result = pg_query_params($db,$state,$stateconcate);
-				$fch = pg_fetch_all($result);
-
-			
-				// $forreadqueryappend = rtrim($forread, ',');
-				// $forreadqueryappend1 = rtrim($forread1, ',');
-
-				
-				// $linkstfinal = rtrim($linkst, ',');
-
-
-		
-			
-
-				 
-				  
-			
-				$insertlinkst1 = 'insert into documentlink'.$_SESSION['activeyears'].' (docids,linkstids,linkdtids,linksdids,linkvtids) VALUES ($1,$2,$3,$4,$5)';
-		
-
-				$resultst1 = pg_query_params($db,$insertlinkst1,array($finaldata['docids'],$finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof));
-
-
-			
-				$resultst_rows = pg_affected_rows($resultst);
-
-
-				if($resultst_rows!=0)
-				{
-
-				pg_query_params($db,'update documentdata'.$_SESSION['activeyears'].' set docstatus=$1 where docids=$2',array(1,$finaldata['docids']));
-
-			
-				if(count($vtf)>0)
-				{
-				pg_query_params($db,'update vt'.$_SESSION['activeyears'].' set "is_deleted"=$1 where "VTID" = Any(string_to_array($2::text, \',\'::text)::NUMERIC[])',array(0,implode(',',$vtf)));	
-				}
-				// if($forreadqueryappend1!='')
-				// {
-				// 	 $insertforread1 = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES '.$forreadqueryappend1.'';
-
-				// pg_query($db,$insertforread1);
-				// }
-				
-
-				if($finaldata['partiallyids1']!='')
-				{
-
-				pg_query_params($db,'update partiallydata'.$_SESSION['activeyears'].' set "pstatus"=$1 where partiallyids=$2',array(1,$finaldata['partiallyids1']));	
-				}
-
-
-				// $finalqueryvt = 'insert into forreaddata2021 ("frfromids","frfromaction","frtoids","frdocids","frcomefrom",
-				// 		"frcomment","is_final","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR")
-				// 		(select "frfromids","frfromaction","frtoids","frdocids","frcomefrom",
-				// 		"frcomment","is_final","comeaction",vt21."STIDR"::integer AS "STIDR11",vt21."DTIDR"::integer AS "DTIDR11",vt21."SDIDR"::BIGINT AS "SDIDR11",vt21."VTIDR"::NUMERIC AS "VTIDR11",vt21."STID",vt21."DTID",vt21."SDID",vt21."VTID",vt21."STIDR"::integer,vt21."DTIDR"::integer,vt21."SDIDR"::BIGINT,vt21."VTIDR"::NUMERIC from vt2021 as vt21 
-				// 		LEFT JOIN (select * from forreaddata2021 where "frtoids"='.$idsof.' ORDER BY "frids" DESC limit 1) as fr21 ON fr21."frtoids"=vt21."VTID" and fr21."frfromids"=vt21."VTIDR" 
-				// 		where vt21."VTID"='.$idsof.' AND vt21."is_deleted"=1
-				// 		)';
-				// 		pg_query($db,$finalqueryvt);
-
-
-				$task = "addfinish";
-				}
-				else
-				{
-				$task = "error";
-				}
-
-
-		}
+			}
 			else
 			{
 
@@ -11750,7 +11687,7 @@ else
 
 									
 
-									$stateconcate =array($finaldata['statenew'][$j],$finaldata['districtnew'][$j],$finaldata['sddistrictnew'][$j],$idsof,$finaldata['newname'][$j],'VILLAGE',$finaldata['vstatus'][$j],'new',$_SESSION['login_id'],$finaldata['statenew'][$j],$finaldata['districtnew'][$j],$finaldata['sddistrictnew'][$j],$idsof);
+									$stateconcate =array($finaldata['statenew'][$j],$finaldata['districtnew'][$j],$finaldata['sddistrictnew'][$j],$idsof,ucwords(strtolower($finaldata['newname'][$j])),'VILLAGE',$finaldata['vstatus'][$j],'new',$_SESSION['login_id'],$finaldata['statenew'][$j],$finaldata['districtnew'][$j],$finaldata['sddistrictnew'][$j],$idsof);
 
  										$state ='insert into vt'.$_SESSION['activeyears'].' ("STID","DTID","SDID","VTID","VTName","Level","Status","flagofcreate","createdby","STIDR","DTIDR","SDIDR","VTIDR") values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) returning "VTID"';
 									
@@ -11779,7 +11716,7 @@ else
 									// $frcomment .='<strong style="color:#15bed2;"><u>Village:</u></strong> Add New '.ucwords(strtolower($finaldata['newname'][$j])).'.';
 									// }
 									// addition code  village level forread resolved by shashi
-                                    $frcomment .='<strong style="color:#15bed2;"><u>Village:</u></strong> Add New '.$finaldata['newname'][$j].'   ('.$finaldata['vstatus'][$j].').';
+                                    $frcomment .='<strong style="color:#15bed2;"><u>Village:</u></strong> Add New '.ucwords(strtolower($finaldata['newname'][$j])).'   ('.$finaldata['vstatus'][$j].').';
 
 
 
@@ -11925,7 +11862,7 @@ else
 									$sqlda = pg_fetch_all($sqlold);
 																
 
-									$stateconcate =array($finaldata['statenew'][$j],$finaldata['districtnew'][$j],$finaldata['sddistrictnew'][$j],$idsof,$finaldata['newname'][$j],$finaldata['vStateStatus'][$j],$finaldata['vstatus'][$j],'new',$_SESSION['login_id'],implode(',',array_column($sqlda, 'STIDR')),implode(',',array_column($sqlda, 'DTIDR')),implode(',',array_column($sqlda, 'SDIDR')),implode(',',array_column($sqlda, 'VTIDR')));
+									$stateconcate =array($finaldata['statenew'][$j],$finaldata['districtnew'][$j],$finaldata['sddistrictnew'][$j],$idsof,ucwords(strtolower($finaldata['newname'][$j])),$finaldata['vStateStatus'][$j],$finaldata['vstatus'][$j],'new',$_SESSION['login_id'],implode(',',array_column($sqlda, 'STIDR')),implode(',',array_column($sqlda, 'DTIDR')),implode(',',array_column($sqlda, 'SDIDR')),implode(',',array_column($sqlda, 'VTIDR')));
 
 									$states ='insert into vt'.$_SESSION['activeyears'].' ("STID","DTID","SDID","VTID","VTName","Level","Status","flagofcreate","createdby","STIDR","DTIDR","SDIDR","VTIDR") values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) returning "VTID"';
 
@@ -11948,7 +11885,7 @@ else
 									if($finaldata['vStateStatus'][$j]=='VILLAGE')
 									{
 								//JC_shashi(one to many) village
-										$frcomment .='<strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['newname'][$j].'('.$finaldata['vstatus'][$j].') Created from '.$finaldata['namefromtext'].' ('.$finaldata['action'][0].');';
+										$frcomment .='<strong style="color:#15bed2;"><u>Village:</u></strong> '.ucwords(strtolower($finaldata['newname'][$j])).'('.$finaldata['vstatus'][$j].') Created from '.$finaldata['namefromtext'].' ('.$finaldata['action'][0].');';
 
 									
 									}
@@ -11956,7 +11893,7 @@ else
 									{
 											
 											//JC_shashi(one to many) village adding the civic status for town
-											$frcomment .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['newname'][$j].' ('.$finaldata['vstatus'][$j].') Created from '.$finaldata['namefromtext'].'('.$finaldata['action'][0].');';
+											$frcomment .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.ucwords(strtolower($finaldata['newname'][$j])).' ('.$finaldata['vstatus'][$j].') Created from '.$finaldata['namefromtext'].'('.$finaldata['action'][0].');';
 									
 									}
 
@@ -12396,7 +12333,7 @@ else
 										$idsdata =$idsdata+1;
 										$idsarray[$j1]=$idsdata;
 
-										 $insertstlinkquery= array($idsdata,$retdata['newname'][$j1],ucwords(strtoupper($retdata['StateStatus'][$j1])),$refids['STIDR'],'new',$_SESSION['login_id']);
+										 $insertstlinkquery= array($idsdata,ucwords(strtolower($retdata['newname'][$j1])),ucwords(strtoupper($retdata['StateStatus'][$j1])),$refids['STIDR'],'new',$_SESSION['login_id']);
 
 											$insertst = 'insert into st'.$_SESSION['activeyears'].' ("STID","STName","Status","STIDR","flagofcreate","createdby") VALUES ($1,$2,$3,$4,$5,$6) returning "STID"';
 
@@ -12463,11 +12400,11 @@ else
 														$fstatusflag='Union Territory';
 													}
 
-													$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statusflag.' '.$retdata['newname'][$j].' Created from '.$retdata['namefromtext'].';';
+													$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statusflag.' '.ucwords(strtolower($retdata['newname'][$j])).' Created from '.$retdata['namefromtext'].';';
 
 													$frcomment .=' <strong style="color:Green;"><u>District:</u></strong> - ; <strong style="color:blue;"><u>Sub District:</u></strong> - ; <strong style="color:#45b0e2;"><u>Town:</u></strong> - ; <strong style="color:#15bed2;"><u>Village:</u></strong> - ;';
 
-													$frcomment1='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$retdata['namefromtext'].' '.$retdata['action'][0].' &  Create '.$statusflag.' '.$retdata['newname'][$j].'';
+													$frcomment1='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$retdata['namefromtext'].' '.$retdata['action'][0].' &  Create '.$statusflag.' '.ucwords(strtolower($retdata['newname'][$j])).'';
 
 													$frcomment1 .=' <strong style="color:Green;"><u>District:</u></strong> - ; <strong style="color:blue;"><u>Sub District:</u></strong> - ; <strong style="color:#45b0e2;"><u>Town:</u></strong> - ; <strong style="color:#15bed2;"><u>Village:</u></strong> - ;';
 
@@ -13278,59 +13215,34 @@ else if($_POST['formname']=='assignformdata')
 								
 										if($_POST['clickpopup']=='Create')
 										{
-													// $statename = '';
-													// $sttext = explode(',',$_POST['namefromtext']);
-													// $a = array_map( 'trim',$_POST['newname']);
-													// $im = array_map( 'strtolower',$a);
-													// if(count(array_dup($im))>0)
-													// {
-													// 	$statename = "duplicatenameexist";
-													// }
-													// else
-													// {
+													$statename = '';
+													$sttext = explode(',',$_POST['namefromtext']);
+													$a = array_map( 'trim',$_POST['newname']);
+													$im = array_map( 'strtolower',$a);
+													if(count(array_dup($im))>0)
+													{
+														$statename = "duplicatenameexist";
+													}
+													else
+													{
 														
-													// 	$imp = "'" . implode( "','", $im) . "'";
+														$imp = "'" . implode( "','", $im) . "'";
 
-													// 	 $query = 'select * from st'.$_SESSION['activeyears'].' where lower("STName") = Any(string_to_array($1::text, \',\'::text)::text[]);';
+														 $query = 'select * from st'.$_SESSION['activeyears'].' where lower("STName") = Any(string_to_array($1::text, \',\'::text)::text[]);';
 														
-													// 	$querydata = pg_query_params($db,$query,array($imp));
+														$querydata = pg_query_params($db,$query,array($imp));
 
-													// 	$querydatarow = pg_numrows($querydata);
-													// 	if($querydatarow>0)
-													// 	{
-													// 	$statename = "alreadyexists";	
-													// 	}
-													// 	else
-													// 	{
-													// 	$statename = "addstate";
-													// 	}
-													// }
+														$querydatarow = pg_numrows($querydata);
+														if($querydatarow>0)
+														{
+														$statename = "alreadyexists";	
+														}
+														else
+														{
+														$statename = "addstate";
+														}
+													}
 
-												
-													//modified by gowthami state level name validation JC_05
-											// 		$flag = false;
-											//    $newnamecheck = $_POST['namefromtext'];
-											//    $newnamecheckArray = explode(',', $newnamecheck);
-											//    $nametotextArray = $_POST['newname'];
-											//    $nametotext = implode(',', $nametotextArray);
-											   
-
-											//    foreach ($newnamecheckArray  as $index => $gs) {
-											// 	   if (($gs) == $nametotext)
-											// 	   {
-											// 		   $statename = "alreadyexists";
-											// 		   $flag = true;
-											// 		   break;
-											// 	   }
-											//    }
-											   
-											//    if ($flag == true) {
-											// 	   $statename = "alreadyexists";
-											//    } else {
-
-												   $statename = "addstate";
-												   
-											  // }
 						
 												$data['data']=array();
 
@@ -13350,19 +13262,17 @@ else if($_POST['formname']=='assignformdata')
 																
 																
 																					$_POST['flag'] = 'newname';
-																					// code changed by bheema for state level ASC the districts name
-																					$data11 = pg_query_params($db, 'SELECT "DTID", "DTName" FROM "dt'.$_SESSION['activeyears'].'"
-																					WHERE "STID" = $1 AND "is_deleted" = $2
-																					ORDER BY "DTName" ASC',
-																				array($_POST['namefrom'][0], 1));
 
+																					$data11 = pg_query_params($db, 'select "DTID","DTName" from "dt'.$_SESSION['activeyears'].'" where "STID"=$1 AND "is_deleted"=$2
+																					ORDER BY "dt'.$_SESSION['activeyears'].'"."DTID"',array($_POST['namefrom'][0],1));
 																					$dataresult1 = pg_fetch_all($data11);
 																					$datacount =pg_num_rows($data11); // total count
+
 
 																					// $idsof = $idsquerydata[0];
 																					for($i=0;$i<count($_POST['newname']);$i++)
 																					{
-																						$_POST['newname'][$i]=($_POST['newname'][$i]);
+																						$_POST['newname'][$i]=ucwords(strtolower($_POST['newname'][$i]));
 																					// $idsof = $idsof + 1;
 
 																					// $stateconcate .="(".$idsof.",'".ucwords(strtolower($_POST['newname'][$i]))."','".$_POST['StateStatus'][$i]."'),";
@@ -13371,7 +13281,7 @@ else if($_POST['formname']=='assignformdata')
 
 
 																					$task1 .='<div class="col-md-6"><label class="col-md-5 col-form-label" for="userName1">'.$comenexttext.' of '.$sttext[0].' '.$_SESSION['logindetails']['baseyear'].' - '.$_SESSION['activeyears'].'</label>  
-																					      <label class="col-md-6 col-form-label" for="userName1">'.$comenexttext.' of '.$_POST['newname'][$i].' '.$_SESSION['activeyears'].'</label> 
+																					      <label class="col-md-6 col-form-label" for="userName1">'.$comenexttext.' of '.ucwords(strtolower($_POST['newname'][$i])).' '.$_SESSION['activeyears'].'</label> 
 																					<select multiple="multiple" id="addlinksDTID_'.$i.'" class="multi-select" name="addlinksDTID'.$i.'[]">';
 																					foreach($dataresult1 as $key => $element) {
 																					$task1 .='<option value="'.$element['DTID'].'">'.$element['DTName'].'
@@ -13418,7 +13328,7 @@ else if($_POST['formname']=='assignformdata')
 
 
 																					$task1 .='<div class="col-md-6"><label class="col-md-5 col-form-label" for="userName1">'.$comenexttext.' of '.$sttext[$i].' '.$_SESSION['logindetails']['baseyear'].' - '.$_SESSION['activeyears'].'</label>  
-																					                          <label class="col-md-6 col-form-label" for="userName1">'.$comenexttext.' of '.$_POST['newname'][0].' '.$_SESSION['activeyears'].'</label> 
+																					                          <label class="col-md-6 col-form-label" for="userName1">'.$comenexttext.' of '.ucwords($_POST['newname'][0]).' '.$_SESSION['activeyears'].'</label> 
 																					<select multiple="multiple" id="addlinksDTID_'.$i.'" class="multi-select" name="addlinksDTID'.$i.'[]">';
 																					      foreach($dataresult1 as $key => $element) {
 																					      $task1 .='<option value="'.$element['DTID'].'">'.$element['DTName'].'
@@ -13439,7 +13349,7 @@ else if($_POST['formname']=='assignformdata')
 																					// {
 																				 //	$fch = pg_fetch_all($result);
 																					$countofids =count($_POST['namefrom']);
-																					$_POST['newname'][0]=$_POST['newname'][0];
+																					$_POST['newname'][0]=ucwords(strtolower($_POST['newname'][0]));
 																					$data=$_POST;
 																				 	// $data['inserstate']=$fch;
 																					$task = "adddata";
@@ -13531,7 +13441,7 @@ else if($_POST['formname']=='assignformdata')
 
 												 $query = 'select * from st'.$_SESSION['activeyears'].' where lower("STName") = Any(string_to_array($1::text, \',\'::text)::text[])';
 												
-												$querydata = pg_query_params($db,$query,array($_POST['newnamecheck'][0]));
+												$querydata = pg_query_params($db,$query,array(strtolower($_POST['newnamecheck'][0])));
 
 												$querydatarow = pg_numrows($querydata);
 
@@ -13581,12 +13491,12 @@ else if($_POST['formname']=='assignformdata')
 														<label class="col-md-6 col-form-label" for="userName1">'.$comenexttext.' of ';
 
 														if(isset($_POST['newnamecheck']) && $_POST['newnamecheck'][0]!='' ){ 
-													      $task1 .=''.$_POST['newnamecheck'][0].'';
+													      $task1 .=''.ucwords($_POST['newnamecheck'][0]).'';
 												         }
 														else
 															{
 																
-															$task1 .=''.$_POST['nametotext'].'';
+															$task1 .=''.ucwords($_POST['nametotext']).'';
 															}  
 															
 														$task1 .=' '.$_SESSION['activeyears'].'</label> 
@@ -13648,11 +13558,11 @@ else if($_POST['formname']=='assignformdata')
 											$task1 .='<div class="col-md-6"><label class="col-md-5 col-form-label" for="userName1">'.$comenexttext.' of '.$sttext[$i].' '.$_SESSION['logindetails']['baseyear'].' - '.$_SESSION['activeyears'].'</label>  
 											<label class="col-md-6 col-form-label" for="userName1">'.$comenexttext.' of ';
 											if(isset($_POST['newnamecheck'])  && $_POST['newnamecheck'][0]!=''){ 
-													$task1 .=''.$_POST['newnamecheck'][0].'';
+													$task1 .=''.ucwords($_POST['newnamecheck'][0]).'';
 												}
 												else
 													{
-														$task1 .=''.$_POST['nametotext'].'';
+														$task1 .=''.ucwords($_POST['nametotext']).'';
 														} 
 														$task1 .=' '.$_SESSION['activeyears'].'</label> 
 											<select multiple="multiple" id="addlinksDTID_'.$i.'" class="multi-select" name="addlinksDTID'.$i.'[]">';
@@ -13689,7 +13599,7 @@ else if($_POST['formname']=='assignformdata')
 												$statename = '';
 												$sttext = explode(',',$_POST['namefromtext']);
 												$a = array_map( 'trim',$_POST['newname']);
-												//$im = array_map( 'strtolower',$a);
+												$im = array_map( 'strtolower',$a);
 
 												//Duplicate district name validation veena
 												// if(count(array_dup($im))>0)
@@ -13723,36 +13633,11 @@ else if($_POST['formname']=='assignformdata')
 												// 	{
 												//  	$statename = "adddistrict";
 												// 	}
-												// } 	// ends here
-                                                // $statename = "adddistrict";
-													
-												 //modified by gowthami District level  name validation JC_05
-
-												//  $flag = false;
-												//  $newnamecheck = $_POST['namefromtext'];
-												//  $newnamecheckArray = explode(',', $newnamecheck);
-												//  $nametotextArray = $_POST['newname'];
-												//  $nametotext = implode(',', $nametotextArray);
-												 
- 
-												//  foreach ($newnamecheckArray  as $index => $gs) {
-												// 	 if (($gs) == ($nametotext)) {
-												// 		 $statename = "alreadyexists";
-												// 		 $flag = true;
-												// 		 break;
-												// 	 }
-												//  }
-												 
-												//  if ($flag == true) {
-												// 	 $statename = "alreadyexists";
-												//  } else {
- 
-													 $statename = "adddistrict";
-													 
 												// }
-												 
-											
-												
+
+
+												// ends here
+												$statename = "adddistrict";
 												$data['data']=array();
 
 												if($statename == 'adddistrict')
@@ -13773,18 +13658,11 @@ else if($_POST['formname']=='assignformdata')
 
 
 																				$_POST['flag'] = 'newname';
-  //Code changed by Bheema for ascending the districts 
-  $data11 = pg_query_params(
-	$db,
-	'SELECT "SDID", "SDName"
-	 FROM "sd'.$_SESSION['activeyears'].'"
-	 WHERE "DTID" = $1 AND "is_deleted" = $2
-	 ORDER BY "SDName" ASC',
-	array($_POST['namefrom'][0], 1)
-);
 
-	$dataresult1 = pg_fetch_all($data11);
-	$datacount =pg_num_rows($data11); // total count
+																				$data11 = pg_query_params($db, 'select "SDID","SDName" from "sd'.$_SESSION['activeyears'].'" where "DTID"=$1 AND "is_deleted"=$2
+																				ORDER BY "sd'.$_SESSION['activeyears'].'"."SDID"',array($_POST['namefrom'][0],1));
+																					$dataresult1 = pg_fetch_all($data11);
+																					$datacount =pg_num_rows($data11); // total count
 
 																				
 																				for($i=0;$i<count($_POST['newname']);$i++)
@@ -13837,7 +13715,7 @@ else if($_POST['formname']=='assignformdata')
 
 
 																				$task1 .='<div class="col-md-6"><label class="col-md-5 col-form-label" for="userName1">'.$comenexttext.' of '.htmlspecialchars($sttext[0]).' '.$_SESSION['logindetails']['baseyear'].' - '.$_SESSION['activeyears'].'</label>  
-																				      <label class="col-md-6 col-form-label" for="userName1">'.$comenexttext.' of '.$_POST['newname'][$i].' '.$_SESSION['activeyears'].'</label> 
+																				      <label class="col-md-6 col-form-label" for="userName1">'.$comenexttext.' of '.ucwords(strtolower(htmlspecialchars($_POST['newname'][$i]))).' '.$_SESSION['activeyears'].'</label> 
 																				<select multiple="multiple" id="addlinksDTID_'.$i.'" class="multi-select" name="addlinksDTID'.$i.'[]">';
 																				foreach($dataresult1 as $key => $element) {
 																				$task1 .='<option value="'.$element['SDID'].'">'.$element['SDName'].'
@@ -13902,7 +13780,7 @@ else if($_POST['formname']=='assignformdata')
 
 
 																				$task1 .='<div class="col-md-6"><label class="col-md-5 col-form-label" for="userName1">'.$comenexttext.' of '.htmlspecialchars($sttext[$i]).' '.$_SESSION['logindetails']['baseyear'].' - '.$_SESSION['activeyears'].'</label>  
-																				                          <label class="col-md-6 col-form-label" for="userName1">'.$comenexttext.' of '.$_POST['newname'][0].'  '.$_SESSION['activeyears'].'</label> 
+																				                          <label class="col-md-6 col-form-label" for="userName1">'.$comenexttext.' of '.ucwords(strtolower(htmlspecialchars($_POST['newname'][0]))).'  '.$_SESSION['activeyears'].'</label> 
 																				<select multiple="multiple" id="addlinksDTID_'.$i.'" class="multi-select" name="addlinksDTID'.$i.'[]">';
 																				      foreach($dataresult1 as $key => $element) {
 																				      $task1 .='<option value="'.$element['SDID'].'">'.$element['SDName'].'
@@ -13982,11 +13860,11 @@ else if($_POST['formname']=='assignformdata')
 
 													$statename = '';
 													$a = array_map( 'trim',$_POST['newnamecheck']);
-													//$im = array_map( 'strtolower', $a );
+													$im = array_map( 'strtolower', $a );
 													// rename validation for district name code modified by srikanth//
 													$statename = '';
 													$districtNames = array_map('trim', $_POST['newnamecheck']);
-													//$districtNames = array_map('strtolower', $districtNames);
+													$districtNames = array_map('strtolower', $districtNames);
 													$stateIds = $_POST['statenew'];
 
 													foreach ($districtNames as $key => $districtName) {
@@ -14060,8 +13938,7 @@ else if($_POST['formname']=='assignformdata')
 												$nametotext = $_POST['nametotext'];
 
 												foreach ($newnamecheck as $index => $gs) {
-													// if ($gs == $nametotext) {
-														if ($gs == $nametotext) {
+													if ($gs == $nametotext) {
 														$task = "alreadyexists";
 														$flag = true;
 														break;
@@ -14112,11 +13989,11 @@ else if($_POST['formname']=='assignformdata')
 													<label class="col-md-6 col-form-label" for="userName1">'.$comenexttext.' of ';
 
 														if(isset($_POST['newnamecheck']) && $_POST['newnamecheck'][0]!=''){ 
-													$task1 .=''.$_POST['newnamecheck'][0].'';
+													$task1 .=''.ucwords(htmlspecialchars($_POST['newnamecheck'][0])).'';
 												}
 												else
 													{
-														$task1 .=''.$_POST['nametotext'].'';
+														$task1 .=''.ucwords($_POST['nametotext']).'';
 														}  
 														$task1 .=' '.$_SESSION['activeyears'].'</label> 
 													<select multiple="multiple" id="addlinksDTID_'.$i.'" class="multi-select" name="addlinksDTID'.$i.'[]">';
@@ -14179,11 +14056,11 @@ else if($_POST['formname']=='assignformdata')
 														<label class="col-md-6 col-form-label" for="userName1">'.$comenexttext.' of ';
 
 														if(isset($_POST['newnamecheck']) && $_POST['newnamecheck'][0]!=''){ 
-													$task1 .=''.$_POST['newnamecheck'][0].'';
+													$task1 .=''.ucwords(htmlspecialchars($_POST['newnamecheck'][0])).'';
 												}
 												else
 													{
-														$task1 .=''.$_POST['nametotext'].'';
+														$task1 .=''.ucwords($_POST['nametotext']).'';
 														}  
 														$task1 .=' '.$_SESSION['activeyears'].'</label> 
 														<select multiple="multiple" id="addlinksDTID_'.$i.'" class="multi-select" name="addlinksDTID'.$i.'[]">';
@@ -14219,7 +14096,7 @@ else if($_POST['formname']=='assignformdata')
 												$statename = '';
 												$sttext = explode(',',$_POST['namefromtext']);
 												$a = array_map( 'trim',$_POST['newname']);
-												//$im = array_map( 'strtolower', $a );
+												$im = array_map( 'strtolower', $a );
 												// if(count(array_dup($im))>0)
 												// {
 												// 	$statename = "duplicatenameexist";
@@ -14227,28 +14104,6 @@ else if($_POST['formname']=='assignformdata')
 												// }
 												// else
 												// {
-
-																								 //modified by gowthami subdistrict  level  name validation JC_05
-																								//  $flag = false;
-																								//  $newnamecheck = $_POST['namefromtext'];
-																								//  //$nametotext = $_POST['newname'];
-																								//  $newnamecheckArray = explode(',', $newnamecheck);
-																								//  $nametotextArray = $_POST['newname'];
-																								//  $nametotext = implode(',', $nametotextArray);
-																								 
-												 
-																								//  foreach ($newnamecheckArray  as $index => $gs) {
-																								// 	 if($gs == $nametotext){
-																								// 		 $statename = "alreadyexists";
-																								// 		 $flag = true;
-																								// 		 break;
-																								// 	 }
-																								//  }
-																								 
-																								//  if ($flag == true) {
-																								// 	 $statename = "alreadyexists";
-																								//  } else 
-																								//  {
 
 													if($_POST['didsup']!='')
 													{
@@ -14278,8 +14133,7 @@ else if($_POST['formname']=='assignformdata')
 													// else
 													// {
 													$statename = "addsubdistrict";
-
-												//	}	
+													
 
 												//	}
 												// }
@@ -14307,17 +14161,11 @@ else if($_POST['formname']=='assignformdata')
 																				{
 
 																				
-	// code changed by bheema for subdistricts level ASC the VTname
 
-	$data11 = pg_query_params($db, 'SELECT "VTID", CONCAT_WS(\' - \', "VTName", "MDDS_VT") as "VTName"
-	FROM "vt'.$_SESSION['activeyears'].'"
-	WHERE "SDID" = $1 AND "is_deleted" = $2
-	ORDER BY "VTName" ASC',
-	array($_POST['namefrom'][0], 1));
-
-	$dataresult1 = pg_fetch_all($data11);
-	$datacount =pg_num_rows($data11); // total count
-
+																				$data11 = pg_query_params($db, 'select "VTID",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "VTName" from "vt'.$_SESSION['activeyears'].'" where "SDID"=$1 AND "is_deleted"=$2
+																				ORDER BY "vt'.$_SESSION['activeyears'].'"."SDID"',array($_POST['namefrom'][0],1));
+																					$dataresult1 = pg_fetch_all($data11);
+																					$datacount =pg_num_rows($data11); // total count
 
 																				
 																				for($i=0;$i<count($_POST['newname']);$i++)
@@ -14330,7 +14178,7 @@ else if($_POST['formname']=='assignformdata')
 
 
 																				$task1 .='<div class="col-md-6"><label class="col-md-5 col-form-label" for="userName1">'.$comenexttext.' of '.htmlspecialchars($sttext[0]).' '.$_SESSION['logindetails']['baseyear'].' - '.$_SESSION['activeyears'].'</label>  
-																				      <label class="col-md-6 col-form-label" for="userName1">'.$comenexttext.' of '.$_POST['newname'][$i].' '.$_SESSION['activeyears'].'</label> 
+																				      <label class="col-md-6 col-form-label" for="userName1">'.$comenexttext.' of '.ucwords(strtolower(htmlspecialchars($_POST['newname'][$i]))).' '.$_SESSION['activeyears'].'</label> 
 																				<select multiple="multiple" id="addlinksDTID_'.$i.'" class="multi-select" name="addlinksDTID'.$i.'[]">';
 																				foreach($dataresult1 as $key => $element) {
 																				$task1 .='<option value="'.$element['VTID'].'">'.$element['VTName'].'
@@ -14414,7 +14262,7 @@ else if($_POST['formname']=='assignformdata')
 
 
 																				$task1 .='<div class="col-md-6"><label class="col-md-5 col-form-label" for="userName1">'.$comenexttext.' of '.htmlspecialchars($sttext[$i]).' '.$_SESSION['logindetails']['baseyear'].' - '.$_SESSION['activeyears'].'</label>  
-																				                          <label class="col-md-6 col-form-label" for="userName1">'.$comenexttext.' of '.htmlspecialchars($_POST['newname'][0]).' '.$_SESSION['activeyears'].'</label> 
+																				                          <label class="col-md-6 col-form-label" for="userName1">'.$comenexttext.' of '.ucwords(strtolower(htmlspecialchars($_POST['newname'][0]))).' '.$_SESSION['activeyears'].'</label> 
 																				<select multiple="multiple" id="addlinksDTID_'.$i.'" class="multi-select" name="addlinksDTID'.$i.'[]">';
 																				      foreach($dataresult1 as $key => $element) {
 																				      $task1 .='<option value="'.$element['VTID'].'">'.$element['VTName'].'
@@ -14476,7 +14324,7 @@ else if($_POST['formname']=='assignformdata')
 
 													$statename = '';
 													$a = array_map( 'trim',$_POST['newnamecheck']);
-													//$im = array_map( 'strtolower', $a );
+													$im = array_map( 'strtolower', $a );
 													// rename validation for  sub district name code modified by srikanth//
 											$statename = '';
 											$subDistrictNames = array_map('trim', $_POST['newnamecheck']);
@@ -14581,8 +14429,7 @@ else if($_POST['formname']=='assignformdata')
 														$nametotext = $_POST['nametotext'];
 		
 														foreach ($newnamecheck as $index => $gs) {
-															// if ($gs == $nametotext) {
-																if (strtolower($gs) == strtolower($nametotext)) {
+															if ($gs == $nametotext) {
 																$task = "alreadyexists";
 																$flag = true;
 																break;
@@ -14933,14 +14780,13 @@ else if($_POST['formname']=='assignformdata')
 													$nametotext = $_POST['nametotext'];
 
 													foreach ($newnamecheck as $index => $gs) {
-														// if ($gs == $nametotext) {
-															if (strtolower($gs) == strtolower($nametotext)) {
+														if ($gs == $nametotext) {
 															$statename = "alreadyexists";
 															$flag = true;
 															break;
 														}
 													}
-
+													
 													if ($flag == true) {
 														$statename = "alreadyexists";
 													} else {
@@ -14952,36 +14798,7 @@ else if($_POST['formname']=='assignformdata')
 												}
 
 												//end
-                                       
-												// modified by gowthami village name validation JC_05
-												// if( ($_POST['clickpopup']=='Create')){	
-												// 	$flag = false;
-												// 	$newnamecheck = $_POST['namefromtext'];
-												// 	$newnamecheckArray = explode(',', $newnamecheck);
-												// 	$nametotextArray = $_POST['newname'];
-												// 	$nametotext = implode(',', $nametotextArray);
-													
-	
-												// 	foreach ($newnamecheckArray  as $index => $gs) {
-												// 		if (($gs) == ($nametotext)) {
-												// 			$statename = "alreadyexists";
-												// 			$flag = true;
-												// 			break;
-												// 		}
-												// 	}
-													
-												// 	if ($flag == true) {
-												// 		$statename = "alreadyexists";
-												// 	} else {
-	
-												// 		$statename == 'addvt';
-														
-												// 	}} else {
-	
-														$statename == 'addvt';
-														
-													// }
-													  //end
+
 
 
 															$data['data']=array();

@@ -59,7 +59,7 @@
                                 
                                     <div class="modal-header bg-primary">
                                         <h5 class="modal-title text-white" id="maintitle"></h5>
-                                        <button type="button" class="close closepopup" data-dismiss="modal" aria-label="Close">
+                                        <button type="button" class="close closepopup" data-dismiss="modal" aria-label="Close"> <!-- JC-->
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
@@ -209,7 +209,7 @@
                                                     <div class="form-group col-md-3 stnew ST pl-1 pr-1" style="display:none">
                                                         <label class="col-md-12 stnew pl-1 pr-1" id="stnew" style="display:none">Select State / UT</label>
                                                         <div class="col-md-12 pl-1 pr-1 stnew" style="display:none">
-                                                            <select id="statenew1" name="statenew[]" class="stnew" onchange="return get_district_popupto(this,'Create',2);">
+                                                            <select id="statenew1" name="statenew[]" class="stnew" onchange="return get_district_popupto(this,'Create');">
                                                                 <option value="">Select State / UT</option>   
                                                             </select>
                                                     
@@ -333,7 +333,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary btn-rounded waves-effect width-xl closepop1 closepopup" data-dismiss="modal"
-                                            aria-label="Close">Cancel</button>
+                                            aria-label="Close">Cancel</button> <!-- JC_11 -->
                                         <button type="submit" name="submit" id="assignbtn" class="btn btn-info btn-rounded width-xl waves-effect waves-light">Assign</button>
                                     </div>
                                 </form>
@@ -419,7 +419,7 @@
                                     
                                     <div class="modal-header bg-primary">
                                         <h5 class="modal-title text-white" id="maintitlesub"></h5>
-                                        <button type="button" class="close closepopup" data-dismiss="modal" aria-label="Close">
+                                        <button type="button" class="close closepopup" data-dismiss="modal" aria-label="Close"> <!-- JC_11 -->
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
@@ -511,7 +511,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary btn-rounded waves-effect width-xl closepop1 closepopup" data-dismiss="modal"
-                                            aria-label="Close">Cancel</button>
+                                            aria-label="Close">Cancel</button> <!-- JC_11 -->
                                         <button type="submit" name="submit" class="btn btn-info btn-rounded width-xl waves-effect waves-light">Assign</button>
                                     </div>
                                 </form>

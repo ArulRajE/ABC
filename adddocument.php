@@ -206,23 +206,12 @@ $rowaction = pg_fetch_all($resultaction);
                                                                 <div class="form-group row mb-3">
                                                                     <label class="col-md-3 col-form-label" for="password1"> Type</label>
                                                                     <div class="col-md-9">
-                                                       
-                                                          <!-- <select required="required" id="adddoctype" <?php if($_GET['come']=='comefromdocadd') { ?> disabled <?php } ?>  name="adddoctype"
+                                                          <!-- document value alert removal -->
+                                                          <select required="required" id="adddoctype" <?php if($_GET['come']=='comefromdocadd') { ?> disabled <?php } ?>  name="adddoctype"
                                                                        onchange="return get_dist_select_data(this,'<?php echo $passvalue; ?>');">
                                             <option value="">Select Type</option>
                                             <option value="Notification">Notification</option>
                                             <option value="Corrigendum Notification">Corrigendum Notification</option>
-                                            <option value="Resolution">Resolution</option>
-                                            <option value="Clarification">Clarification</option>
-                                            <option value="Collector Letter">Collector Letter</option>
-                                            <option value="Others">Others</option>
-                                        </select> -->
-                                           <!-- adddocument type -->
-                                        <select required="required" id="adddoctype" <?php if($_GET['come']=='comefromdocadd') { ?> disabled <?php } ?>  name="adddoctype"
-                                            onchange="return get_doctype_data(this,'<?php echo $_GET['come']; ?>');">
-                                            <option value="">Select Type</option>
-                                            <option value="Notification">Notification</option>
-                                            <option value="Erratum Notification">Erratum Notification</option>
                                             <option value="Resolution">Resolution</option>
                                             <option value="Clarification">Clarification</option>
                                             <option value="Collector Letter">Collector Letter</option>
@@ -507,10 +496,11 @@ $rowaction = pg_fetch_all($resultaction);
 </div>
  <form enctype="multipart/form-data" class="form-horizontal group-border-dashed" data-parsley-validate
                 novalidate data-parsley-trigger="keyup" id="adddocumentnext">
-                <!-- JC_11 -->
-<input type="hidden" name="rowno" id="rowno" value="1">
+
 <input type="hidden" name="formname" id="formname" value="finaladddocument">
 <input type="hidden" name="applyon" id="applyon" value="">
+<!-- JC_11 -->
+<input type="hidden" name="rowno" id="rowno" value="1">
 <!-- <input type="hidden" name="selectstid" id="selectstid" value="">
 <input type="hidden" name="selectstidupdated" id="selectstidupdated" value="">
  <input type="hidden" name="dtstname" id="dtstname" value="">
@@ -953,6 +943,7 @@ $(function() {
     var x = 1;
     var y = 0;
 
+
  var x1 = 1;
     var y1 = 0;
 
@@ -1017,8 +1008,8 @@ $(function() {
                         $('#row_'+x+'').find('input, textarea, button, select').attr('disabled','disabled');
             }
             x++;
-            // JC_11
-            $('#rowno').val(x);
+             // JC_11
+             $('#rowno').val(x);
 
  var seleted = $('#applyon').val();
 var clickpopup = $('#clickpopup').val();
@@ -2063,8 +2054,8 @@ if(clickpopup=='Reshuffle')
         $(this).parent().parent('div').remove();
          addButton.attr('disabled', false);
         x--;
-        // JC_11
-        $('#rowno').val(x);
+         // JC_11
+         $('#rowno').val(x);
                     var action = $('select[name="action[]"]').map(function () {
                         return this.value;    
                    
@@ -2232,13 +2223,12 @@ var status = $('#oremovenew'+i[1]+'').is(":checked");
             
 
     }); 
-    //JC_11
-    $('.closepopup').click(function(){
+
+//JC_11
+$('.closepopup').click(function(){
         x = 1;
         $('#rowno').val(x);
     });
-
-
 
 });
 
