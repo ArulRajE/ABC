@@ -282,105 +282,256 @@ function s2ab(s) {
                                         {
                                             $fla=true;  
                                         }
+
+                                        //By sahana 0111
+                                        $stid = $data['STID2011']; 
+                                        $query2 = 'SELECT * FROM st' . $_SESSION['activeyears'] . ' WHERE "STID" = $1';
+                                        $result2 = pg_query_params($db, $query2, array($stid));
+                                        
+                                        if (!$result2) {
+                                            echo 'Query failed: ' . pg_last_error($db);
+                                        }
+                                
+                                        $data2 = pg_fetch_array($result2)
                                         ?>
 
-                                        <!-- Modified by sahana Split_Action_Administrative_Units 0310 Defect_JC_38-->
-                                        <tr id="<?php echo $data['DTID']."*****".$data['DTID'.$_SESSION['logindetails']['baseyear'].'']; ?>" <?php if($fla){ ?>class="incompleted"<?php  } ?>>
+                                         <!-- Modified by sahana Split_Action_Administrative_Units 0310 Defect_JC_38-->
+                                         <tr id="<?php echo $data['DTID']."*****".$data['DTID'.$_SESSION['logindetails']['baseyear'].'']; ?>" <?php if($fla){ ?>class="incompleted"<?php  } ?>>
                                         <td><?php 
-                                        if($data['STID2011']==$data['STID'])
+
+                                        if ($data2['auaction']== 'Split')
                                         {
-                                          echo $data['MDDS_DT'.$_SESSION['logindetails']['baseyear'].''];  
-                                        } 
-                                        else if($STIDDATA[1]!=$data['STID2011']) 
-                                        { 
-                                            echo '';  
-                                        } 
-                                        else if(($STIDDATA[1]==$data['STID2011']))
+                                            if($data['STID2011']==$data['STID'])
+                                                {
+                                                    echo $data['MDDS_DT'.$_SESSION['logindetails']['baseyear'].''];  
+                                                }
+                                            else if($STIDDATA[1]!=$data['STID2011']) 
+                                            { 
+                                                echo '';  
+                                            } 
+                                            else if(($STIDDATA[1]==$data['STID2011']))
+                                            {
+                                                echo $data['MDDS_DT'.$_SESSION['logindetails']['baseyear'].''];  
+                                            }
+                                            else 
+                                            { 
+                                                echo $data['MDDS_DT'.$_SESSION['logindetails']['baseyear'].''];  
+                                            } 
+                                        }
+                                        else if($data2['auaction']== 'Merge') 
                                         {
+                                            if($data['STID']==$data2['STID'])
+                                                {
+                                                    echo $data['MDDS_DT'.$_SESSION['logindetails']['baseyear'].''];  
+                                                }
+                                                else {
+                                                    echo ''; 
+                                                }
+                                        }
+                                        else if($data2['auaction']== 'Partially Merge')
+                                        {
+                                            
+                                                
+                                                if($STIDDATA[1]==$data['STID2011'] && $data['STID2011']==$data2['STID'])
+                                                {
+                                                        echo $data['MDDS_DT'.$_SESSION['logindetails']['baseyear'].''];  
+                                                }
+                                                else 
+                                                {
+                                                        echo ''; 
+                                                }
+                                        }
+                                        else{
                                             echo $data['MDDS_DT'.$_SESSION['logindetails']['baseyear'].''];  
                                         }
-                                        else 
-                                        { 
-                                            echo $data['MDDS_DT'.$_SESSION['logindetails']['baseyear'].''];  
-                                        } 
                                         ?></td>
 
 
                                         <td><?php 
-                                        if($data['STID2011']==$data['STID'])
-                                        { 
+                                        if ($data2['auaction']== 'Split')
+                                        {
+                                            if($data['STID2011']==$data['STID'])
+                                            {
+                                                echo $data['DTName'.$_SESSION['logindetails']['baseyear'].''];  
+                                            }
+                                            else if($STIDDATA[1]!=$data['STID2011']) 
+                                            { 
+                                                echo '';  
+                                            } 
+                                            else if(($STIDDATA[1]==$data['STID2011']))
+                                            {
+                                                echo $data['DTName'.$_SESSION['logindetails']['baseyear'].''];  
+                                            }
+                                            else 
+                                            { 
+                                                echo $data['DTName'.$_SESSION['logindetails']['baseyear'].''];  
+                                            } 
+                                        }
+                                        else if($data2['auaction']== 'Merge')
+                                        {
+                                                if($data['STID']==$data2['STID'])
+                                                {
+                                                    echo $data['DTName'.$_SESSION['logindetails']['baseyear'].''];
+                                                }
+                                                else {
+                                                    echo ''; 
+                                                }
+                                        }
+                                        else if($data2['auaction']== 'Partially Merge')
+                                        {
+                                            if($STIDDATA[1]==$data['STID2011'] && $data['STID2011']==$data2['STID'])
+                                            {
+                                                echo $data['DTName'.$_SESSION['logindetails']['baseyear'].''];
+                                            }
+                                            else 
+                                            {
+                                                    echo ''; 
+                                            }
+                                        }
+                                        else {
                                             echo $data['DTName'.$_SESSION['logindetails']['baseyear'].''];
-                                        } 
-                                        else if($STIDDATA[1]!=$data['STID2011']) 
-                                        { 
-                                            echo '';  
-                                        } 
-                                        else if(($STIDDATA[1]==$data['STID2011']))
-                                        {
-                                            echo $data['DTName'.$_SESSION['logindetails']['baseyear'].''];
                                         }
-                                        else 
-                                        { 
-                                            echo $data['DTName'.$_SESSION['logindetails']['baseyear'].'']; 
-                                        } 
                                         ?></td>
 
 
                                         <td><?php 
-                                        if($data['STID2011']==$data['STID'])
-                                        { 
-                                            echo $data['SubDistricts'.$_SESSION['logindetails']['baseyear'].'']; 
-                                        } 
-                                        else if($STIDDATA[1]!=$data['STID2011']) 
+                                        if ($data2['auaction']== 'Split')
                                         {
-                                            echo '';  
-                                        } 
-                                        else if(($STIDDATA[1]==$data['STID2011']))
+                                            if($data['STID2011']==$data['STID'])
+                                            {
+                                                echo $data['SubDistricts'.$_SESSION['logindetails']['baseyear'].'']; 
+                                            }
+                                            else if($STIDDATA[1]!=$data['STID2011']) 
+                                            { 
+                                                echo '';  
+                                            } 
+                                            else if(($STIDDATA[1]==$data['STID2011']))
+                                            {
+                                                echo $data['SubDistricts'.$_SESSION['logindetails']['baseyear'].'']; 
+                                            }
+                                            else 
+                                            { 
+                                                echo $data['SubDistricts'.$_SESSION['logindetails']['baseyear'].'']; 
+                                            } 
+                                        }
+                                        else if($data2['auaction']== 'Merge')
                                         {
+                                                if($data['STID']==$data2['STID'])
+                                                {
+                                                    echo $data['SubDistricts'.$_SESSION['logindetails']['baseyear'].'']; 
+                                                }
+                                                else {
+                                                    echo ''; 
+                                                }
+                                        }
+                                        else if($data2['auaction']== 'Partially Merge')
+                                        {
+                                            if($STIDDATA[1]==$data['STID2011'] && $data['STID2011']==$data2['STID'])
+                                            {
+                                                echo $data['SubDistricts'.$_SESSION['logindetails']['baseyear'].'']; 
+                                            }
+                                            else 
+                                            {
+                                                    echo ''; 
+                                            }
+                                        }
+                                        else {
                                             echo $data['SubDistricts'.$_SESSION['logindetails']['baseyear'].'']; 
                                         }
-                                        else { 
-                                            echo $data['SubDistricts'.$_SESSION['logindetails']['baseyear'].'']; 
-                                        } 
                                         ?></td>
 
 
                                         <td><?php 
-                                        if($data['STID2011']==$data['STID'])
-                                        { 
-                                            echo $data['Villages'.$_SESSION['logindetails']['baseyear'].'']; 
-                                        } 
-                                        else if($STIDDATA[1]!=$data['STID2011']) 
-                                        { 
-                                            echo '';  
-                                        } 
-                                        else if(($STIDDATA[1]==$data['STID2011']))
+                                        if ($data2['auaction']== 'Split')
                                         {
-                                            echo $data['Villages'.$_SESSION['logindetails']['baseyear'].'']; 
+                                            if($data['STID2011']==$data['STID'])
+                                            {
+                                                echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
+                                            }
+                                            else if($STIDDATA[1]!=$data['STID2011']) 
+                                            { 
+                                                echo '';  
+                                            } 
+                                            else if(($STIDDATA[1]==$data['STID2011']))
+                                            {
+                                                echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
+                                            }
+                                            else 
+                                            { 
+                                                echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
+                                            } 
                                         }
-                                        else { 
+                                        else if($data2['auaction']== 'Merge')
+                                        {
+                                                if($data['STID']==$data2['STID'])
+                                                {
+                                                    echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
+                                                }
+                                                else {
+                                                    echo ''; 
+                                                }
+                                        }
+                                        else if($data2['auaction']== 'Partially Merge')
+                                        {
+                                            if($STIDDATA[1]==$data['STID2011'] && $data['STID2011']==$data2['STID'])
+                                            {
+                                                echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
+                                            }
+                                            else 
+                                            {
+                                                    echo ''; 
+                                            }
+                                        }
+                                        else {
                                             echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
-                                        } 
+                                        }
                                         ?></td>
 
 
                                         <td><?php 
-                                        if($data['STID2011']==$data['STID'])
-                                        {  
-                                            echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
-                                        } 
-                                        else if($STIDDATA[1]!=$data['STID2011']) 
+                                        if ($data2['auaction']== 'Split')
                                         {
-                                             echo '';  
-                                        } 
-                                        else if(($STIDDATA[1]==$data['STID2011']))
-                                        {
-                                            echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
+                                            if($data['STID2011']==$data['STID'])
+                                            {
+                                                echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
+                                            }
+                                            else if($STIDDATA[1]!=$data['STID2011']) 
+                                            { 
+                                                echo '';  
+                                            } 
+                                            else if(($STIDDATA[1]==$data['STID2011']))
+                                            {
+                                                echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
+                                            }
+                                            else 
+                                            { 
+                                                echo $data['Towns'.$_SESSION['logindetails']['baseyear'].''];  
+                                            } 
                                         }
-                                        else 
+                                        else if($data2['auaction']== 'Merge')
                                         {
-                                             echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
-                                        } 
+                                                if($data['STID']==$data2['STID'])
+                                                {
+                                                    echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
+                                                }
+                                                else {
+                                                    echo ''; 
+                                                }
+                                        }
+                                        else if($data2['auaction']== 'Partially Merge')
+                                        {
+                                            if($STIDDATA[1]==$data['STID2011'] && $data['STID2011']==$data2['STID'])
+                                            {
+                                                echo $data['Towns'.$_SESSION['logindetails']['baseyear'].''];  
+                                            }
+                                            else 
+                                            {
+                                                    echo ''; 
+                                            }
+                                        }
+                                        else {
+                                            echo $data['Towns'.$_SESSION['logindetails']['baseyear'].''];  
+                                        }
                                         ?></td>
 
                                     
@@ -390,6 +541,8 @@ function s2ab(s) {
                                     <!-- Modified by sahana Split_Action_Administrative_Units 0310 Defect_JC_38-->  
                                     <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021">
                                        <?php 
+                                    if ($data2['auaction']== 'Split')
+                                    {
                                        if($data['STID2011']==$data['STID'])
                                         { 
                                             echo $data['MDDS_DT']; 
@@ -406,85 +559,221 @@ function s2ab(s) {
                                         { 
                                             echo ''; 
                                         } 
-                                        ?></td>
+                                    }
+                                    else if($data2['auaction']== 'Merge')
+                                    {
+                                            if($data['STID2011']==$data2['STID'])
+                                            {
+                                                echo $data['MDDS_DT'];
+                                            }
+                                            else {
+                                                echo ''; 
+                                            }
+                                    }
+                                    else if($data2['auaction']== 'Partially Merge')
+                                    {
+                                            if($data['STID2011']!=$data2['STID'] || $data['STID2011']==$data2['STID'] && $STIDDATA[1]==$data['STID'])
+                                            {
+                                                echo $data['MDDS_DT'];
+                                            }
+                                            else {
+                                                echo ''; 
+                                            }
+                                    }
+                                    else {
+                                        echo $data['MDDS_DT'];
+
+                                    }
+                                ?></td>
                                         <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021">
                                         <?php 
-                                        if($data['STID2011']==$data['STID'])
-                                        { 
-                                            echo $data['DTName']; 
-                                        }
-                                        else if($STIDDATA[1]==$data['STID']) 
+                                        if ($data2['auaction']== 'Split')
                                         {
-                                           
+                                            if($data['STID2011']==$data['STID'])
+                                            { 
+                                                echo $data['DTName']; 
+                                            } 
+                                            else if($STIDDATA[1]==$data['STID']) 
+                                            {
+                                                echo $data['DTName'];
+                                            } 
+                                            else if ($STIDDATA[1]!=$data['STID'] && $data['STID2011']==$data['STID'])
+                                            {
+                                                echo $data['DTName'];
+                                            }
+                                            else 
+                                            { 
+                                                echo ''; 
+                                            } 
+                                        }
+                                        else if($data2['auaction']== 'Merge')
+                                        {
+                                                if($data['STID2011']==$data2['STID'])
+                                                {
+                                                    echo $data['DTName'];
+                                                }
+                                                else {
+                                                    echo ''; 
+                                                }
+                                        }
+                                        else if($data2['auaction']== 'Partially Merge')
+                                        {
+                                                if($data['STID2011']!=$data2['STID'] || $data['STID2011']==$data2['STID'] && $STIDDATA[1]==$data['STID'])
+                                                {
+                                                    echo $data['DTName'];
+                                                }
+                                                else {
+                                                    echo ''; 
+                                                }
+                                        }
+                                        else {
                                             echo $data['DTName'];
-                                        } 
-                                        else if ($STIDDATA[1]!=$data['STID'] && $data['STID2011']==$data['STID'])
-                                        {
-                                            echo $data['DTName'];
+    
                                         }
-                                        else 
-                                        { 
-                                            echo ''; 
-                                        } 
                                         ?></td>
+
+
                                         <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021">
                                         <?php 
-                                        if($data['STID2011']==$data['STID'])
-                                        { 
-                                            echo $data['SubDistricts']; 
-                                        } 
-                                        else if($STIDDATA[1]==$data['STID']) 
-                                        {
-                                            echo $data['SubDistricts'];
-                                        } 
-                                        else if ($STIDDATA[1]!=$data['STID'] && $data['STID2011']==$data['STID'])
-                                        {
-                                            echo $data['SubDistricts'];
-                                        }
-                                        else 
-                                        { 
-                                            echo ''; 
-                                        } 
+                                            if ($data2['auaction']== 'Split')
+                                            {
+                                                if($data['STID2011']==$data['STID'])
+                                                { 
+                                                    echo $data['SubDistricts']; 
+                                                } 
+                                                else if($STIDDATA[1]==$data['STID']) 
+                                                {
+                                                    echo $data['SubDistricts'];
+                                                } 
+                                                else if ($STIDDATA[1]!=$data['STID'] && $data['STID2011']==$data['STID'])
+                                                {
+                                                    echo $data['SubDistricts'];
+                                                }
+                                                else 
+                                                { 
+                                                    echo ''; 
+                                                } 
+                                            }
+                                            else if($data2['auaction']== 'Merge')
+                                            {
+                                                    if($data['STID2011']==$data2['STID'])
+                                                    {
+                                                        echo $data['SubDistricts'];
+                                                    }
+                                                    else {
+                                                        echo ''; 
+                                                    }
+                                            }
+                                            else if($data2['auaction']== 'Partially Merge')
+                                            {
+                                                    if($data['STID2011']!=$data2['STID'] || $data['STID2011']==$data2['STID'] && $STIDDATA[1]==$data['STID'])
+                                                    {
+                                                        echo $data['SubDistricts'];
+                                                    }
+                                                    else {
+                                                        echo ''; 
+                                                    }
+                                            }
+                                            else {
+                                                echo $data['SubDistricts'];
+
+                                            }
                                         ?></td>
+
+
                                         <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021">
                                         <?php 
-                                        if($data['STID2011']==$data['STID'])
-                                        { 
+                                        if ($data2['auaction']== 'Split')
+                                        {
+                                            if($data['STID2011']==$data['STID'])
+                                            { 
+                                                echo $data['Villages']; 
+                                            } 
+                                            else if($STIDDATA[1]==$data['STID']) 
+                                            {
+                                                echo $data['Villages'];
+                                            } 
+                                            else if ($STIDDATA[1]!=$data['STID'] && $data['STID2011']==$data['STID'])
+                                            {
+                                                echo $data['Villages'];
+                                            }
+                                            else 
+                                            { 
+                                                echo ''; 
+                                            } 
+                                        }
+                                        else if($data2['auaction']== 'Merge')
+                                        {
+                                                if($data['STID2011']==$data2['STID'])
+                                                {
+                                                    echo $data['Villages']; 
+                                                }
+                                                else {
+                                                    echo ''; 
+                                                }
+                                        }
+                                        else if($data2['auaction']== 'Partially Merge')
+                                        {
+                                                if($data['STID2011']!=$data2['STID'] || $data['STID2011']==$data2['STID'] && $STIDDATA[1]==$data['STID'])
+                                                {
+                                                    echo $data['Villages']; 
+                                                }
+                                                else {
+                                                    echo ''; 
+                                                }
+                                        }
+                                        else {
                                             echo $data['Villages']; 
-                                        } 
-                                        else if($STIDDATA[1]==$data['STID']) 
-                                        {
-                                           
-                                            echo $data['Villages'];
-                                        } 
-                                        else if ($STIDDATA[1]!=$data['STID'] && $data['STID2011']==$data['STID'])
-                                        {
-                                            echo $data['Villages'];
+    
                                         }
-                                        else 
-                                        { 
-                                            echo ''; 
-                                        } 
                                         ?></td>
+
+
                                         <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021">
                                         <?php 
-                                        if($data['STID2011']==$data['STID'])
-                                        { 
-                                            echo $data['Towns']; 
-                                        } 
-                                        else if($STIDDATA[1]==$data['STID']) 
+                                        if ($data2['auaction']== 'Split')
                                         {
-                                           
-                                            echo $data['Towns'];
-                                        } 
-                                        else if ($STIDDATA[1]!=$data['STID'] && $data['STID2011']==$data['STID'])
-                                        {
-                                            echo $data['Towns'];
+                                            if($data['STID2011']==$data['STID'])
+                                            { 
+                                                echo $data['Towns']; 
+                                            } 
+                                            else if($STIDDATA[1]==$data['STID']) 
+                                            {
+                                                echo $data['Towns'];
+                                            } 
+                                            else if ($STIDDATA[1]!=$data['STID'] && $data['STID2011']==$data['STID'])
+                                            {
+                                                echo $data['Towns'];
+                                            }
+                                            else 
+                                            { 
+                                                echo ''; 
+                                            } 
                                         }
-                                        else 
-                                        { 
-                                            echo ''; 
-                                        } 
+                                        else if($data2['auaction']== 'Merge')
+                                        {
+                                                if($data['STID2011']==$data2['STID'])
+                                                {
+                                                    echo $data['Towns'];
+                                                }
+                                                else {
+                                                    echo ''; 
+                                                }
+                                        }
+                                        else if($data2['auaction']== 'Partially Merge')
+                                        {
+                                                if($data['STID2011']!=$data2['STID'] || $data['STID2011']==$data2['STID'] && $STIDDATA[1]==$data['STID'])
+                                                {
+                                                    echo $data['Towns'];
+                                                }
+                                                else {
+                                                    echo ''; 
+                                                }
+                                        }
+                                        else {
+                                            echo $data['Towns'];
+    
+                                        }
                                         ?></td>
 
                                        <?php /* <td class="class2021"><?php if($data['STID2011']==$data['STID']){ echo $data['Wards']; } else if($STIDDATA[1]==$data['STID']) {

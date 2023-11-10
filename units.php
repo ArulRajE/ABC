@@ -358,17 +358,26 @@ function s2ab(s) {
                                                         $dataflag2011 = ' - ('.$data['Status'.$_SESSION['logindetails']['baseyear'].''].')';
                                                     }
 
-  $fla=false;                                                 
- if (in_array($data['STID'], $arraydata))
- {
-      $fla=true;  
- }
-                                        
+                                                    $fla=false;                                                 
+                                                    if (in_array($data['STID'], $arraydata))
+                                                    {
+                                                        $fla=true;  
+                                                    }
+                                                         
+                                                    //By sahana 0111
+                                                    $stid = $data['STID2011']; 
+                                                    $query2 = 'SELECT * FROM st' . $_SESSION['activeyears'] . ' WHERE "STID" = $1';
+                                                    $result2 = pg_query_params($db, $query2, array($stid));
                                                     
+                                                    if (!$result) {
+                                                        echo 'Query failed: ' . pg_last_error($db);
+                                                    }
+
+                                                    $data2 = pg_fetch_array($result2)
 
                                           ?>
 
-                                    <tr <?php if($fla){ ?>class="incompleted"<?php  } ?> >
+                                        <tr <?php if($fla){ ?>class="incompleted"<?php  } ?> >
                                        <!-- modified by sahana to add 0 to first 9 numbers for STID 2011 -->
                                        <?php
                                         $number = $data['STID'.$_SESSION['logindetails']['baseyear']];
@@ -382,8 +391,10 @@ function s2ab(s) {
                                         <td><?php echo $data['SubDistricts'.$_SESSION['logindetails']['baseyear'].'']; ?></td>
                                         <td><?php echo $data['Villages'.$_SESSION['logindetails']['baseyear'].'']; ?></td>
                                         <td><?php echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; ?></td>
-                                      <!-- modified by sahana to add 0 to first 9 numbers for STID 2021  -->
-                                      <td class="<?php if ($fla) { ?>incompleted<?php } ?>class2021">
+
+
+                                        <!-- modified by sahana to add 0 to first 9 numbers for STID 2021  -->
+                                        <td class="<?php if ($fla) { ?>incompleted<?php } ?>class2021">
                                             <?php
                                             $number = $data['STID'];
                                             if ($number >= 1 && $number <= 9) {
@@ -394,7 +405,7 @@ function s2ab(s) {
                                             echo $formattedNumber;
                                             ?>
                                         </td>
-                                       <!-- Changes for Admin New State issue By Sahana -->
+                                        <!-- Changes for Admin New State issue By Sahana -->
                                         <!-- <td class="<?php //if($fla){ ?>incompleted<?php // } ?>class2021"><?php //echo $data['STID']; ?></td> -->
                                         <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021"><?php echo $data['STName'].$dataflag; ?></td>
                                         <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021"><?php echo $data['Districts']; ?></td>
@@ -402,6 +413,8 @@ function s2ab(s) {
                                         <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021"><?php echo $data['Villages']; ?></td>
                                         <td class="<?php if($fla){ ?>incompleted<?php  } ?>class2021"><?php echo $data['Towns']; ?></td>
                                         
+
+
                                         <?php 
                                         
                                         if($data['STID']==null)

@@ -275,7 +275,7 @@ if($_POST['flag']=='ST')
 			       		END AS "VTName$acyearshort"
 
 			       		,CASE
-			            WHEN "frfromaction"='Sub-Merge'  THEN ''
+						   WHEN vt$acyear."is_deleted"=0  THEN ''
 			            ELSE "MDDS_VT$acyearshort"
 			        	END AS "MDDS_VT$acyearshort"
 			        	,CASE
@@ -740,7 +740,7 @@ else if($_POST['flag']=='DT')
 			       		END AS "VTName$acyearshort"
 
 			       		,CASE
-			            WHEN "frfromaction"='Sub-Merge'  THEN ''
+						   WHEN vt$acyear."is_deleted"=0  THEN ''
 			            ELSE "MDDS_VT$acyearshort"
 			        	END AS "MDDS_VT$acyearshort"
 			        	,CASE
@@ -1187,7 +1187,7 @@ else if($_POST['flag']=='SD')
 			       		END AS "VTName$acyearshort"
 
 			       		,CASE
-			            WHEN "frfromaction"='Sub-Merge'  THEN ''
+						   WHEN vt$acyear."is_deleted"=0  THEN ''
 			            ELSE "MDDS_VT$acyearshort"
 			        	END AS "MDDS_VT$acyearshort"
 			        	,CASE
@@ -1543,7 +1543,7 @@ else if($_POST['flag']=='VT')
 			       		END AS "VTName$acyearshort"
 
 			       		,CASE
-			            WHEN "frfromaction"='Sub-Merge'  THEN ''
+						   WHEN vt$acyear."is_deleted"=0  THEN ''
 			            ELSE "MDDS_VT$acyearshort"
 			        	END AS "MDDS_VT$acyearshort"
 			        	,CASE
@@ -3796,7 +3796,7 @@ else if($_POST['formname']=='getdataofpopupsub_list')
 				{
 					$where = ' AND "STID" IN ('.$_POST['fstids'].')';
 					$array = array(1,$_POST['fstids']);
-					 $query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "DTID" ASC';
+					 $query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "DTName" ASC';
 
 					 $resultstatelk = pg_query_params($db, $query,$array);
 
@@ -3804,7 +3804,7 @@ else if($_POST['formname']=='getdataofpopupsub_list')
 				else
 				{
 					$array = array('1');
-					 $query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "DTID" ASC';
+					 $query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "DTName" ASC';
 
 					 $resultstatelk = pg_query_params($db, $query,$array);
 
@@ -3922,7 +3922,7 @@ else if($_POST['formname']=='getdataofpopupsub_sublist')
 			}
 
 
-			 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 '.$where.' order by "SDID" ASC';
+			 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 '.$where.' order by "SDName" ASC';
 
 			$resultstatelk = pg_query_params($db, $query,$arraydata);
 			if(pg_numrows($resultstatelk)>0)
@@ -4029,7 +4029,7 @@ if($_POST['clickpopup']=='Create' ||  $_POST['clickpopup']=='Addition' || $_POST
 			{
 				// print_r($arraydata);
 
-				$query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 '.$where.'  order by "SDID" ASC';
+				$query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 '.$where.'  order by "SDName" ASC';
 
 			$resultstatelk = pg_query_params($db,$query,$arraydata);
 			if(pg_numrows($resultstatelk)>0)
@@ -4049,13 +4049,13 @@ if($_POST['clickpopup']=='Create' ||  $_POST['clickpopup']=='Addition' || $_POST
 
 					$arr=array(1,$_SESSION['logindetails']['assignlist']);
 					// $cond_dco = ' AND "STID" IN ('.$_SESSION['logindetails']['assignlist'].')';
-					$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STID" ASC';
+					$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STName" ASC';
 
 					}	
 					else
 					{
 					$arr=array(1);
-					$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STID" ASC';
+					$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STName" ASC';
 					}
 
 
@@ -4125,25 +4125,25 @@ else
 			{
 				array_push($array,$_POST['SDID']);
 
-				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2  order by "SDID" ASC';
+				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2  order by "SDName" ASC';
 			$flag=1;	 
 			// $where = ' and "SDID"='.$_POST['SDID'].'';
 			array_push($arraynew,$_POST['SDID']);
-			 $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2  order by "SDID" ASC';
+			 $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2  order by "SDName" ASC';
 			
 		// 	$where1 = ' and "SDID"='.$_POST['SDID'].'';
 			}
 			else if(isset($_POST['SDID']) && $_POST['SDID']=='' && $_POST['subdistselected']=='')
 			{
 				$flag=2;
-			 	 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "SDID" ASC';
-				 $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "SDID" ASC';
+			 	 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "SDName" ASC';
+				 $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "SDName" ASC';
 			}
 			else
 			{   $flag=2;
-				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "SDID" ASC'; 
+				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "SDName" ASC'; 
 				 array_push($arraynew,$_POST['subdistselected']);
-				 $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 order by "SDID" ASC';
+				 $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 order by "SDName" ASC';
 				// $where1 = ' and "SDID"='.$_POST['subdistselected'].'';
 			}
 
@@ -4158,9 +4158,9 @@ else
 				{
 				 array_push($array,$_POST['STdidsmrg']);
 
-				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 order by "SDID" ASC';
+				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 order by "SDName" ASC';
 				 array_push($arraynew,$_POST['STdidsmrg']);
-				  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 order by "SDID" ASC';
+				  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 order by "SDName" ASC';
 			
 
 				}
@@ -4168,10 +4168,10 @@ else
 				{
 				   array_push($array,$_POST['STdidsmrg']);
 
-				  $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 order by "SDID" ASC';
+				  $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 order by "SDName" ASC';
 
 				  array_push($arraynew,$_POST['STdidsmrg']);
-				  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 order by "SDID" ASC';
+				  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 order by "SDName" ASC';
 
 				}
 			$stflag=1;
@@ -4183,20 +4183,20 @@ else
 				{
 				 array_push($array,$_POST['STID']);
 
-				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 order by "SDID" ASC';
+				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 order by "SDName" ASC';
 
 				   array_push($arraynew,$_POST['STID']);
-				  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 order by "SDID" ASC';
+				  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 order by "SDName" ASC';
 
 				}
 				else
 				{
 					 array_push($array,$_POST['STID']);
 
-				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 order by "SDID" ASC';
+				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 order by "SDName" ASC';
 
 				  array_push($arraynew,$_POST['STID']);
-				  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 order by "SDID" ASC';
+				  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 order by "SDName" ASC';
 
 				}
 
@@ -4212,10 +4212,10 @@ else
 				{
 				 array_push($array,$_POST['DTIDS']);
 
-				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4  order by "SDID" ASC';
+				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4  order by "SDName" ASC';
 
 				 array_push($arraynew,$_POST['DTIDS']);
-				  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDID" ASC';
+				  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDName" ASC';
 
 
 				}
@@ -4223,29 +4223,29 @@ else
 				{
 				 array_push($array,$_POST['DTIDS']);
 
-				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDID" ASC';
+				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDName" ASC';
 
 
 
 				  array_push($arraynew,$_POST['DTIDS']);
-				  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDID" ASC';
+				  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDName" ASC';
 
 				}
 				else if($flag==2 && $stflag==1)
 				{
 				 array_push($array,$_POST['DTIDS']);
 
-				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 and "DTID"=$3 order by "SDID" ASC';
+				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 and "DTID"=$3 order by "SDName" ASC';
 
 				 if($_POST['subdistselected']=='')
 				 {
 				 	 array_push($arraynew,$_POST['DTIDS']);
-				  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 and "DTID"=$3 order by "SDID" ASC';
+				  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 and "DTID"=$3 order by "SDName" ASC';
 				 }
 				 else
 				 {
 				 	 array_push($arraynew,$_POST['DTIDS']);
-				  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDID" ASC';
+				  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDName" ASC';
 				 }
 				 
 
@@ -4254,17 +4254,17 @@ else
 				else if($flag==2 && $stflag==2)
 				{
 				 array_push($array,$_POST['DTIDS']);
-				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 and "DTID"=$3 order by "SDID" ASC';
+				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 and "DTID"=$3 order by "SDName" ASC';
 
 					if($_POST['subdistselected']=='')
 					{
 					array_push($arraynew,$_POST['DTIDS']);
-					$query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 and "DTID"=$3 order by "SDID" ASC';
+					$query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 and "DTID"=$3 order by "SDName" ASC';
 					}
 					else
 					{
 					array_push($arraynew,$_POST['DTIDS']);
-					$query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDID" ASC';
+					$query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDName" ASC';
 					}
 
 
@@ -4283,38 +4283,38 @@ else
 				{
 				 array_push($array,$_POST['DTID']);
 
-				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4  order by "SDID" ASC';
+				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4  order by "SDName" ASC';
 
 				 	array_push($arraynew,$_POST['DTID']);
-					$query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDID" ASC';
+					$query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDName" ASC';
 
 				}
 				else if($flag==1 && $stflag==2)
 				{
 				 array_push($array,$_POST['DTID']);
 
-				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDID" ASC';
+				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDName" ASC';
 
 
 				 	array_push($arraynew,$_POST['DTID']);
-					$query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDID" ASC';
+					$query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDName" ASC';
 
 				}
 				else if($flag==2 && $stflag==1)
 				{
 				 array_push($array,$_POST['DTID']);
 
-				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 and "DTID"=$3 order by "SDID" ASC';
+				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 and "DTID"=$3 order by "SDName" ASC';
 
 				 if($_POST['subdistselected']=='')
 					{
 					array_push($arraynew,$_POST['DTID']);
-					$query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 and "DTID"=$3 order by "SDID" ASC';
+					$query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 and "DTID"=$3 order by "SDName" ASC';
 					}
 					else
 					{
 					array_push($arraynew,$_POST['DTID']);
-					$query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDID" ASC';
+					$query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDName" ASC';
 					}
 
 
@@ -4323,17 +4323,17 @@ else
 				{
 				 array_push($array,$_POST['DTID']);
 
-				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 and "DTID"=$3 order by "SDID" ASC';
+				 $query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 and "DTID"=$3 order by "SDName" ASC';
 
 				  if($_POST['subdistselected']=='')
 					{
 					array_push($arraynew,$_POST['DTID']);
-					$query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 and "DTID"=$3 order by "SDID" ASC';
+					$query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "STID"=$2 and "DTID"=$3 order by "SDName" ASC';
 					}
 					else
 					{
 					array_push($arraynew,$_POST['DTID']);
-					$query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDID" ASC';
+					$query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=$1 and "SDID"=$2 and "STID"=$3 and "DTID"=$4 order by "SDName" ASC';
 					}
 					
 
@@ -4449,7 +4449,7 @@ $task1='';
 		if($_POST['clickpopup']=='submerge')
 		{
 			$arra = array($_POST['STID'],$_POST['DTID'],$_POST['SDID'],1);
-			 $query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID"=$1 and "DTID"=$2 and "SDID"=$3 and is_deleted=$4  order by "VTID" ASC';
+			 $query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID"=$1 and "DTID"=$2 and "SDID"=$3 and is_deleted=$4  order by "VTName" ASC';
 
 		 	$resultstatelk = pg_query_params($db, $query,$arra);
 			if(pg_numrows($resultstatelk)>0)
@@ -4479,7 +4479,7 @@ $task1='';
 			if($_POST['comefrom']=='Village / Town' )
 			{
 			$arra = array(1);
-			$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STID" ASC';
+			$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STName" ASC';
 			$resultstquery = pg_query_params($db, $queryst,$arra);
 			if(pg_numrows($resultstquery)>0)
 			{
@@ -4491,7 +4491,7 @@ $task1='';
 				if($_POST['STID']!='' && $_POST['DTID']!='' && $_POST['SDID']!='')
 				{
 					$aaarrr= array($_POST['STID'],$_POST['DTID'],$_POST['SDID'],1);
-						 $query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "STID" = Any(string_to_array($3::text, \',\'::text)::bigint[]) and is_deleted=$4  order by "VTID" ASC';
+						 $query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "STID" = Any(string_to_array($3::text, \',\'::text)::bigint[]) and is_deleted=$4  order by "VTName" ASC';
 
 		 	$resultstatelk = pg_query_params($db, $query,$aaarrr);
 			if(pg_numrows($resultstatelk)>0)
@@ -4558,19 +4558,19 @@ else if($_POST['formname']=='getdataofpopupsubvillagenew')
 				if($flag==1 && $flag1==1)
 				{
 					$array = array($_POST['fstids'],$_POST['fdtids'],$_POST['datavalue'],$_POST['fvtids'],$_POST['jigs'],1);
-					$query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "SDID" = Any(string_to_array($3::text, \',\'::text)::bigint[]) AND "VTID" = Any(string_to_array($4::text, \',\'::text)::NUMERIC[]) AND NOT "VTID" != Any(string_to_array($5::text, \',\'::text)::NUMERIC[]) and is_deleted=$6 order by "VTID" ASC';
+					$query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "SDID" = Any(string_to_array($3::text, \',\'::text)::bigint[]) AND "VTID" = Any(string_to_array($4::text, \',\'::text)::NUMERIC[]) AND NOT "VTID" != Any(string_to_array($5::text, \',\'::text)::NUMERIC[]) and is_deleted=$6 order by "VTName" ASC';
 
 					// concat("VTName",\' - \',"MDDS_VT")
 				}
 				else if($flag==0 && $flag1==1)
 				{
 					$array = array($_POST['fstids'],$_POST['fdtids'],$_POST['datavalue'],$_POST['jigs'],1);
-					 $query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "SDID" = Any(string_to_array($3::text, \',\'::text)::bigint[]) AND NOT "VTID" = Any(string_to_array($4::text, \',\'::text)::NUMERIC[]) and is_deleted=$5 order by "VTID" ASC';	
+					 $query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "SDID" = Any(string_to_array($3::text, \',\'::text)::bigint[]) AND NOT "VTID" = Any(string_to_array($4::text, \',\'::text)::NUMERIC[]) and is_deleted=$5 order by "VTName" ASC';	
 				}
 				else if($flag==1 && $flag1==0)
 				{
 					$array = array($_POST['fstids'],$_POST['fdtids'],$_POST['datavalue'],$_POST['fvtids'],1);
-					$query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "SDID" = Any(string_to_array($3::text, \',\'::text)::bigint[]) AND "VTID" = Any(string_to_array($4::text, \',\'::text)::NUMERIC[]) and is_deleted=$5 order by "VTID" ASC';
+					$query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "SDID" = Any(string_to_array($3::text, \',\'::text)::bigint[]) AND "VTID" = Any(string_to_array($4::text, \',\'::text)::NUMERIC[]) and is_deleted=$5 order by "VTName" ASC';
 				}
 				else
 				{
@@ -4673,12 +4673,12 @@ $task1='';
 			{
 			// $cond = ' AND "VTID" IN ('.$_POST['fvtids'].')';	
 				$arra=array($_POST['fstids'],$_POST['fdtids'],$_POST['fsdids'],1,$_POST['fvtids']);
-				$query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "SDID" = Any(string_to_array($3::text, \',\'::text)::bigint[])  and  is_deleted=$4 AND "VTID" = Any(string_to_array($5::text, \',\'::text)::NUMERIC[])  order by "VTID" ASC';
+				$query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "SDID" = Any(string_to_array($3::text, \',\'::text)::bigint[])  and  is_deleted=$4 AND "VTID" = Any(string_to_array($5::text, \',\'::text)::NUMERIC[])  order by "VTName" ASC';
 			}
 			else
 			{
 				$arra=array($_POST['fstids'],$_POST['fdtids'],$_POST['fsdids'],1);
-				$query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "SDID" = Any(string_to_array($3::text, \',\'::text)::bigint[])  and  is_deleted=$4 order by "VTID" ASC';
+				$query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "SDID" = Any(string_to_array($3::text, \',\'::text)::bigint[])  and  is_deleted=$4 order by "VTName" ASC';
 					
 			}
 
@@ -4719,14 +4719,14 @@ $task1='';
 			
 			 $arra=array($_POST['fstids'],$_POST['fdtids'],$_POST['fsdids'],1,$_POST['fvtids']);
 
-			 $query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "SDID" = Any(string_to_array($3::text, \',\'::text)::bigint[])  and  is_deleted=$4 AND "VTID" = Any(string_to_array($5::text, \',\'::text)::NUMERIC[])  order by "VTID" ASC';
+			 $query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "SDID" = Any(string_to_array($3::text, \',\'::text)::bigint[])  and  is_deleted=$4 AND "VTID" = Any(string_to_array($5::text, \',\'::text)::NUMERIC[])  order by "VTName" ASC';
 
 			}
 			else
 			{
 				$arra=array($_POST['fstids'],$_POST['fdtids'],$_POST['fsdids'],1);
 
-			    $query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "SDID" = Any(string_to_array($3::text, \',\'::text)::bigint[])  and  is_deleted=$4 order by "VTID" ASC';
+			    $query = 'select "VTID" as "id",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "Name" from "vt'.$_SESSION['activeyears'].'" where "STID" = Any(string_to_array($1::text, \',\'::text)::bigint[]) and "DTID" = Any(string_to_array($2::text, \',\'::text)::bigint[]) and "SDID" = Any(string_to_array($3::text, \',\'::text)::bigint[])  and  is_deleted=$4 order by "VTName" ASC';
 
 			}
 
@@ -4753,7 +4753,7 @@ else if($_POST['formname']=='getdataofpopupsubmerge')
 								{
 														$task1='';
 															 $arra=array(1);
-														 $query = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STID" ASC';
+														 $query = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STName" ASC';
 															 
 																$resultstatelk = pg_query_params($db,$query,$arra);
 															if(pg_numrows($resultstatelk)>0)
@@ -4826,7 +4826,7 @@ else if($_POST['formname']=='getdataofpopupsubmerge')
 															if($where123!='')
 															{
 
-															  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=1 '.$where123.'  order by "DTID" ASC';
+															  $query1 = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where is_deleted=1 '.$where123.'  order by "DTName" ASC';
 													
 									
 																$resultstatelk1 = pg_query($db, $query1);
@@ -4838,7 +4838,7 @@ else if($_POST['formname']=='getdataofpopupsubmerge')
 
 
 															}
-															 $query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where is_deleted=1 '.$stids.' order by "DTID" ASC';
+															 $query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where is_deleted=1 '.$stids.' order by "DTName" ASC';
 																
 																$resultstatelk = pg_query($db, $query);
 															if(pg_numrows($resultstatelk)>0)
@@ -4865,7 +4865,7 @@ else if($_POST['formname']=='getdataofpopupsubmerge')
 												{
 															$task1='';
 														$arra=array(1);
-														 $query = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STID" ASC';
+														 $query = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STName" ASC';
 															
 																$resultstatelk = pg_query_params($db, $query,$arra);
 															if(pg_numrows($resultstatelk)>0)
@@ -4902,14 +4902,14 @@ else if($_POST['formname']=='getdataofpopupsubmerge')
 																{
 																	// $cond_dco = ' AND "STID" IN ('.$_SESSION['logindetails']['assignlist'].')';
 																	$arra=array(1,$_SESSION['logindetails']['assignlist']);
-																	$query = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$query = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STName" ASC';
 															
 
 																}	
 																else
 																{
 																	$arra=array(1);
-																	$query = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STID" ASC';
+																	$query = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STName" ASC';
 															
 																}
 
@@ -4938,7 +4938,7 @@ else if($_POST['formname']=='getdataofpopupsubmerge')
 								}
 								else if($_POST['comefrom']=='Ward')
 								{
-											$query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where "STID"='.$_POST['selectstid'].' AND is_deleted=1  order by "DTID" ASC';
+											$query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where "STID"='.$_POST['selectstid'].' AND is_deleted=1  order by "DTName" ASC';
 											 	$resultstatelk = pg_query($db, $query);
 												if(pg_numrows($resultstatelk)>0)
 												{
@@ -4949,7 +4949,7 @@ else if($_POST['formname']=='getdataofpopupsubmerge')
 								{
 									$task1='';
 										$arra=array(1);
-													$query = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1  order by "STID" ASC';
+													$query = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1  order by "STName" ASC';
 												 	$resultstatelk = pg_query_params($db, $query,$arra);
 													if(pg_numrows($resultstatelk)>0)
 													{
@@ -5040,22 +5040,22 @@ else if($_POST['formname']=='getdataofpopup1')
 		if($flag==1 && $flag1==1)
 		{
 			$arra=array(1,$_POST['fstids'],$_POST['fdtids']);
-					$query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where  "is_deleted"=$1 AND "STID"=$2 AND "DTID"=$3 order by "DTID" ASC';
+					$query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where  "is_deleted"=$1 AND "STID"=$2 AND "DTID"=$3 order by "DTName" ASC';
 		}
 		else if($flag==1 && $flag1==0)
 		{
 			$arra=array(1,$_POST['fstids']);
-					$query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where  "is_deleted"=$1 AND "STID"=$2 order by "DTID" ASC';
+					$query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where  "is_deleted"=$1 AND "STID"=$2 order by "DTName" ASC';
 		}
 		else if($flag==2 && $flag1==0)
 		{
 			$arra=array(1,$_POST['selectstid']);
-					$query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where  "is_deleted"=$1 AND "STID"=$2 order by "DTID" ASC';
+					$query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where  "is_deleted"=$1 AND "STID"=$2 order by "DTName" ASC';
 		}
 		else if($flag==2 && $flag1==1)
 		{
 			$arra=array(1,$_POST['fstids'],$_POST['fdtids']);
-					$query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where  "is_deleted"=$1 AND "STID"=$2 AND "DTID"=$3 order by "DTID" ASC';
+					$query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where  "is_deleted"=$1 AND "STID"=$2 AND "DTID"=$3 order by "DTName" ASC';
 		}
 
 
@@ -5100,14 +5100,14 @@ else if($_POST['formname']=='getdataofpopup_to')
 									if($_POST['tdtids']!='')
 									{
 										$arrr=array(1,$_POST['tdtids'],$_POST['selectstid']);
-										$query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where "STID"=$3 AND "is_deleted"=$1 AND "DTID"=$2 order by "DTID" ASC';
+										$query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where "STID"=$3 AND "is_deleted"=$1 AND "DTID"=$2 order by "DTName" ASC';
 
 									//	$where = ' AND "DTID"='.$_POST['tdtids'].'';
 									}
 									else
 									{
 										$arrr=array(1,$_POST['selectstid']);
-										$query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where "STID"=$2 AND "is_deleted"=$1 order by "DTID" ASC';
+										$query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where "STID"=$2 AND "is_deleted"=$1 order by "DTName" ASC';
 
 									}
 														
@@ -5142,12 +5142,12 @@ else if($_POST['formname']=='getdataofpopup_to_sd')
 	if($_POST['tsdids']!='')
 	{
 		$arrr=array($_POST['selectdtid'],1,$_POST['tsdids']);
-	$query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where "DTID"=$1 AND is_deleted=$2 AND  "SDID"=$3  order by "SDID" ASC';
+	$query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where "DTID"=$1 AND is_deleted=$2 AND  "SDID"=$3  order by "SDName" ASC';
 	}
 	else
 	{
 $arrr=array($_POST['selectdtid'],1);
-	$query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where "DTID"=$1 AND is_deleted=$2 order by "SDID" ASC';
+	$query = 'select "SDID" as "id","SDName" as "Name" from "sd'.$_SESSION['activeyears'].'" where "DTID"=$1 AND is_deleted=$2 order by "SDName" ASC';
 		}
 
 
@@ -5176,7 +5176,7 @@ else if($_POST['formname']=='getdataofpopup_add')
 								$rowaction = array();
 													$ar=array($_POST['selectstid'],1);
 														
-															  $query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where "STID"=$1 AND is_deleted=$2 order by "DTID" ASC';
+															  $query = 'select "DTID" as "id","DTName" as "Name" from "dt'.$_SESSION['activeyears'].'" where "STID"=$1 AND is_deleted=$2 order by "DTName" ASC';
 																
 																$resultstatelk = pg_query_params($db, $query,$ar);
 															if(pg_numrows($resultstatelk)>0)
@@ -5236,22 +5236,22 @@ else if($_POST['formname']=='getdataofpopup')
  
 																	
 
-																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) AND "STID" = Any(string_to_array($3::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) AND "STID" = Any(string_to_array($3::text, \',\'::text)::integer[]) order by "STName" ASC';
 																}
 																else if($flag==1 && $flag1==0)
 																{
 																	$array = array(1,$_POST['fstids']);
-																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STName" ASC';
 																}
 																else if($flag==0 && $flag1==1)
 																{
 																	$array = array(1,$_SESSION['logindetails']['assignlist']);
-																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STName" ASC';
 																}
 																else if($flag==0 && $flag1==0)
 																{
 																	$array = array(1);
-																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STID" ASC';
+																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STName" ASC';
 																}
 
 																
@@ -5278,7 +5278,7 @@ else if($_POST['formname']=='getdataofpopup')
 																{
 																	$array1 = array(1,$_POST['fstids'],$_POST['tstids']);
 																	
-																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) AND "STID" = Any(string_to_array($3::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) AND "STID" = Any(string_to_array($3::text, \',\'::text)::integer[]) order by "STName" ASC';
 
 
 																	
@@ -5286,17 +5286,17 @@ else if($_POST['formname']=='getdataofpopup')
 																else if($flag2==1 && $flag1==0)
 																{
 																	$array1 = array(1,$_POST['tstids']);
-																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STName" ASC';
 																}
 																else if($flag2==0 && $flag1==1)
 																{
 																	$array1 = array(1,$_SESSION['logindetails']['assignlist']);
-																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STName" ASC';
 																}
 																else if($flag2==0 && $flag1==0)
 																{
 																	$array1 = array(1);
-																	 $querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STID" ASC';
+																	 $querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STName" ASC';
 																}
 																$resultstqueryt = pg_query_params($db, $querystt,$array1);
 																if(pg_numrows($resultstqueryt)>0)
@@ -5360,23 +5360,23 @@ else if($_POST['formname']=='getdataofpopup')
 																if($flag==1 && $flag1==1)
 																{
 																	$array = array(1,$_POST['fstids'],$_SESSION['logindetails']['assignlist']);
-																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) AND "STID" = Any(string_to_array($3::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) AND "STID" = Any(string_to_array($3::text, \',\'::text)::integer[]) order by "STName" ASC';
 																}
 																else if($flag==1 && $flag1==0)
 																{
 																	$array = array(1,$_POST['fstids']);
-																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STName" ASC';
 																}
 																else if($flag==0 && $flag1==1)
 																{
 																	
 																	$array = array(1,$_SESSION['logindetails']['assignlist']);
-																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STName" ASC';
 																}
 																else if($flag==0 && $flag1==0)
 																{
 																	$array = array(1);
-																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STID" ASC';
+																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STName" ASC';
 																}
 
 																
@@ -5407,7 +5407,7 @@ else if($_POST['formname']=='getdataofpopup')
 																{
 																	$array1 = array(1,$_POST['fstids'],$_POST['tstids']);
 																	
-																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) AND "STID" = Any(string_to_array($3::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) AND "STID" = Any(string_to_array($3::text, \',\'::text)::integer[]) order by "STName" ASC';
 
 
 																	
@@ -5415,17 +5415,17 @@ else if($_POST['formname']=='getdataofpopup')
 																else if($flag2==1 && $flag1==0)
 																{
 																	$array1 = array(1,$_POST['tstids']);
-																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STName" ASC';
 																}
 																else if($flag2==0 && $flag1==1)
 																{
 																	$array1 = array(1,$_SESSION['logindetails']['assignlist']);
-																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STName" ASC';
 																}
 																else if($flag2==0 && $flag1==0)
 																{
 																	$array1 = array(1);
-																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STID" ASC';
+																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STName" ASC';
 																}
 																
 																$resultstqueryt = pg_query_params($db,$querystt,$array1);
@@ -5484,22 +5484,22 @@ else if($_POST['formname']=='getdataofpopup')
 																if($flag==1 && $flag1==1)
 																{
 																	$array = array(1,$_POST['fstids'],$_SESSION['logindetails']['assignlist']);
-																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) AND "STID" = Any(string_to_array($3::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) AND "STID" = Any(string_to_array($3::text, \',\'::text)::integer[]) order by "STName" ASC';
 																}
 																else if($flag==1 && $flag1==0)
 																{
 																	$array = array(1,$_POST['fstids']);
-																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STName" ASC';
 																}
 																else if($flag==0 && $flag1==1)
 																{
 																	$array = array(1,$_SESSION['logindetails']['assignlist']);
-																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STName" ASC';
 																}
 																else if($flag==0 && $flag1==0)
 																{
 																	$array = array(1);
-																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STID" ASC';
+																	$queryst = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STName" ASC';
 																}
 
 																
@@ -5523,7 +5523,7 @@ else if($_POST['formname']=='getdataofpopup')
 																{
 																	$array1 = array(1,$_POST['fstids'],$_POST['tstids']);
 																	
-																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) AND "STID" = Any(string_to_array($3::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) AND "STID" = Any(string_to_array($3::text, \',\'::text)::integer[]) order by "STName" ASC';
 
 
 																	
@@ -5531,17 +5531,17 @@ else if($_POST['formname']=='getdataofpopup')
 																else if($flag2==1 && $flag1==0)
 																{
 																	$array1 = array(1,$_POST['tstids']);
-																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STName" ASC';
 																}
 																else if($flag2==0 && $flag1==1)
 																{
 																	$array1 = array(1,$_SESSION['logindetails']['assignlist']);
-																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STName" ASC';
 																}
 																else if($flag2==0 && $flag1==0)
 																{
 																	$array1 = array(1);
-																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STID" ASC';
+																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STName" ASC';
 																}
 																$resultstqueryt = pg_query_params($db, $querystt,$array1);
 
@@ -5569,7 +5569,7 @@ else if($_POST['formname']=='getdataofpopup')
 									// print_r($_POST);
 									// exit;
 													$arra=array(1);
-													$query = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1  order by "STID" ASC';
+													$query = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1  order by "STName" ASC';
 												 	$resultstatelk = pg_query_params($db, $query,$arra);
 													if(pg_numrows($resultstatelk)>0)
 													{
@@ -5582,12 +5582,12 @@ else if($_POST['formname']=='getdataofpopup')
 																{
 																	
 																$ar=array(1,$_POST['tstids']);
-																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STID" ASC';
+																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 AND "STID" = Any(string_to_array($2::text, \',\'::text)::integer[]) order by "STName" ASC';
 																}
 																else
 																{
 																	$ar=array(1);
-																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STID" ASC';
+																	$querystt = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 order by "STName" ASC';
 																}	
 
 
@@ -5845,6 +5845,29 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 
 					// pg_query_params('update wd'.$_SESSION['activeyears'].' set "STID"=$1 where wd'.$_SESSION['activeyears'].'."DTID" IN ($2)');
 
+					//By sahana partially merge state level 0111
+					$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+					$au = pg_query_params($db, $auflag_query, array($retdata['action'][0], $retdata['comefromcheck']));
+
+					if ($au) {
+						$row = pg_fetch_assoc($au);
+						$auflag_value = $row['auflag'];
+						$namefrom = $retdata['namefrom'][0];
+						$newnamem = $retdata['newnamem'][0];
+
+						$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3 OR "STID" = $4', array($auflag_value, $retdata['action'][0], $namefrom, $newnamem)); 
+						$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3 OR "STID" = $4', array($auflag_value, $retdata['action'][0], $namefrom, $newnamem)); 
+						$update_dt = pg_query_params($db, 'UPDATE dt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3 OR "STID" = $4', array($auflag_value, $retdata['action'][0], $namefrom, $newnamem)); 
+						$update_st = pg_query_params($db, 'UPDATE st'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3 OR "STID" = $4', array($auflag_value, $retdata['action'][0], $namefrom, $newnamem)); 
+						
+						if (!$update_st || !$update_dt || !$update_sd || !$update_vt) {
+							echo "UPDATE queries failed: " . pg_last_error($db);
+						}
+					} else {
+						echo "SELECT query failed: " . pg_last_error($db);
+					}
+
+
 					if($partiallylevel!='')
 					{
 
@@ -5878,13 +5901,14 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 					if($retdata['oremovenewarray']==1)
 					{
 					$stnameupdate = "update st".$_SESSION['activeyears']." set \"STName\"=$1,\"Status\"=$2 where \"STID\"=$3";		
-					pg_query_params($db,$stnameupdate,array($retdata['newnamecheck'][0]),ucwords($retdata['StateStatus'][0]),$retdata['newnamem'][0]);	
+					pg_query_params($db,$stnameupdate,array($retdata['newnamecheck'][0],ucwords($retdata['StateStatus'][0]),$retdata['newnamem'][0]));
+				
 				//	pg_query_params($db,$stnameupdate,array(ucwords(strtolower($retdata['newnamecheck'][0])),ucwords(strtoupper($retdata['StateStatus'][0])),$retdata['newnamem'][0]));	
 					}
 					else
 					{
 						$stnameupdate = "update st".$_SESSION['activeyears']." set \"Status\"=$1 where \"STID\"=$2";		
-						pg_query_params($db,$stnameupdate,array($retdata['StateStatus'][0]),$retdata['newnamem'][0]);
+						pg_query_params($db,$stnameupdate,array($retdata['StateStatus'][0],$retdata['newnamem'][0]));
 
 					//pg_query_params($db,$stnameupdate,array(ucwords(strtoupper($retdata['StateStatus'][0])),$retdata['newnamem'][0]));
 					}
@@ -5897,7 +5921,35 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 			}
 			else
 			{
-					
+					//sahana merge state level many to one n one to one 0111
+					$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+					$actions = $finaldata['action'];
+					$namefrom_values = $finaldata['namefrom'];
+					// $newnamem_values = $finaldata['newnamem'];
+
+					foreach ($actions as $key => $action) {
+						$namefrom = $namefrom_values[$key];
+						// $newnamem = $newnamem_values[0];
+
+						$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
+
+						if ($au) {
+							$row = pg_fetch_assoc($au);
+							$auflag_value = $row['auflag'];
+
+							// $update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3 OR "STID" = $4', array($auflag_value, $action, $namefrom, $newnamem));
+							$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3', array($auflag_value, $action, $namefrom));
+							$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3', array($auflag_value, $action, $namefrom));
+							$update_dt = pg_query_params($db, 'UPDATE dt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3', array($auflag_value, $action, $namefrom));
+							$update_st = pg_query_params($db, 'UPDATE st'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3', array($auflag_value, $action, $namefrom));
+
+							if (!$update_st || !$update_dt || !$update_sd || !$update_vt) {
+								echo "UPDATE query failed: " . pg_last_error($db);
+							}
+						} else {
+							echo "SELECT query failed: " . pg_last_error($db);
+						}
+					}	
 	
 					$forreadqueryapp ='';
 					for($j=0;$j<count($finaldata['namefrom']);$j++)
@@ -6313,6 +6365,34 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 				// print_r($k);
 				// exit;
 					
+				//By sahana Partially merge district one to one, many to one 0111
+				$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+				$actions = $retdata['action'];
+				$namefrom_values = $retdata['namefrom'];
+				$newnamem_values = $retdata['newnamem'];
+
+				foreach ($actions as $key => $action) {
+					$namefrom = $namefrom_values[$key];
+					// $newnamem = $newnamem_values[0];
+
+					$au = pg_query_params($db, $auflag_query, array($action, $retdata['comefromcheck']));
+
+					if ($au) {
+						$row = pg_fetch_assoc($au);
+						$auflag_value = $row['auflag'];
+
+						// $update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "DTID" = $3 OR "DTID" = $4', array($auflag_value, $action, $namefrom, $newnamem));
+						$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "DTID" = $3', array($auflag_value, $action, $namefrom));
+						$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "DTID" = $3', array($auflag_value, $action, $namefrom));
+						$update_dt = pg_query_params($db, 'UPDATE dt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "DTID" = $3', array($auflag_value, $action, $namefrom));
+
+						if (!$update_dt || !$update_sd || !$update_vt) {
+							echo "UPDATE query failed: " . pg_last_error($db);
+						}
+					} else {
+						echo "SELECT query failed: " . pg_last_error($db);
+					}
+				}
 
 					$linkDTarray = array();
 					$forread = '';
@@ -6597,7 +6677,34 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 			}
 			else
 			{
-				
+				//By sahana merge district level one to one, many to one 0111
+				$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+				$actions = $finaldata['action'];
+				$namefrom_values = $finaldata['namefrom'];
+				// $newnamem_values = $finaldata['newnamem'];
+
+				foreach ($actions as $key => $action) {
+					$namefrom = $namefrom_values[$key];
+					// $newnamem = $newnamem_values[0];
+
+					$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
+
+					if ($au) {
+						$row = pg_fetch_assoc($au);
+						$auflag_value = $row['auflag'];
+
+						// $update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "DTID" = $3 OR "DTID" = $4', array($auflag_value, $action, $namefrom, $newnamem));
+						$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "DTID" = $3', array($auflag_value, $action, $namefrom));
+						$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "DTID" = $3', array($auflag_value, $action, $namefrom));
+						$update_dt = pg_query_params($db, 'UPDATE dt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "DTID" = $3', array($auflag_value, $action, $namefrom));
+
+						if (!$update_dt || !$update_sd || !$update_vt) {
+							echo "UPDATE query failed: " . pg_last_error($db);
+						}
+					} else {
+						echo "SELECT query failed: " . pg_last_error($db);
+					}
+				}
 
 				if(isset($finaldata['statenewarray']))
 				{
@@ -7099,10 +7206,34 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 					}
 					
 
+					//By sahana partially merge subdistrict one to one, many to one 0111
+					$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+					$actions = $retdata['action'];
+					$namefrom_values = $retdata['namefrom'];
+					$newnamem_values = $retdata['newnamem'];
+
+					foreach ($actions as $key => $action) {
+						$namefrom = $namefrom_values[$key];
+						$newnamem = $newnamem_values[0];
+
+						$au = pg_query_params($db, $auflag_query, array($action, $retdata['comefromcheck']));
+
+						if ($au) {
+							$row = pg_fetch_assoc($au);
+							$auflag_value = $row['auflag'];
+
+							$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3 OR "SDID" = $4', array($auflag_value, $action, $namefrom, $newnamem));
+							$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3 OR "SDID" = $4', array($auflag_value, $action, $namefrom, $newnamem));
+
+							if (!$update_sd || !$update_vt) {
+								echo "UPDATE query failed: " . pg_last_error($db);
+							}
+						} else {
+							echo "SELECT query failed: " . pg_last_error($db);
+						}
+					}
 
 					
-
-
 
 					// pg_query('update dt'.$_SESSION['activeyears'].' set "STID"='.$retdata['newnamem'][0].' where dt'.$_SESSION['activeyears'].'."DTID" IN ('.implode(',',$linkDTarray).')');
 
@@ -7313,7 +7444,29 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 
 					}
 					
-					
+					//By sahana merge sub district one to one, many to one 0111
+					$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+					$actions = $finaldata['action'];
+					$namefrom_values = $finaldata['namefrom'];
+
+					foreach ($actions as $key => $action) {
+						$namefrom = $namefrom_values[$key];
+						$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
+
+						if ($au) {
+							$row = pg_fetch_assoc($au);
+							$auflag_value = $row['auflag'];
+
+						$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $action, $namefrom));
+						$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $action, $namefrom));
+
+						if (!$update_sd || !$update_vt) {
+							echo "UPDATE query failed: " . pg_last_error($db);
+						}
+						} else {
+							echo "SELECT query failed: " . pg_last_error($db);
+						}
+					}
 
 					$documentdata = "update documentdata".$_SESSION['activeyears']." set docstatus=$1 where \"docids\"=$2";
 
@@ -7575,8 +7728,11 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 										{
 										$stnameupdate = "update vt".$_SESSION['activeyears']." set \"VTName\"=$1,\"Level\"=$2,\"Status\"=$3 where \"VTID\"=$4";		
 
-										pg_query_params($db,$stnameupdate,array(ucwords(strtolower($finaldata['newnamecheck'][0])),ucwords(strtoupper($finaldata['vStateStatus'][0])),ucwords(strtoupper($finaldata['vstatus'][0])),$finaldata['newnamem'][0]));	
-										}
+										
+									//pg_query_params($db,$stnameupdate,array(ucwords(strtolower($finaldata['newnamecheck'][0])),ucwords(strtoupper($finaldata['vStateStatus'][0])),ucwords(strtoupper($finaldata['vstatus'][0])),$finaldata['newnamem'][0]));	
+										//Titlecase issue resolved by gowthami
+									pg_query_params($db,$stnameupdate,array($finaldata['newnamecheck'][0],ucwords(strtoupper($finaldata['vStateStatus'][0])),ucwords(strtoupper($finaldata['vstatus'][0])),$finaldata['newnamem'][0]));	
+									}
 										else
 										{
 
@@ -7676,14 +7832,16 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 													if($sqlda['Level']=='VILLAGE')
 													{
 													// 	$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> No Change;';
-															$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' Name Changed to '.$finaldata['newnamecheck'][0].';';
-															$frcomment1 .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' Name Changed to '.$finaldata['newnamecheck'][0].';';
+													//08_11
+															$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' Name Changed to '.$finaldata['newnamecheck'][0].' - '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
+															$frcomment1 .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' Name Changed to '.$finaldata['newnamecheck'][0].'- '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 													}
 													else
 													{
-															$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' Name Changed to '.$finaldata['newnamecheck'][0].';';
+															//08_11
+															$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' Name Changed to '.$finaldata['newnamecheck'][0].' - '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 
-															$frcomment1 .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' Name Changed to '.$finaldata['newnamecheck'][0].';';
+															$frcomment1 .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' Name Changed to '.$finaldata['newnamecheck'][0].' - '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 
 														// 	$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> No Change';
 													}
@@ -7695,16 +7853,18 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 
 													if($sqlda['Level']=='VILLAGE')
 													{
+														//08_11
 														// $frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> No Change;';
-															$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].';';
+															$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' - '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 
-															$frcomment1 .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].';';
+															$frcomment1 .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].'- '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 													}
 													else
 													{
-															$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].';';
+															//08_11
+															$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' - '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 
-															$frcomment1 .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].';';
+															$frcomment1 .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' - '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 															// $frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> No Change';
 													}
 
@@ -7771,16 +7931,18 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 													{
 															//Defect ID JC_09 forread issue solved by shashi
 														// $frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> No Change;';
-															$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' name changed to '.$finaldata['newnamecheck'][0].' and status changed to '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
+														//08_11
+															$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' name changed to '.$finaldata['newnamecheck'][0].' and status changed to '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 
-															$frcomment1 .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' name changed to '.$finaldata['newnamecheck'][0].' and status changed to '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
+															$frcomment1 .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' name changed to '.$finaldata['newnamecheck'][0].' and status changed to '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 													}
 													else
 													{
 															//Defect ID JC_09 forread issue solved by shashi
-															$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' name changed to '.$finaldata['newnamecheck'][0].' and status changed to '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
+															//08_11
+															$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' name changed to '.$finaldata['newnamecheck'][0].' and status changed to '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 
-															$frcomment1 .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' name changed to '.$finaldata['newnamecheck'][0].' and status changed to'.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
+															$frcomment1 .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' name changed to '.$finaldata['newnamecheck'][0].' and status changed to'.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 
 
 															// $frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> No Change';
@@ -7795,15 +7957,17 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 													if($sqlda['Level']=='VILLAGE')
 													{
 														// $frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> No Change;';
-															$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].';';
+														//08_11
+															$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].'- '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].') ;';
 
-															$frcomment1 .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].';';
+															$frcomment1 .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].'- '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 													}
 													else
 													{
-															$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].';';
+														//08_11
+															$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].'- '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 
-															$frcomment1 .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].';';
+															$frcomment1 .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' -'.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 
 														//	$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> No Change';
 													}
@@ -7872,12 +8036,14 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 													{
 														//Defect ID JC_09 forread issue solved by shashi
 														//$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> No Change;';
-															$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' Name Changed to '.$finaldata['newnamecheck'][0].' and status changed to '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
+														//08_11
+															$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' Name Changed to '.$finaldata['newnamecheck'][0].' and status changed to '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 													}
 													else
 													{
+														//08_11
 															//Defect ID JC_09 forread issue solved by shashi
-															$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' Name Changed to '.$finaldata['newnamecheck'][0].' and status changed to '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
+															$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' and '.$finaldata['nametotext'].' Name Changed to '.$finaldata['newnamecheck'][0].' and status changed to '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 															//$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> No Change';
 													}
 
@@ -7888,17 +8054,20 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 												{
 													if($sqlda['Level']=='VILLAGE')
 													{
+														//08_11
 														//$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> No Change;';
-															$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].';';
+															$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 													}
 													else
 													{
-															$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$sqlda['VTName'].' - '.$sqlda['MDDS_VT'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].';';
+														//08_11
+															$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][$o].'d into '.$finaldata['nametotext'].' '.$finaldata['vStateStatus'][0].' ('.$finaldata['vstatus'][0].');';
 														//	$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> No Change';
 													}
 
 												
 												}
+												
 
 												
 
@@ -8055,6 +8224,39 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 
 										}
 
+								//By sahana village merge one to one, partially merge one to one, merge many to one, partially merge many to one, many to one merge and partially merge combination 0111
+								$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+								$actions = $finaldata['action'];
+								$namefrom_values = [];
+								
+								foreach ($finaldata as $key => $value) {
+									if (preg_match('/^namefrom\d*$/', $key)) {
+										$namefrom_values[] = $value;
+									}
+								}
+				
+								foreach ($actions as $action) {
+									if (empty($namefrom_values)) {
+										break; 
+									}
+								
+									$namefrom = array_shift($namefrom_values);
+								
+									foreach ($namefrom as $item) {
+										$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
+								
+										if ($au) {
+											$row = pg_fetch_assoc($au);
+											$auflag_value = $row['auflag'];
+											$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "VTID" = $3', array($auflag_value, $action, $item));
+											if (!$update_vt) {
+												echo "UPDATE query failed: " . pg_last_error($db);
+											}
+										} else {
+											echo "SELECT query failed: " . pg_last_error($db);
+										}
+									}
+								}
 
 
 							$task = "mergedone";
@@ -8438,6 +8640,26 @@ else if($_POST['clickbutton']=='submerge')
 
 						// $forreadqueryappendsd = rtrim($forreadsd, ',');	
 						// $linksddata = rtrim($linksd, ',');	
+
+						//By sahana submerge village 0111
+						$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+						$action = $finaldata['clickpopup'];
+						$namefrom = $finaldata['selected_comesub'];
+
+							foreach ($namefrom as $item) {
+								$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromchecksub']));
+						
+								if ($au) {
+									$row = pg_fetch_assoc($au);
+									$auflag_value = $row['auflag'];
+									$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "VTID" = $3', array($auflag_value, $action, $item));
+									if (!$update_vt) {
+										echo "UPDATE query failed: " . pg_last_error($db);
+									}
+								} else {
+									echo "SELECT query failed: " . pg_last_error($db);
+								}
+						}
 						
 					$sqlsubmerge =pg_query_params($db,'update vt'.$_SESSION['activeyears'].' set is_deleted=$1 where "VTID" = Any(string_to_array($2::text, \',\'::text)::NUMERIC[])',array(0,implode(',',$fullmerege))); 
 					$result_rows = pg_affected_rows($sqlsubmerge);
@@ -9133,12 +9355,12 @@ else if($_POST['clickbutton']=='Deletion'){
 								// $frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> - ;';
 
 
-								$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$nameor[$i].' Rename with '.$finaldata['newnamecheck'][$i].' and Status Changed to '.$stat.';';
+								$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$nameor[$i].' is Deleted;';
 								}
 								else
 								{
 								// 	$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> No Change;';
-								$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$nameor[$i].' Status Change to '.$stat.';';
+								$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$nameor[$i].'is Deleted;';
 								}
 
 		 				}
@@ -9147,12 +9369,12 @@ else if($_POST['clickbutton']=='Deletion'){
 								if($finaldata['newnamecheck'][$i]!='')
 								{
 
-								$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$nameor[$i].' Rename with '.$finaldata['newnamecheck'][$i].' and Status Changed to '.$stat.'';
+								$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$nameor[$i].' is Deleted';
 								// $frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> No Change;';
 								}
 								else
 								{
-								$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$nameor[$i].' Status Changed to '.$stat.'';
+								$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> '.$nameor[$i].' is Deleted';
 								// $frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> No Change;';
 								}
 
@@ -9172,12 +9394,12 @@ else if($_POST['clickbutton']=='Deletion'){
 									{
 									// 	$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> No Change;';
 
-									$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$nameor[$i].' Status Changed to '.$finaldata['vstatus'][$i].' and Rename with '.$finaldata['newnamecheck'][$i].';';
+									$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$nameor[$i].' is Deleted;';
 									}
 									else
 									{
 									// 	$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> No Change;';
-									$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$nameor[$i].' Status Changed to '.$finaldata['vstatus'][$i].';';
+									$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$nameor[$i].' is Deleted;';
 									}
 
 
@@ -9187,12 +9409,12 @@ else if($_POST['clickbutton']=='Deletion'){
 									if($finaldata['newnamecheck'][$i]!='')
 									{
 
-									$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong>'.$nameor[$i].' Status Changed to '.$finaldata['vstatus'][$i].' and Rename with '.$finaldata['newnamecheck'][$i].';';
+									$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong>'.$nameor[$i].' is Deleted;';
 									// $frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> No Change;';
 									}
 									else
 									{
-									$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong>'.$nameor[$i].' Status Changed to '.$finaldata['vstatus'][$i].';';
+									$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong>'.$nameor[$i].' is Deleted;';
 									// $frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> No Change;';
 									}
 		 						}
@@ -9206,13 +9428,13 @@ else if($_POST['clickbutton']=='Deletion'){
 		 					if($finaldata['vlevel'][$i]=='VILLAGE')
 		 						{
 		 							// $frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> No Change;';
-									$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$nameor[$i].' Rename with '.$finaldata['newnamecheck'][$i].'';
+									$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$nameor[$i].' is Deleted';
 
 		 						}
 		 						else
 		 						{
 		 							// $frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> No Change;';
-		 							$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$nameor[$i].' Rename with '.$finaldata['newnamecheck'][$i].'';
+		 							$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$nameor[$i].' is Deleted';
 		 						}
 		 					
 		 				}
@@ -9367,6 +9589,32 @@ else if($_POST['clickbutton']=='Reshuffle')
 					$str = explode(',',$sqlda['STIDR']);
 					$dtr = explode(',',$sqlda['DTIDR']);
 					$sdtr = explode(',',$sqlda['SDIDR']);
+
+
+
+					//By sahana reshuffle subdistrict one to one, many to one 0111
+					$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+					$actions = $finaldata['action'];
+					$namefrom_values = $finaldata['namefrom'];
+					foreach ($actions as $key => $action) {
+						$namefrom = $namefrom_values[$key];
+						$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
+
+						if ($au) {
+							$row = pg_fetch_assoc($au);
+							$auflag_value = $row['auflag'];
+
+							$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $action, $namefrom));
+							$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $action, $namefrom));
+
+							if (!$update_sd || !$update_vt) {
+								echo "UPDATE query failed: " . pg_last_error($db);
+							}
+						} else {
+							echo "SELECT query failed: " . pg_last_error($db);
+						}
+					}
+
 
 					for($hj=0;$hj<count($str);$hj++)
 					{
@@ -9589,6 +9837,41 @@ else if($_POST['clickbutton']=='Reshuffle')
 
 					pg_query_params($db,'update vt'.$_SESSION['activeyears'].' set "STID"=$1,"DTID"=$2,"SDID"=$3 where "VTID" = Any(string_to_array($4::text, \',\'::text)::NUMERIC[])',array($finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],implode(',',$vt)));
 
+
+					//By sahana village reshuffle one to one, many to one 0111
+					$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+								$actions = $finaldata['action'];
+								$namefrom_values = [];
+								
+								foreach ($finaldata as $key => $value) {
+									if (preg_match('/^namefrom\d*$/', $key)) {
+										$namefrom_values[] = $value;
+									}
+								}
+				
+								foreach ($actions as $action) {
+									if (empty($namefrom_values)) {
+										break; 
+									}
+								
+									$namefrom = array_shift($namefrom_values);
+								
+									foreach ($namefrom as $item) {
+										$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
+								
+										if ($au) {
+											$row = pg_fetch_assoc($au);
+											$auflag_value = $row['auflag'];
+											$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "VTID" = $3', array($auflag_value, $action, $item));
+											if (!$update_vt) {
+												echo "UPDATE query failed: " . pg_last_error($db);
+											}
+										} else {
+											echo "SELECT query failed: " . pg_last_error($db);
+										}
+									}
+								} 
+
 				$task = "addReshuffle";
 
 	 	}
@@ -9624,6 +9907,32 @@ else
 					$linkSTarray='';
 					if($retdata['flag']=='namefrom')
 					{
+
+									// By sahana split district, many to one 0111
+									$auflag_query = "SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2";
+									$actions = $retdata['action'];
+									$namefrom_values = $retdata['namefrom'];
+									
+									foreach ($actions as $key => $action) {
+										$namefrom = $namefrom_values[$key];
+									
+										$au = pg_query_params($db, $auflag_query, array($action, $retdata['comefromcheck']));
+									
+										if ($au) {
+											$row = pg_fetch_assoc($au);
+											$auflag_value = $row['auflag'];
+									
+											$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "DTID" = $3', array($auflag_value, $action, $namefrom));
+											$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "DTID" = $3', array($auflag_value, $action, $namefrom));
+											$update_dt = pg_query_params($db, 'UPDATE dt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "DTID" = $3', array($auflag_value, $action, $namefrom));
+											
+											if (!$update_dt || !$update_sd || !$update_vt) {
+												echo "UPDATE query failed: " . pg_last_error($db);
+											}
+										} else {
+											echo "SELECT query failed: " . pg_last_error($db);
+										}
+									}
 
 									if(isset($retdata['statenewarray']))
 									{
@@ -9898,6 +10207,31 @@ else
 					else
 					{
 
+									//By sahana split district, one to one 0111
+									$auflag_query = "SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2";
+									$actions = $retdata['action'];
+									$namefrom_values = $retdata['namefrom'];
+									
+									foreach ($actions as $key => $action) {
+										$namefrom = $namefrom_values[$key];
+									
+										$au = pg_query_params($db, $auflag_query, array($action, $retdata['comefromcheck']));
+									
+										if ($au) {
+											$row = pg_fetch_assoc($au);
+											$auflag_value = $row['auflag'];
+									
+											$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "DTID" = $3', array($auflag_value, $action, $namefrom));
+											$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "DTID" = $3', array($auflag_value, $action, $namefrom));
+											$update_dt = pg_query_params($db, 'UPDATE dt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "DTID" = $3', array($auflag_value, $action, $namefrom));
+											
+											if (!$update_dt || !$update_sd || !$update_vt) {
+												echo "UPDATE query failed: " . pg_last_error($db);
+											}
+										} else {
+											echo "SELECT query failed: " . pg_last_error($db);
+										}
+									}
 						
 									if(isset($retdata['statenewarray']))
 									{
@@ -10283,8 +10617,9 @@ else
 											$sqlold = pg_query_params($db,$sqlo,array(implode(',',$finaldata['namefrom']),1));
 											$sqlda = pg_fetch_all($sqlold);
 
-							$stateconcate = array($finaldata['statenew'][0],$finaldata['districtnew'][0],$idsof,ucwords(strtolower($finaldata['newname'][0])),implode(',',$finaldata['fromstate']),implode(',',$finaldata['districtget']),implode(',',$finaldata['namefrom']),'new',$_SESSION['login_id']);
-
+							//$stateconcate = array($finaldata['statenew'][0],$finaldata['districtnew'][0],$idsof,ucwords(strtolower($finaldata['newname'][0])),implode(',',$finaldata['fromstate']),implode(',',$finaldata['districtget']),implode(',',$finaldata['namefrom']),'new',$_SESSION['login_id']);
+                            //Titlecase issue resolved by gowthami
+							$stateconcate = array($finaldata['statenew'][0],$finaldata['districtnew'][0],$idsof,$finaldata['newname'][0],implode(',',$finaldata['fromstate']),implode(',',$finaldata['districtget']),implode(',',$finaldata['namefrom']),'new',$_SESSION['login_id']);
 
 							$state ='insert into sd'.$_SESSION['activeyears'].' ("STID","DTID","SDID","SDName","STIDR","DTIDR","SDIDR","flagofcreate","createdby") values ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning "SDID"';
 
@@ -10339,15 +10674,30 @@ else
 							$resultst_rows = pg_affected_rows($resultst);
 
 							
+							//By sahana full merge sub district many to one 0111
+							$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+							$actions = $finaldata['action'];
+							$namefrom_values = $finaldata['namefrom'];
 
-						
+							foreach ($actions as $key => $action) {
+								$namefrom = $namefrom_values[$key];
+								$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
 
+								if ($au) {
+									$row = pg_fetch_assoc($au);
+									$auflag_value = $row['auflag'];
 
+									$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $action, $namefrom));
+									$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $action, $namefrom));
 
-							
-							
-
-
+									if (!$update_sd || !$update_vt) {
+										echo "UPDATE query failed: " . pg_last_error($db);
+									}
+								} else {
+									echo "SELECT query failed: " . pg_last_error($db);
+								}
+							}
+					
 
 							if($resultst_rows && $result_rows)
 							{
@@ -10519,7 +10869,29 @@ else
 
 					// 	$forreadqueryappend1 = rtrim($forread1, ',');
 
+						//By sahana full merge sub district level one to one 0111
+						$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+						$actions = $finaldata['action'];
+						$namefrom_values = $finaldata['namefrom'];
 
+						foreach ($actions as $key => $action) {
+							$namefrom = $namefrom_values[$key];
+							$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
+
+							if ($au) {
+								$row = pg_fetch_assoc($au);
+								$auflag_value = $row['auflag'];
+
+								$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $action, $namefrom));
+								$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $action, $namefrom));
+
+								if (!$update_sd || !$update_vt) {
+									echo "UPDATE query failed: " . pg_last_error($db);
+								}
+							} else {
+								echo "SELECT query failed: " . pg_last_error($db);
+							}
+						}
 						
 						$linkst='';
 						for($k=0;$k<count($sd);$k++)
@@ -10664,7 +11036,9 @@ else
 
 											
 
-						$stateconcate = array($retdata['statenew'][0],$retdata['districtnew'][0],$idsof,ucwords(strtolower($retdata['newname'][0])),implode(',',$retdata['fromstate']),implode(',',$retdata['districtget']),implode(',',$retdata['namefrom']),'new',$_SESSION['login_id']);
+						//$stateconcate = array($retdata['statenew'][0],$retdata['districtnew'][0],$idsof,ucwords(strtolower($retdata['newname'][0])),implode(',',$retdata['fromstate']),implode(',',$retdata['districtget']),implode(',',$retdata['namefrom']),'new',$_SESSION['login_id']);
+                        //Titlecase issue resolved by gowthami
+						$stateconcate = array($retdata['statenew'][0],$retdata['districtnew'][0],$idsof,$retdata['newname'][0],implode(',',$retdata['fromstate']),implode(',',$retdata['districtget']),implode(',',$retdata['namefrom']),'new',$_SESSION['login_id']);
 
 
 						$state ='insert into sd'.$_SESSION['activeyears'].' ("STID","DTID","SDID","SDName","STIDR","DTIDR","SDIDR","flagofcreate","createdby") values ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning "SDID"';
@@ -10796,6 +11170,31 @@ else
 						pg_query_params($db,'update vt'.$_SESSION['activeyears'].' set "STID"=$1,"DTID"=$2,"SDID"=$3 where vt'.$_SESSION['activeyears'].'."VTID" = Any(string_to_array($4::text, \',\'::text)::NUMERIC[])',array($retdata['statenew'][0],$retdata['districtnew'][0],$idsof,implode(',',$linkDTarray)));
 
 						pg_query_params($db,'update vt'.$_SESSION['activeyears'].' set "STID"=$1,"DTID"=$2,"SDID"=$3 where vt'.$_SESSION['activeyears'].'."SDID" = Any(string_to_array($4::text, \',\'::text)::bigint[])',array($retdata['statenew'][0],$retdata['districtnew'][0],$idsof,implode(',',$removearraysd)));
+						
+						//By sahana split subdistrict, many to one 0111
+						$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+							$actions = $retdata['action'];
+							$namefrom_values = $retdata['namefrom'];
+
+							foreach ($actions as $key => $action) {
+								$namefrom = $namefrom_values[$key];
+
+								$au = pg_query_params($db, $auflag_query, array($action, $retdata['comefromcheck']));
+
+								if ($au) {
+									$row = pg_fetch_assoc($au);
+									$auflag_value = $row['auflag'];
+
+									$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $action, $namefrom));
+									
+									if (!$update_sd) {
+										echo "UPDATE query failed: " . pg_last_error($db);
+									}
+								} else {
+									echo "SELECT query failed: " . pg_last_error($db);
+								}
+						}
+						
 						if($partiallylevel!='')
 						{
 
@@ -10887,6 +11286,7 @@ else
 				else
 				{
 
+		
 					$statenewarray='';
 					$districtnewarray='';
 					$statenewarrayfrom='';
@@ -10961,6 +11361,23 @@ else
  						$state ='insert into sd'.$_SESSION['activeyears'].' ("STID","DTID","SDID","SDName","STIDR","DTIDR","SDIDR","flagofcreate","createdby") values ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning "SDID"';
 						 pg_query_params($db,$state,$stateconcate);
 
+						//By sahana split subdistrict one to one 0111 0611
+						$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+						$au = pg_query_params($db, $auflag_query, array($retdata['action'][0], $retdata['comefromcheck']));
+
+						if ($au) {
+							$row = pg_fetch_assoc($au);
+							$auflag_value = $row['auflag'];
+							$namefrom = $retdata['namefrom'][0];
+
+							$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $retdata['action'][0], $namefrom));
+							$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $retdata['action'][0], $namefrom));
+							if (!$update_sd || !$update_vt) {  
+								echo "UPDATE queries failed: " . pg_last_error($db);
+							}
+						} else {
+							echo "SELECT query failed: " . pg_last_error($db);
+						} 
 
 						if(isset($finaldata['partiallylevel'.$j.'']))
 						{
@@ -11518,7 +11935,32 @@ else
 								$frcomment='';
 							$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarray[0].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarray[0].'; <strong style="color:blue;"><u>Sub District:</u></strong> '.$sddistrictnewarray[0].'; ';
 								
-								
+								$frcommentt='';
+                            if (
+                                isset($finaldata['action']) && is_array($finaldata['action']) &&
+                                isset($finaldata['namefrom']) && is_array($finaldata['namefrom']) &&
+                                count($finaldata['action']) && count($finaldata['namefrom'])
+                            ) {
+                                $frcommentt = '';
+                            
+                                for ($a = 0; $a < count($finaldata['namefrom']); $a++) {
+                                    $namefromtextt = $finaldata['namefrom'][$a];
+                                    $frcommentt .= ' ' . $namefromtextt . ' (' . $finaldata['action'][0] . ')';
+                                }
+                            } 
+                             if (
+                                isset($finaldata['action']) && is_array($finaldata['action']) &&
+                                isset($finaldata['namefrom2']) && is_array($finaldata['namefrom2']) &&
+                                count($finaldata['action']) && count($finaldata['namefrom2'])
+                            ) {
+                                
+                            
+                                for ($b = 0; $b < count($finaldata['namefrom2']); $b++) {
+                                    $namefromtextt = $finaldata['namefrom2'][$b];
+                                    $frcommentt .= ' ' . $namefromtextt. ' (' . $finaldata['action'][1] . ')';
+                                }
+                            }
+                            
 								
 								if($finaldata['vStateStatus'][0]=='VILLAGE')
 								{
@@ -11625,8 +12067,10 @@ else
 				$sqlold = pg_query_params($db,$sqlo,array(implode(',',$allvt),1));
 				$sqlda = pg_fetch_all($sqlold);
 
-				 $stateconcate =array($finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,ucwords(strtolower($finaldata['newname'][0])),$finaldata['vStateStatus'][0],$finaldata['vstatus'][0],'new',$_SESSION['login_id'],implode(',',array_column($sqlda, 'STIDR')),implode(',',array_column($sqlda, 'DTIDR')),implode(',',array_column($sqlda, 'SDIDR')),implode(',',array_column($sqlda, 'VTIDR')));
-				
+				 //$stateconcate =array($finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,ucwords(strtolower($finaldata['newname'][0])),$finaldata['vStateStatus'][0],$finaldata['vstatus'][0],'new',$_SESSION['login_id'],implode(',',array_column($sqlda, 'STIDR')),implode(',',array_column($sqlda, 'DTIDR')),implode(',',array_column($sqlda, 'SDIDR')),implode(',',array_column($sqlda, 'VTIDR')));
+				//Titlecase issue resolved by gowthami
+				$stateconcate =array($finaldata['statenew'][0],$finaldata['districtnew'][0],$finaldata['sddistrictnew'][0],$idsof,$finaldata['newname'][0],$finaldata['vStateStatus'][0],$finaldata['vstatus'][0],'new',$_SESSION['login_id'],implode(',',array_column($sqlda, 'STIDR')),implode(',',array_column($sqlda, 'DTIDR')),implode(',',array_column($sqlda, 'SDIDR')),implode(',',array_column($sqlda, 'VTIDR')));
+
 
 
 				 $state ='insert into vt'.$_SESSION['activeyears'].' ("STID","DTID","SDID","VTID","VTName","Level","Status","flagofcreate","createdby","STIDR","DTIDR","SDIDR","VTIDR") values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) returning "VTID"';
@@ -11668,6 +12112,8 @@ else
 				{
 				pg_query_params($db,'update vt'.$_SESSION['activeyears'].' set "is_deleted"=$1 where "VTID" = Any(string_to_array($2::text, \',\'::text)::NUMERIC[])',array(0,implode(',',$vtf)));	
 				}
+
+				
 				// if($forreadqueryappend1!='')
 				// {
 				// 	 $insertforread1 = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES '.$forreadqueryappend1.'';
@@ -11675,6 +12121,39 @@ else
 				// pg_query($db,$insertforread1);
 				// }
 				
+				//By sahana village split many to one, full merge many to one, and split and full merge many to one 0111
+				 $auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+				 $actions = $finaldata['action'];
+				 $namefrom_values = [];
+				
+				 foreach ($finaldata as $key => $value) {
+				 	if (preg_match('/^namefrom\d*$/', $key)) {
+					$namefrom_values[] = $value;
+				 	}
+				 }
+
+				 foreach ($actions as $action) {
+				 	if (empty($namefrom_values)) {
+				 		break; 
+				 	}
+				
+				 	$namefrom = array_shift($namefrom_values);
+				
+				 	foreach ($namefrom as $item) {
+				 		$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
+				
+				 		if ($au) {
+							$row = pg_fetch_assoc($au);
+				 			$auflag_value = $row['auflag'];
+							$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "VTID" = $3', array($auflag_value, $action, $item));
+							if (!$update_vt) {
+				 				echo "UPDATE query failed: " . pg_last_error($db);
+						}
+				 		} else {
+							echo "SELECT query failed: " . pg_last_error($db);
+			 		}
+					}
+				 }
 
 				if($finaldata['partiallyids1']!='')
 				{
@@ -11984,8 +12463,11 @@ else
 									else
 									{
 										//JC_shashi (one to many) village
-												$frcomment1 .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][0].' &  Created '.ucwords(strtolower($finaldata['newname'][$j])).' ('.$finaldata['vstatus'][$j].');';
-								
+												//$frcomment1 .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][0].' &  Created '.ucwords(strtolower($finaldata['newname'][$j])).' ('.$finaldata['vstatus'][$j].');';
+								//Titlecase issue resolved by gowthami
+								$frcomment1 .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][0].' &  Created '.$finaldata['newname'][$j].' ('.$finaldata['vstatus'][$j].');';
+
+
 									}
 
 									$std=explode(',',$sqlda[$g]['STIDR']);
@@ -12077,7 +12559,28 @@ else
 
 										}
 										
-									
+										//By sahana village split one to one, full merge one to one 0111
+										$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+										$actions = $finaldata['action'];
+										$namefrom_values = $finaldata['namefrom'];
+										foreach ($namefrom_values as $key => $namefrom_value) {
+											$action = $actions[0];
+											$namefrom = $namefrom_values[$key];
+											$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
+
+											if ($au) {
+												$row = pg_fetch_assoc($au);
+												$auflag_value = $row['auflag'];
+
+												$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "VTID" = $3', array($auflag_value, $action, $namefrom));
+
+												if (!$update_vt) {
+													echo "UPDATE query failed: " . pg_last_error($db);
+												}
+											} else {
+												echo "SELECT query failed: " . pg_last_error($db);
+											}
+										}
 
 										if($finaldata['partiallyids1']!='')
 										{
@@ -12127,6 +12630,35 @@ else
 
 	else
 	{
+
+					//By sahana split state level many to one 0111 0611										
+					$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+					$actions = $retdata['action'];
+					$namefrom_values = $retdata['namefrom'];
+
+					foreach ($actions as $key => $action) {
+						$namefrom = $namefrom_values[$key];
+
+						$au = pg_query_params($db, $auflag_query, array($action, $retdata['comefromcheck']));
+
+						if ($au) {
+							$row = pg_fetch_assoc($au);
+							$auflag_value = $row['auflag'];
+
+							$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3', array($auflag_value, $action, $namefrom));
+							$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3', array($auflag_value, $action, $namefrom));
+							$update_dt = pg_query_params($db, 'UPDATE dt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3', array($auflag_value, $action, $namefrom));
+							$update_st = pg_query_params($db, 'UPDATE st'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3', array($auflag_value, $action, $namefrom));
+							
+							if (!$update_st || !$update_dt || !$update_sd || !$update_vt) {
+								echo "UPDATE query failed: " . pg_last_error($db);
+							}
+						} else {
+							echo "SELECT query failed: " . pg_last_error($db);
+						}
+					}
+
+
 					$sql = 'SELECT st'.$_SESSION['activeyears'].'."STID" FROM st'.$_SESSION['activeyears'].' ORDER BY st'.$_SESSION['activeyears'].'."STID" DESC FETCH FIRST ROW ONLY';
 
 					$idsquery = pg_query_params($db,$sql,array());
@@ -12153,7 +12685,11 @@ else
 
 												
 
-												$insertstquery = array($idsdata,ucwords(strtolower($retdata['newname'][$m])),$retdata['StateStatus'][$m],implode(',',$retdata['namefrom']),'new',$_SESSION['login_id']);
+												//$insertstquery = array($idsdata,ucwords(strtolower($retdata['newname'][$m])),$retdata['StateStatus'][$m],implode(',',$retdata['namefrom']),'new',$_SESSION['login_id']);
+                                                //Titlecase issue resolved by gowthami
+												$insertstquery = array($idsdata,$retdata['newname'][$m],$retdata['StateStatus'][$m],implode(',',$retdata['namefrom']),'new',$_SESSION['login_id']);
+
+
 
 												 $insertst = 'insert into st'.$_SESSION['activeyears'].' ("STID","STName","Status","STIDR","flagofcreate","createdby") VALUES ($1,$2,$3,$4,$5,$6) returning "STID"';
 					
@@ -12237,11 +12773,17 @@ else
 
 
 
-													$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statusflag.' '.ucwords(strtolower($retdata['newname'][0])).' Created from '.$retdata['namefromtext'].';';
+													//$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statusflag.' '.ucwords(strtolower($retdata['newname'][0])).' Created from '.$retdata['namefromtext'].';';
+													//Titlecase issue resolved by gowthami
+													$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statusflag.' '.$retdata['newname'][0].' Created from '.$retdata['namefromtext'].';';
+													
+													
+													
 													$frcomment .=' <strong style="color:Green;"><u>District:</u></strong> - ; <strong style="color:blue;"><u>Sub District:</u></strong> - ; <strong style="color:#45b0e2;"><u>Town:</u></strong> - ; <strong style="color:#15bed2;"><u>Village:</u></strong> - ;';
 
-													$frcomment1 .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$retdata['namefromtext'].' '.$retdata['action'][0].' &  Create '.$statusflag.' '.ucwords(strtolower($retdata['newname'][0])).';';
-
+													//$frcomment1 .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$retdata['namefromtext'].' '.$retdata['action'][0].' &  Create '.$statusflag.' '.ucwords(strtolower($retdata['newname'][0])).';';
+                                                    //Titlecase issue resolved by gowthami
+													$frcomment1 .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$retdata['namefromtext'].' '.$retdata['action'][0].' &  Create '.$statusflag.' '.$retdata['newname'][0].';';
 													$frcomment1 .=' <strong style="color:Green;"><u>District:</u></strong> - ; <strong style="color:blue;"><u>Sub District:</u></strong> - ; <strong style="color:#45b0e2;"><u>Town:</u></strong> - ; <strong style="color:#15bed2;"><u>Village:</u></strong> - ;';
 												
 												$forread1 = array($retdata['namefrom'][$j],$retdata['action'][$j],$retdata['namefrom'][$j],$retdata['docids'],$retdata['comefromcheck'],$frcomment1,'MAIN',$retdata['namefrom'][$j],$retdata['namefrom'][$j],$retdata['namefrom'][$j],$_SESSION['login_id']);
@@ -12316,10 +12858,7 @@ else
 														{
 															pg_query_params($db,'update st'.$_SESSION['activeyears'].' set "is_deleted"=$1 where "STID" = Any(string_to_array($2::text, \',\'::text)::integer[])',array(0,implode(',',$removearrayst)));	
 														}
-														
-
 															
-
 
 														if($partiallylevel!='')
 												{
@@ -12491,14 +13030,29 @@ else
 												$insertforread = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","STIDACTIVE","STIDR","created_by") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)';
 												$result = pg_query_params($db,$insertforread,$forread);
 
-
-												
-
-											
-
 												}
 													
+												//By sahana split state level one to one 0111
+												$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+												$au = pg_query_params($db, $auflag_query, array($retdata['action'][0], $retdata['comefromcheck']));
 
+												if ($au) {
+													$row = pg_fetch_assoc($au);
+													$auflag_value = $row['auflag'];
+													$namefrom = $retdata['namefrom'][0];
+
+													$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3', array($auflag_value, $retdata['action'][0], $namefrom));
+													$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3', array($auflag_value, $retdata['action'][0], $namefrom));
+													$update_dt = pg_query_params($db, 'UPDATE dt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3', array($auflag_value, $retdata['action'][0], $namefrom));
+													$update_st = pg_query_params($db, 'UPDATE st'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3', array($auflag_value, $retdata['action'][0], $namefrom));
+													
+											
+													if (!$update_st || !$update_dt || !$update_sd || !$update_vt) { 
+														echo "UPDATE queries failed: " . pg_last_error($db);
+													}
+												} else {
+													echo "SELECT query failed: " . pg_last_error($db);
+												}
 
 													
 																
@@ -12821,8 +13375,14 @@ $cond221='';
 
 
         	
-        	,vt$acyear."Level"
-,vt$acyear."Status",fr21.* FROM vt$acyear 
+        	,CASE
+            WHEN vt$acyear."is_deleted"=0  THEN ''
+            ELSE vt$acyear."Level"
+            END AS "Level"
+            ,CASE
+            WHEN vt$acyear."is_deleted"=0  THEN ''
+            ELSE vt$acyear."Status"
+            END AS "Status",fr21.* FROM vt$acyear 
 
 INNER JOIN (select forreaddata$acyear."STIDACTIVE",forreaddata$acyear."frfromaction":: TEXT,forreaddata$acyear."DTIDACTIVE",forreaddata$acyear."SDIDACTIVE",forreaddata$acyear."VTIDACTIVE",forreaddata$acyear."VTIDR",vt$olyear."STID$olyear",vt$olyear."STName$olyear",vt$olyear."MDDS_ST$olyear",vt$olyear."DTID$olyear",vt$olyear."DTName$olyear"
 			,vt$olyear."MDDS_DT$olyear"
@@ -12833,7 +13393,7 @@ INNER JOIN (select "STID" AS "STID$olyear","STName" AS "STName$olyear","MDDS_ST"
 INNER JOIN (select "DTID" AS "DTID$olyear","DTName" AS "DTName$olyear","MDDS_DT" AS "MDDS_DT$olyear" from dt$olyear) as dt11 ON dt11."DTID$olyear"=vt$olyear."DTID"
 INNER JOIN (select "SDID" AS "SDID$olyear","SDName" AS "SDName$olyear","MDDS_SD" AS "MDDS_SD$olyear" from sd$olyear) as sd11 ON sd11."SDID$olyear"=vt$olyear."SDID" ) AS vt$olyear ON vt$olyear."VTID"=forreaddata$acyear."VTIDR" $condo AND forreaddata$acyear."VTIDACTIVE"!=0 
 AND forreaddata$acyear."frcomefrom"='Village / Town' AND forreaddata$acyear."comeaction"!='MAIN') AS fr21 ON fr21."VTIDACTIVE"=vt$acyear."VTID" 
- $condost AND (fr21."VTIDACTIVE"!=fr21."VTIDR"  OR fr21."frfromaction"='Sub-Merge')
+ $condost AND (fr21."VTIDACTIVE"!=fr21."VTIDR"  OR fr21."frfromaction"='Sub-Merge' OR "frfromaction"='Deletion')
 
 INNER JOIN (select * from st$acyear) as st21 ON st21."STID"=vt$acyear."STID"
 INNER JOIN (select * from dt$acyear) as dt21 ON dt21."DTID"=vt$acyear."DTID"
@@ -13121,7 +13681,7 @@ else if($_POST['formname']=='submergeform')
 																				{
 																				
 																				$data11 = pg_query_params($db, 'select "VTID",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "VTName" from "vt'.$_SESSION['activeyears'].'" where "SDID"=$1
-																				ORDER BY "vt'.$_SESSION['activeyears'].'"."VTID"',array($_POST['partiallylevel0'][$i]));
+																				ORDER BY "vt'.$_SESSION['activeyears'].'"."VTName"',array($_POST['partiallylevel0'][$i]));
 																				$dataresult1 = pg_fetch_all($data11);
 																				$datacount = pg_num_rows($data11); // total count
 
@@ -13164,7 +13724,7 @@ else if($_POST['formname']=='submergeform')
 
 												$data['data']=array();
 														$task1 = '';
-														$sql = 'select trim("Level") as "Lev","Status" from vt'.$_SESSION['activeyears'].' where "VTID" = Any(string_to_array($1::text, \',\'::text)::NUMERIC[]) ORDER BY "VTID" ASC';
+														$sql = 'select trim("Level") as "Lev","Status" from vt'.$_SESSION['activeyears'].' where "VTID" = Any(string_to_array($1::text, \',\'::text)::NUMERIC[]) ORDER BY "VTName" ASC';
 								$query = pg_query_params($db,$sql,array(implode(',',$_POST['selected_comesub'])));
 								$data1 = pg_fetch_all($query);
 								// print_r($data);
@@ -13279,7 +13839,7 @@ else if($_POST['formname']=='assignformdata')
 										if($_POST['clickpopup']=='Create')
 										{
 													// $statename = '';
-													// $sttext = explode(',',$_POST['namefromtext']);
+												           $sttext = explode(',',$_POST['namefromtext']);
 													// $a = array_map( 'trim',$_POST['newname']);
 													// $im = array_map( 'strtolower',$a);
 													// if(count(array_dup($im))>0)
@@ -13412,7 +13972,7 @@ else if($_POST['formname']=='assignformdata')
 																					{
 																						
 																					$data11 = pg_query_params($db, 'select "DTID","DTName" from "dt'.$_SESSION['activeyears'].'" where "STID"=$1 AND "is_deleted"=$2
-																					ORDER BY "dt'.$_SESSION['activeyears'].'"."DTID"',array($_POST['namefrom'][$i],1));
+																					ORDER BY "dt'.$_SESSION['activeyears'].'"."DTName"',array($_POST['namefrom'][$i],1));
 																					$dataresult1 = pg_fetch_all($data11);
 																					$datacount = pg_num_rows($data11); //total count
 
@@ -13476,29 +14036,58 @@ else if($_POST['formname']=='assignformdata')
 													$da = str_contains($_POST['oremovenewarray'],'1');
 													
 											// rename validation for state name code modified by srikanth//
-											$statename = '';
-											$a = array_map('trim', $_POST['newnamecheck']);
-											$im = array_map('strtolower', $a);
+											// $statename = '';
+											// $a = array_map('trim', $_POST['newnamecheck']);
+											// $im = array_map('strtolower', $a);
 
 
-											if (count(array_unique($im)) < count($im)) {
-												$statename = "duplicatenameexist"; // Duplicate Name Exists
+											// if (count(array_unique($im)) < count($im)) {
+											// 	$statename = "duplicatenameexist"; // Duplicate Name Exists
+											// } else {
+											// 	$imp = "'" . implode( "','", $im) . "'";
+												
+												
+											// 	$query = 'SELECT * FROM st' . $_SESSION['activeyears'] . ' WHERE lower("STName") IN (' . $imp . ')';
+											// 	$querydata = pg_query($db, $query);
+
+											// 	$querydatarow = pg_numrows($querydata);
+
+											// 	if ($querydatarow > 0) {
+											// 		$statename = "alreadyexists"; 
+											// 	} else {
+											// 		$statename = "addstate"; 
+											// 	}
+											// }
+                                                   // ends here
+												// modified by Gowthami rename state level												  
+											$flag = false;
+											$newnamecheck = $_POST['newnamecheck'];
+											$nametotext = $_POST['nametotext'];
+											$pattern = '/[^A-Za-z]/';  
+											$nametotextArray = explode(',', $nametotext);
+											if (count($newnamecheck) !== count($nametotextArray)) {
+												$statename = "mismatched";
 											} else {
-												$imp = "'" . implode( "','", $im) . "'";
-												
-												
-												$query = 'SELECT * FROM st' . $_SESSION['activeyears'] . ' WHERE lower("STName") IN (' . $imp . ')';
-												$querydata = pg_query($db, $query);
+												foreach (array_map(null, $newnamecheck, $nametotextArray) as $pair) {
+													list($gs, $textElement) = $pair;
+													if (preg_match('/\d/', $gs)) {
+														continue;
+													}
+													$gsWos = preg_replace($pattern, '', $gs);
+													$gsWos1 = preg_replace($pattern, '', $textElement);
 
-												$querydatarow = pg_numrows($querydata);
+													if (strtolower($gsWos) == strtolower($gsWos1)) {  
+														$statename = "alreadyexists";
+														$flag = true;
+														break;
+													}
+												}
 
-												if ($querydatarow > 0) {
-													$statename = "alreadyexists"; 
-												} else {
-													$statename = "addstate"; 
+												if (!$flag) {
+													$statename = "addstate";
 												}
 											}
-                                                   // ends here//
+											// ends here
 
 											
 														$data['data']=array();
@@ -13523,27 +14112,48 @@ else if($_POST['formname']=='assignformdata')
 										}
 										else
 										{
+                                   //modified by gowthami state level  name validation
+											if(($_POST['clickpopup']=='Merge') || ($_POST['clickpopup']=='Partiallysm')){
+                                                $flag = false;
+                                                $newnamecheck = $_POST['newnamecheck'];
+                                                $nametotext = $_POST['nametotext'];
+                                                foreach ($newnamecheck as $index => $gs) {
+                                                    // if ($gs == $nametotext) {
+                                                        if (strtolower($gs) == strtolower($nametotext)){
+                                                        $task = "alreadyexists";
+                                                        $flag = true;
+                                                        break;
+                                                    }
+                                                }
+                                                if ($flag == true) {
+                                                    $task = "alreadyexists";
+                                                } else {
+                                                    $task = "adddata";
+                                                }
+                                            }
+                                           
+
 											$sttext = explode(',',$_POST['namefromtext']);
 											$data = array();
 											
 											if($_POST['oremovenewarray']==1)
 											{
 
-												 $query = 'select * from st'.$_SESSION['activeyears'].' where lower("STName") = Any(string_to_array($1::text, \',\'::text)::text[])';
+												//  $query = 'select * from st'.$_SESSION['activeyears'].' where lower("STName") = Any(string_to_array($1::text, \',\'::text)::text[])';
 												
-												$querydata = pg_query_params($db,$query,array($_POST['newnamecheck'][0]));
+												// $querydata = pg_query_params($db,$query,array($_POST['newnamecheck'][0]));
 
-												$querydatarow = pg_numrows($querydata);
+												// $querydatarow = pg_numrows($querydata);
 
 
-												if($querydatarow>0)
-												{
-												$task = "alreadyexists";	
-												}
-												else
-												{
-												$task = "adddata";
-												}
+												// if($querydatarow>0)
+												// {
+												// $task = "alreadyexists";	
+												// }
+												// else
+												// {
+												// $task = "adddata";
+												// }
 
 												$flus =false; 
 												if($_POST['clickpopup']=='Partiallysm')
@@ -13572,7 +14182,7 @@ else if($_POST['formname']=='assignformdata')
 														$swami = $swami+1;
 
 														$data11 = pg_query_params($db, 'select "DTID","DTName" from "dt'.$_SESSION['activeyears'].'" where "STID"=$1 AND "is_deleted"=$2
-														ORDER BY "dt'.$_SESSION['activeyears'].'"."DTID"',array($_POST['namefrom'][$i],1));
+														ORDER BY "dt'.$_SESSION['activeyears'].'"."DTName"',array($_POST['namefrom'][$i],1));
 														$dataresult1 = pg_fetch_all($data11);
 														$datacount = pg_num_rows($data11); // total count
 
@@ -13640,7 +14250,7 @@ else if($_POST['formname']=='assignformdata')
 											$swami = $swami+1;
 
 											$data11 = pg_query_params($db, 'select "DTID","DTName" from "dt'.$_SESSION['activeyears'].'" where "STID"=$1 AND "is_deleted"=$2
-											ORDER BY "dt'.$_SESSION['activeyears'].'"."DTID"',array($_POST['namefrom'][$i],1));
+											ORDER BY "dt'.$_SESSION['activeyears'].'"."DTName"',array($_POST['namefrom'][$i],1));
 											$dataresult1 = pg_fetch_all($data11);
 											$datacount = pg_num_rows($data11); // total count
 
@@ -13895,7 +14505,7 @@ else if($_POST['formname']=='assignformdata')
 
 																				// $idsof = $idsof + 1;
 																				$data11 = pg_query_params($db, 'select "SDID","SDName" from "sd'.$_SESSION['activeyears'].'" where "STID"='.$_POST['fromstate'][$i].' AND "DTID"=$1 AND "is_deleted"=$2
-																				ORDER BY "sd'.$_SESSION['activeyears'].'"."SDID"',array($_POST['namefrom'][$i],1));
+																				ORDER BY "sd'.$_SESSION['activeyears'].'"."SDName"',array($_POST['namefrom'][$i],1));
 																				$dataresult1 = pg_fetch_all($data11);
 																				$datacount =pg_num_rows($data11); // total count
 
@@ -13984,30 +14594,62 @@ else if($_POST['formname']=='assignformdata')
 													$a = array_map( 'trim',$_POST['newnamecheck']);
 													//$im = array_map( 'strtolower', $a );
 													// rename validation for district name code modified by srikanth//
-													$statename = '';
-													$districtNames = array_map('trim', $_POST['newnamecheck']);
-													//$districtNames = array_map('strtolower', $districtNames);
-													$stateIds = $_POST['statenew'];
+													// $statename = '';
+													// $districtNames = array_map('trim', $_POST['newnamecheck']);
+													// $districtNames = array_map('strtolower', $districtNames);
+													// $stateIds = $_POST['statenew'];
 
-													foreach ($districtNames as $key => $districtName) {
+													// foreach ($districtNames as $key => $districtName) {
 													
-														$query = "SELECT * FROM dt" . $_SESSION['activeyears'] . " WHERE \"STID\" = {$stateIds[$key]} AND lower(\"DTName\") = '{$districtName}'";
-														$querydata = pg_query($db, $query);
+													// 	$query = "SELECT * FROM dt" . $_SESSION['activeyears'] . " WHERE \"STID\" = {$stateIds[$key]} AND lower(\"DTName\") = '{$districtName}'";
+													// 	$querydata = pg_query($db, $query);
 
-														$querydatarow = pg_numrows($querydata);
+													// 	$querydatarow = pg_numrows($querydata);
 
-														if ($querydatarow > 0) {
-															$statename = "alreadyexists"; 
-															break; 
-														}
-													}
+													// 	if ($querydatarow > 0) {
+													// 		$statename = "alreadyexists"; 
+													// 		break; 
+													// 	}
+													// }
 
-													if ($statename != "alreadyexists") {
-														$statename = "adddistrict"; 
-													}
+													// if ($statename != "alreadyexists") {
+													// 	$statename = "adddistrict"; 
+													// }
 
 
 											// ends here//
+
+											//Rename validation modified by Gowthami District level
+											
+											$flag = false;
+											$newnamecheck = $_POST['newnamecheck'];
+											$nametotext = $_POST['nametotext'];
+											$pattern = '/[^A-Za-z]/';  
+											$nametotextArray = explode(',', $nametotext);
+											if (count($newnamecheck) !== count($nametotextArray)) {
+												$statename = "mismatched";
+											} else {
+												foreach (array_map(null, $newnamecheck, $nametotextArray) as $pair) {
+													list($gs, $textElement) = $pair;
+													if (preg_match('/\d/', $gs)) {
+														continue;
+													}
+													$gsWos = preg_replace($pattern, '', $gs);
+													$gsWos1 = preg_replace($pattern, '', $textElement);
+
+													if (strtolower($gsWos) == strtolower($gsWos1)) {  
+														$statename = "alreadyexists";
+														$flag = true;
+														break;
+													}
+												}
+
+												if (!$flag) {
+													$statename = "adddistrict";
+												}
+											}
+
+											//ends here
 											
 														$data['data']=array();
 
@@ -14052,7 +14694,7 @@ else if($_POST['formname']=='assignformdata')
 											// 	{
 												// $task = "adddata";
 											//	}
-
+                                          // modified by gowthami new name validation district level
 											if(($_POST['clickpopup']=='Merge') || ($_POST['clickpopup']=='Partiallysm')){	
 													
 												$flag = false;
@@ -14061,7 +14703,7 @@ else if($_POST['formname']=='assignformdata')
 
 												foreach ($newnamecheck as $index => $gs) {
 													// if ($gs == $nametotext) {
-														if ($gs == $nametotext) {
+														if  (strtolower($gs) == strtolower($nametotext)) {
 														$task = "alreadyexists";
 														$flag = true;
 														break;
@@ -14103,7 +14745,7 @@ else if($_POST['formname']=='assignformdata')
 													$swami = $swami+1;
 
 													$data11 = pg_query_params($db, 'select "SDID","SDName" from "sd'.$_SESSION['activeyears'].'" where "STID"=$1 AND "DTID"=$2 AND "is_deleted"=$3
-													ORDER BY "sd'.$_SESSION['activeyears'].'"."SDID"',array($_POST['fromstate'][$i],$_POST['namefrom'][$i],1));
+													ORDER BY "sd'.$_SESSION['activeyears'].'"."SDName"',array($_POST['fromstate'][$i],$_POST['namefrom'][$i],1));
 													$dataresult1 = pg_fetch_all($data11);
 													$datacount =pg_num_rows($data11); // total count
 
@@ -14170,7 +14812,7 @@ else if($_POST['formname']=='assignformdata')
 														$swami = $swami+1;
 
 														$data11 = pg_query_params($db, 'select "SDID","SDName" from "sd'.$_SESSION['activeyears'].'" where "STID"=$1 AND "DTID"=$2 AND "is_deleted"=$3
-														ORDER BY "sd'.$_SESSION['activeyears'].'"."SDID"',array($_POST['fromstate'][$i],$_POST['namefrom'][$i],1));
+														ORDER BY "sd'.$_SESSION['activeyears'].'"."SDName"',array($_POST['fromstate'][$i],$_POST['namefrom'][$i],1));
 														$dataresult1 = pg_fetch_all($data11);
 														$datacount =pg_num_rows($data11); // total count
 
@@ -14408,7 +15050,7 @@ else if($_POST['formname']=='assignformdata')
 																					{
 
 																				$data11 = pg_query_params($db, 'select "VTID",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "VTName" from "vt'.$_SESSION['activeyears'].'" where "SDID"=$1 AND "is_deleted"=$2
-																				ORDER BY "vt'.$_SESSION['activeyears'].'"."VTID"',array($_POST['namefrom'][$i],1));
+																				ORDER BY "vt'.$_SESSION['activeyears'].'"."VTName"',array($_POST['namefrom'][$i],1));
 																				$dataresult1 = pg_fetch_all($data11);
 																				$datacount =pg_num_rows($data11); // total count
 
@@ -14421,7 +15063,7 @@ else if($_POST['formname']=='assignformdata')
 																				          </option>';
 																				          }
 																						  // twice same place repeating issue JC_37
-																						  $task1 .='</select><div class="mt-2">Total Selected '.$comenexttext.'(s) : <span id="totaldefultselected_'.$i.'">0</span> - out of : <span> '.$datacount.'</span></div><div class="mt-2"><input type="checkbox" onclick="handleClick(this,'.$i.');" name="haveapartially'.$i.'[]" class="haveapartially" id="'.$i.'"> <label for="checkbox2">Any '.$comenexttext.' Partially '.$_POST['action'][0].' from '.$sttext[$i].' </label></div><div id="selectedlist'.$i.'"></div></div>'; // total count  // partially repeated twice 200923
+																						  $task1 .='</select><div class="mt-2">Total Selected '.$comenexttext.'(s) : <span id="totaldefultselected_'.$i.'">0</span> - out of : <span> '.$datacount.'</span></div><div class="mt-2"><input type="checkbox" onclick="handleClick(this,'.$i.');" name="haveapartially'.$i.'[]" class="haveapartially" id="'.$i.'"> <label for="checkbox2">Any '.$comenexttext.' Partially '.$_POST['action'][1].' from '.$sttext[$i].' </label></div><div id="selectedlist'.$i.'"></div></div>'; // total count  // partially repeated twice 200923
 
 
 																				      }
@@ -14478,39 +15120,71 @@ else if($_POST['formname']=='assignformdata')
 													$a = array_map( 'trim',$_POST['newnamecheck']);
 													//$im = array_map( 'strtolower', $a );
 													// rename validation for  sub district name code modified by srikanth//
-											$statename = '';
-											$subDistrictNames = array_map('trim', $_POST['newnamecheck']);
-											$subDistrictNames = array_map('strtolower', $subDistrictNames);
-											$stateIds = $_POST['statenew'];
-											$districtIds = $_POST['districtnew'];
+											// $statename = '';
+											// $subDistrictNames = array_map('trim', $_POST['newnamecheck']);
+											// $subDistrictNames = array_map('strtolower', $subDistrictNames);
+											// $stateIds = $_POST['statenew'];
+											// $districtIds = $_POST['districtnew'];
 	
 										
-											for ($i = 0; $i < count($subDistrictNames); $i++) {
-												$subDistrictName = $subDistrictNames[$i];
-												$stateId = $stateIds[$i];
-												$districtId = $districtIds[$i];
+											// for ($i = 0; $i < count($subDistrictNames); $i++) {
+											// 	$subDistrictName = $subDistrictNames[$i];
+											// 	$stateId = $stateIds[$i];
+											// 	$districtId = $districtIds[$i];
 	
-												
-												$query = "SELECT * FROM sd".$_SESSION['activeyears']." WHERE \"STID\"=$stateId AND \"DTID\"=$districtId AND lower(\"SDName\") = '$subDistrictName'";
-												$querydata = pg_query($db, $query);
+											// 	$query = "SELECT * FROM sd".$_SESSION['activeyears']." WHERE \"STID\"=$stateId AND \"DTID\"=$districtId AND lower(TRIM(\"SDName\")) LIKE lower('%$subDistrictName%')";
+											// 	// $query = "SELECT * FROM sd".$_SESSION['activeyears']." WHERE \"STID\"=$stateId AND \"DTID\"=$districtId AND lower(\"SDName\") = '$subDistrictName'";
+											// 	$querydata = pg_query($db, $query);
 	
-												$querydatarow = pg_numrows($querydata);
+											// 	$querydatarow = pg_numrows($querydata);
 	
-												if ($querydatarow > 0) {
-													$statename = "alreadyexists"; 
-													break; 
-												}
-											}
+											// 	if ($querydatarow > 0) {
+											// 		$statename = "alreadyexists"; 
+											// 		break; 
+											// 	}
+											// }
 	
-											if ($statename != "alreadyexists") {
-												$statename = "addsddistrict"; 
-											}
+											// if ($statename != "alreadyexists") {
+											// 	$statename = "addsddistrict"; 
+											// }
 	
 										// ends here//
+
+										//rename validation modified by gowthami subdistrict
+										$flag = false;
+											$newnamecheck = $_POST['newnamecheck'];
+											$nametotext = $_POST['nametotext'];
+											$pattern = '/[^A-Za-z]/';  
+											$nametotextArray = explode(',', $nametotext);
+											if (count($newnamecheck) !== count($nametotextArray)) {
+												$statename = "mismatched";
+											} else {
+												foreach (array_map(null, $newnamecheck, $nametotextArray) as $pair) {
+													list($gs, $textElement) = $pair;
+													if (preg_match('/\d/', $gs)) {
+														continue;
+													}
+													$gsWos = preg_replace($pattern, '', $gs);
+													$gsWos1 = preg_replace($pattern, '', $textElement);
+
+													if (strtolower($gsWos) == strtolower($gsWos1)) {  
+														$statename = "alreadyexists";
+														$flag = true;
+														break;
+													}
+												}
+
+												if (!$flag) {
+													$statename = "addsd";
+												}
+											}
+
+										
+				                                  // ends here
 											
 														$data['data']=array();
 
-														if($statename == 'addsddistrict')
+														if($statename == 'addsd')
 												{
 
 														$task1 = '';
@@ -14572,7 +15246,7 @@ else if($_POST['formname']=='assignformdata')
 													// $task = "adddata";
 													// }
 
-                                                  // subdistrict name validation starts here
+                                                  // subdistrict name validation starts here modified by gowthami
 
 													if(($_POST['clickpopup']=='Merge') || ($_POST['clickpopup']=='Partiallysm')){	
 													
@@ -14624,7 +15298,7 @@ else if($_POST['formname']=='assignformdata')
 														{
 														$swami = $swami+1;
 
-														$data11 = pg_query_params($db, 'select "VTID",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "VTName" from "vt'.$_SESSION['activeyears'].'" where "STID"=$1 AND "DTID"=$2 AND "SDID"=$3 AND "is_deleted"=$4 ORDER BY "vt'.$_SESSION['activeyears'].'"."VTID"',array($_POST['fromstate'][$i],$_POST['districtget'][$i],$_POST['namefrom'][$i],1));
+														$data11 = pg_query_params($db, 'select "VTID",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "VTName" from "vt'.$_SESSION['activeyears'].'" where "STID"=$1 AND "DTID"=$2 AND "SDID"=$3 AND "is_deleted"=$4 ORDER BY "vt'.$_SESSION['activeyears'].'"."VTName"',array($_POST['fromstate'][$i],$_POST['districtget'][$i],$_POST['namefrom'][$i],1));
 														$dataresult1 = pg_fetch_all($data11);
 														$datacount =pg_num_rows($data11); // total count
 
@@ -14688,7 +15362,7 @@ else if($_POST['formname']=='assignformdata')
 											$swami = $swami+1;
 											
 
-											$data11 = pg_query_params($db, 'select "VTID",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "VTName" from "vt'.$_SESSION['activeyears'].'" where "STID"=$1 AND "DTID"=$2 AND "SDID"=$3 AND "is_deleted"=$4 ORDER BY "vt'.$_SESSION['activeyears'].'"."VTID"',array($_POST['fromstate'][$i],$_POST['districtget'][$i],$_POST['namefrom'][$i],1));
+											$data11 = pg_query_params($db, 'select "VTID",CONCAT_WS(\' - \',"VTName","MDDS_VT") as "VTName" from "vt'.$_SESSION['activeyears'].'" where "STID"=$1 AND "DTID"=$2 AND "SDID"=$3 AND "is_deleted"=$4 ORDER BY "vt'.$_SESSION['activeyears'].'"."VTName"',array($_POST['fromstate'][$i],$_POST['districtget'][$i],$_POST['namefrom'][$i],1));
 											$dataresult1 = pg_fetch_all($data11);
 											$datacount =pg_num_rows($data11); // total count
 
@@ -14773,29 +15447,60 @@ else if($_POST['formname']=='assignformdata')
 													}
 													else
 													{
-														$stids = "".implode( ",", $_POST['statenew'])."";	
-														$dtids = "".implode( ",", $_POST['districtnew'])."";
-														$sdids = "".implode( ",", $_POST['sddistrictnew'])."";	
-														$imp = "'" . implode( "','",$im) . "'";
+														// $stids = "".implode( ",", $_POST['statenew'])."";	
+														// $dtids = "".implode( ",", $_POST['districtnew'])."";
+														// $sdids = "".implode( ",", $_POST['sddistrictnew'])."";	
+														// $imp = "'" . implode( "','",$im) . "'";
 
-														$query = "select * from vt".$_SESSION['activeyears']." where \"STID\" IN (".$stids.") AND \"DTID\" IN (".$dtids.") AND \"SDID\" IN (".$sdids.") AND lower(\"VTName\") IN ($imp)";
-														$querydata = pg_query($db,$query);
+														// $query = "select * from vt".$_SESSION['activeyears']." where \"STID\" IN (".$stids.") AND \"DTID\" IN (".$dtids.") AND \"SDID\" IN (".$sdids.") AND lower(\"VTName\") IN ($imp)";
+														// $querydata = pg_query($db,$query);
 
-														$querydatarow = pg_numrows($querydata);
-														if($querydatarow>0)
-														{
-														$statename = "alreadyexists";	
-														}
-														else
-														{
-															$statename = "addsddistrict";
-															}
-														}
-											//rename validation code changed by srikanth ends here//
-											
+														// $querydatarow = pg_numrows($querydata);
+														// if($querydatarow>0)
+														// {
+														// $statename = "alreadyexists";	
+														// }
+														// else
+														// {
+														// 	$statename = "addsddistrict";
+														// 	}
+														// }
+										         // ends here
+
+											// rename validation changes made by gowthami village level
+											$flag = false;
+											$newnamecheck = $_POST['newnamecheck'];
+											$nametotext = $_POST['nametotext'];
+											$pattern = '/[^A-Za-z]/';  
+											$nametotextArray = explode(',', $nametotext);
+											if (count($newnamecheck) !== count($nametotextArray)) {
+												$statename = "mismatched";
+											} else {
+												foreach (array_map(null, $newnamecheck, $nametotextArray) as $pair) {
+													list($gs, $textElement) = $pair;
+													if (preg_match('/\d/', $gs)) {
+														continue;
+													}
+													$gsWos = preg_replace($pattern, '', $gs);
+													$gsWos1 = preg_replace($pattern, '', $textElement);
+
+													if (strtolower($gsWos) == strtolower($gsWos1)) {  
+														$statename = "alreadyexists";
+														$flag = true;
+														break;
+													}
+												}
+
+												if (!$flag) {
+													$statename = "addvt";
+												}
+											}
+
+										}
+											//ends here
 														$data['data']=array();
 
-														if($statename == 'addsddistrict')
+														if($statename == 'addvt')
 												{
 
 														$task1 = '';
@@ -14926,32 +15631,56 @@ else if($_POST['formname']=='assignformdata')
 												            //  $statename = "addvt";
 
                                                  //modified by gowthami village name validation
-												if(($_POST['clickpopup']=='Merge') || ($_POST['clickpopup']=='Partiallysm')){	
+												// if(($_POST['clickpopup']=='Merge') || ($_POST['clickpopup']=='Partiallysm')){	
 													
-													$flag = false;
-													$newnamecheck = $_POST['newnamecheck'];
-													$nametotext = $_POST['nametotext'];
+												// 	$flag = false;
+												// 	$newnamecheck = $_POST['newnamecheck'];
+												// 	$nametotext = $_POST['nametotext'];
 
-													foreach ($newnamecheck as $index => $gs) {
-														// if ($gs == $nametotext) {
-															if (strtolower($gs) == strtolower($nametotext)) {
-															$statename = "alreadyexists";
-															$flag = true;
-															break;
-														}
-													}
+												// 	foreach ($newnamecheck as $index => $gs) {
+												// 		// if ($gs == $nametotext) {
+												// 			if (strtolower($gs) == strtolower($nametotext)) {
+												// 			$statename = "alreadyexists";
+												// 			$flag = true;
+												// 			break;
+												// 		}
+												// 	}
 
-													if ($flag == true) {
-														$statename = "alreadyexists";
-													} else {
-														$statename = "addvt";
-													}
-												}
-												else {
-													$statename = "addvt";
-												}
-
-												//end
+												// 	if ($flag == true) {
+												// 		$statename = "alreadyexists";
+												// 	} else {
+												// 		$statename = "addvt";
+												// 	}
+												// }
+												// else {
+												// 	$statename = "addvt";
+												// }
+                                                    //modified by gowthami village name validation
+												   if(($_POST['clickpopup'] == 'Merge') || ($_POST['clickpopup'] == 'Partiallysm')) {
+                                                    $flag = false;
+                                                    $newnamecheck = $_POST['newnamecheck'];
+                                                    $nametotext = $_POST['nametotext'];
+                                                    $pattern = '/[^A-Za-z]/';
+                                                    foreach ($newnamecheck as $index => $gs) {
+                                                        if (preg_match('/\d/', $gs)) {
+                                                            continue;
+                                                        }
+                                                        $gsWos = preg_replace($pattern, '', $gs);
+                                                        $gsWos1 = preg_replace($pattern, '', $nametotext);
+                                                        if (strtolower($gsWos) == strtolower($gsWos1)) {
+                                                            $statename = "alreadyexists";
+                                                            $flag = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                    if ($flag == true) {
+                                                        $statename = "alreadyexists";
+                                                    } else {
+                                                        $statename = "addvt";
+                                                    }
+                                                } else {
+                                                    $statename = "addvt";
+                                                }
                                        
 												// modified by gowthami village name validation JC_05
 												// if( ($_POST['clickpopup']=='Create')){	

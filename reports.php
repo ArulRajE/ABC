@@ -121,20 +121,19 @@ if(pg_numrows($result)>0) {
                                     </div> -->
 
                                     <!-- pagination issue Gowthami-->
-                                   <div class=" col-md-12 col-form-label row">
-                                 <div class="col-md-3 mt-3">
-                                      <select onchange="return get_filter_new(this.value,'stselect','ST');" id="STID"
+                                    <div class=" col-md-12 col-form-label row">
+                                 <div class="col-md-3 mt-3"> <select onchange="return reportfilterst(this.value,'stselect','ST');" id="STID"
                                             name="STID">
                                             <?php if (in_array($header, array(0, 1, 2, 3))) { ?>
-                                            <option value="" >Select State / UT Name</option>
+                                            <option value="">Select State / UT Name</option>
                                             <?php } ?>
                                             <?php foreach ($row as $key => $element) { ?>
-                                                <option value="<?php echo $element['STID']; ?>">
-                                          <?php echo $element['STName']; ?>
-                                          </option>
+                                            <option value="<?php echo $element['STID']; ?>"
+    >
+                                                <?php echo $element['STName']; ?></option>
                                             <?php } ?>
                                         </select>
-                                    </div> 
+                                    </div>
                                     
                                     <div class="col-md-3 mt-3">
                                         <!-- <select id="DTID"

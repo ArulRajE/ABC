@@ -206,12 +206,23 @@ $rowaction = pg_fetch_all($resultaction);
                                                                 <div class="form-group row mb-3">
                                                                     <label class="col-md-3 col-form-label" for="password1"> Type</label>
                                                                     <div class="col-md-9">
-                                                          <!-- document value alert removal -->
-                                                          <select required="required" id="adddoctype" <?php if($_GET['come']=='comefromdocadd') { ?> disabled <?php } ?>  name="adddoctype"
+                                                       
+                                                          <!-- <select required="required" id="adddoctype" <?php if($_GET['come']=='comefromdocadd') { ?> disabled <?php } ?>  name="adddoctype"
                                                                        onchange="return get_dist_select_data(this,'<?php echo $passvalue; ?>');">
                                             <option value="">Select Type</option>
                                             <option value="Notification">Notification</option>
                                             <option value="Corrigendum Notification">Corrigendum Notification</option>
+                                            <option value="Resolution">Resolution</option>
+                                            <option value="Clarification">Clarification</option>
+                                            <option value="Collector Letter">Collector Letter</option>
+                                            <option value="Others">Others</option>
+                                        </select> -->
+                                           <!-- adddocument type -->
+                                        <select required="required" id="adddoctype" <?php if($_GET['come']=='comefromdocadd') { ?> disabled <?php } ?>  name="adddoctype"
+                                            onchange="return get_doctype_data(this,'<?php echo $_GET['come']; ?>');">
+                                            <option value="">Select Type</option>
+                                            <option value="Notification">Notification</option>
+                                            <option value="Erratum Notification">Erratum Notification</option>
                                             <option value="Resolution">Resolution</option>
                                             <option value="Clarification">Clarification</option>
                                             <option value="Collector Letter">Collector Letter</option>
@@ -499,7 +510,7 @@ $rowaction = pg_fetch_all($resultaction);
 
 <input type="hidden" name="formname" id="formname" value="finaladddocument">
 <input type="hidden" name="applyon" id="applyon" value="">
-<!-- JC_11 -->
+<!-- JC_11 Modified By Arul Add Button-->
 <input type="hidden" name="rowno" id="rowno" value="1">
 <!-- <input type="hidden" name="selectstid" id="selectstid" value="">
 <input type="hidden" name="selectstidupdated" id="selectstidupdated" value="">
@@ -507,7 +518,6 @@ $rowaction = pg_fetch_all($resultaction);
   <input type="hidden" name="dtselected" id="dtselected" value="">
     <input type="hidden" name="sdidsselected" id="sdidsselected" value=""> -->
      
-  
   <input type="hidden" name="fstids" id="fstids" value="">
   <input type="hidden" name="fdtids" id="fdtids" value="">
   <input type="hidden" name="fsdids" id="fsdids" value="">
@@ -860,12 +870,16 @@ $('#Mergebt').prop('disabled', false);
 });
 
 function PreviewImage1() {
-    pdffile=document.getElementById("adddocnotification").files[0];
-    pdffile_url=URL.createObjectURL(pdffile);
-    
-  $('#viewer').css("display", "block")
-    $('#viewer').attr('src',pdffile_url);
+    var pdffile = document.getElementById("adddocnotification").files[0];
+    var pdffile_url = URL.createObjectURL(pdffile);
+    $('#viewer').css("display", "block");
+    $('#viewer').attr('src', pdffile_url);
 }
+//remove from Upload doc modified by gowthami
+$(".dropify-clear").on("click", function() {
+    $('#viewer').css("display", "none");
+});
+
 
 $(function() {
 
@@ -1008,8 +1022,8 @@ $(function() {
                         $('#row_'+x+'').find('input, textarea, button, select').attr('disabled','disabled');
             }
             x++;
-             // JC_11
-             $('#rowno').val(x);
+            // JC_11 Modified By Arul For Add Button 
+            $('#rowno').val(x);
 
  var seleted = $('#applyon').val();
 var clickpopup = $('#clickpopup').val();
@@ -1514,6 +1528,15 @@ var seleted = $('#applyon').val();
                         $('.newnamecheck').prop('required',false);
                         $('.statestatus1').css("display", "block");
                         $(".Statusyear").prop('required',true);
+                        $('.Statusyear').change(function(){
+                        var value = $(this).val();
+                      // This value required removed -Arun
+                     if(value !='')
+                        {
+                            $(this).parsley().removeError('required',{updateClass: true});
+                        }
+                    });
+
                         $('.add_button_name').attr('disabled', false);  
                         //}
 
@@ -2054,8 +2077,8 @@ if(clickpopup=='Reshuffle')
         $(this).parent().parent('div').remove();
          addButton.attr('disabled', false);
         x--;
-         // JC_11
-         $('#rowno').val(x);
+        // JC_11 Modified By Arul For Add Button 
+        $('#rowno').val(x);
                     var action = $('select[name="action[]"]').map(function () {
                         return this.value;    
                    
@@ -2224,14 +2247,6 @@ var status = $('#oremovenew'+i[1]+'').is(":checked");
 
     }); 
 
-//JC_11
-$('.closepopup').click(function(){
-        x = 1;
-        $('#rowno').val(x);
-    });
-
 });
-
-
 
 </script>

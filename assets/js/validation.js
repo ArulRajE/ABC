@@ -650,6 +650,7 @@ return false;
 }
 function get_doctype_data(data,doccome) {
 
+    manageParsleyErrors(data);
     if (data.value != "" && data.value == "Others" && doccome=='') {
           $('.otherrmk').css("display", "block");
           $(".otherrmk").prop('required',true); 
@@ -1679,9 +1680,27 @@ function get_fromvalue1(value,i)
 {
     // JC_11
     var rn = $('#rowno').val();
-    
+    // Ends
+    $('.mainvaldata').change(function(){
+        var value = $(this).val();
+        if(value !='')
+        {
+            $(this).parsley().removeError('required',{updateClass: true});
+        }
+    });
+    $('.namefrom').change(function(){
+        var value = $(this).val();
+        if(value !='')
+        {
+            $(this).parsley().removeError('required',{updateClass: true});
+        }
+    });
+
    var partiallyids1 = $('#partiallyids1').val();
-  
+  if(value=='')
+  {
+    $('.add_button').attr('disabled', true); 
+  }
     if(value!='' && $('#clickpopup').val()=='Create' && ($('#comefromcheck').val()=='State' || $('#comefromcheck').val()=='District' ))
     {
 
@@ -1824,7 +1843,7 @@ function get_fromvalue1(value,i)
                                   kl="ST";
                                 }
                                   $('#fstatus'+finalresult[2]+' option').prop('disabled',false);
-                                   $('#fstatus'+finalresult[2]+' option[value='+kl+']').prop('disabled',true);
+                                   $('#fstatus'+finalresult[2]+' option[value='+kl+']').prop('disabled',false); // to disable freeze changed by srikanth jc-44
                                   $('#fstatus'+finalresult[2]+'').val(finalresult[3]).trigger('change');
 
                                 
@@ -1977,35 +1996,36 @@ function get_fromvalue1(value,i)
       // $("#statenew1").val(tstids).trigger('change');
      }
 
-    } 
+    }
+
     // JC_11
     else if ($('#clickpopup').val()=='Reshuffle' && $('#comefromcheck').val()=='Sub-District') {
         
         if(value != ''){
             $('#action'+rn).val('Reshuffle').trigger('change');
-            EnabledButton();
+            EnableAddButton1();
         } else {
-             DisabledButton();
+             DisableAddButton1();
            }
     }
    // Ends
-   // JC_104 Modified by arul for action refresh in district M/PM
+    // JC_104 Modified by arul for action refresh in district M/PM
    if (value == "" &&
    $("#clickpopup").val() == "Merge") {
-   if ($("#comefromcheck").val() == "District") {
-       $("#action" + i + "")
-           .val("")
-           .trigger("change");
-   } else if ($("#comefromcheck").val() == "State") {
-       $("#action" + i + "")
-           .val("")
-           .trigger("change");
-       $("#fstatus" + i + "")
-           .val("")
-           .trigger("change");
-   }
-}
-// Ends...
+        if ($("#comefromcheck").val() == "District") {
+            $("#action" + i + "")
+                .val("")
+                .trigger("change");
+        } else if ($("#comefromcheck").val() == "State") {
+            $("#action" + i + "")
+                .val("")
+                .trigger("change");
+            $("#fstatus" + i + "")
+                .val("")
+                .trigger("change");
+        }
+    }
+    // Ends...
 
 }
 
@@ -2014,8 +2034,34 @@ function get_to_data(value,i)
 {
     // JC_11
     var rn = $('#rowno').val();
+    var namefrom = $('#row_' + rn).find('select[name^="namefrom"] option:selected').map(function () {
+        if (this.value != '') {
+            return this.value;
+        }
+
+    }).get();
+    var action = $('#row_' + rn).find('select[name^="action"] option:selected').map(function () {
+        if (this.value != '') {
+            return this.value;
+        }
+
+    }).get();
+    // Ends
+    //This value Required -arun
+    if(value.value!=''){
+        // console.log($(data).siblings('ul.parsley-errors-list').length);
+         if (value.value != "" && $(value).siblings('ul.parsley-errors-list').length > 0) {
+             $(value).siblings('ul.parsley-errors-list').children('li').hide();
+         }
+         else {
+             $(value).siblings('ul.parsley-errors-list').children('li').show();
+         }
+          $(value).siblings('ul.parsley-errors-list').children().remove();
+     }
+
     if(value.value!='' && $('#clickpopup').val()=='Merge' && $('#comefromcheck').val()=='State')
     {
+        
 
 
                      $.ajax({
@@ -2038,9 +2084,11 @@ function get_to_data(value,i)
     });
 
 
-    // JC_11 Modified by Arul for disable add M/PM
+// JC_11 Modified by Arul for disable add M/PM
+if(namefrom.length > 0 && action.length > 0){
     DisableRow(rn);
-                   
+}
+// Ends... 
 
       
     }
@@ -2134,22 +2182,38 @@ function get_to_data(value,i)
             }
     });
 
-
+    }
 
                    
 
-      
-    }
-   // JC_104 Modified by Arul for Refresh Status
-   else if ($("#clickpopup").val() == "Merge" && $("#comefromcheck").val() == "State" && value.value == "") {
+    
+   
+// JC_104 Modified by Arul for Refresh Status
+else if ($("#clickpopup").val() == "Merge" && $("#comefromcheck").val() == "State" && value.value == "") {
     $("#Statusyear_1").val('').trigger("change");
     $("#toStatus_1").val('');
     //JC_11
+    if(namefrom.length > 0 && action.length > 0){
     EnableRow(rn);
+    }
 }
 
 // Ends...
 
+
+  // Code modified by srikanth 
+  else if(value.value =='' && ( $('#clickpopup').val() =='Rename' || $('#clickpopup').val() =='Merge' || $('#clickpopup').val() == 'Addition' ) && $('#comefromcheck').val()=='Village / Town')
+  {
+      
+      $('#vStatus2021_1' +i+ '').val('').trigger('change');
+
+    {
+        $('#vStatus2021_' +i+ '').val('').trigger('change');
+
+    }
+     
+  }
+    //ends here  
 }
 
 
@@ -2266,6 +2330,7 @@ function get_sub_district_popup_list(data)
                       
                         
                                     if(finalresult[2]!='State' || finalresult[2]!='District')
+                                    //code changed by bheema
                                     {
                                         ////Submerge Dropdown village issue by Pavithra
                                         $('#addbtu,#adddataof,#let').css("display", "block ");
@@ -2273,63 +2338,66 @@ function get_sub_district_popup_list(data)
                                         $('#comefromdata123').html('');
                                         $('#comefromdata123').html(finalresult[3]);
                                          $('.haveapartially').prop("disabled", true);
-                                        $('#selected_comesub').multiSelect({
-                                        selectableHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
-                                        selectionHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
-                                        afterInit: function (t) {
-
-                                            var e = this,
-                                                n = e.$selectableUl.prev(),
-                                                a = e.$selectionUl.prev(),
-                                                i = "#" + e.$container.attr("id") + " .ms-elem-selectable:not(.ms-selected)",
-                                                s = "#" + e.$container.attr("id") + " .ms-elem-selection.ms-selected";
-                                            e.qs1 = n.quicksearch(i).on("keydown", function (t) {
-                                                if (40 === t.which) return e.$selectableUl.focus(), !1
-                                            }), e.qs2 = a.quicksearch(s).on("keydown", function (t) {
-                                                if (40 == t.which) return e.$selectionUl.focus(), !1
-                                            })
-                                        },
-                                        afterSelect: function (values) {
-                                            
-                                        var $el=$("#ms-selected_comesub");
-
-                                        $('#totaldefultselected_1').html($el.find('[class*="ms-elem-selection ms-selected"]').length);
-
-                                            this.qs1.cache(), this.qs2.cache()
-                                                    if(this.qs2.matchedResultsCount!=0)
-                                                    {
-                                                    $('.haveapartially').prop("disabled", false);
-                                                    }
-                                                    else
-                                                    {
-                                                    $('.haveapartially').prop("disabled", true);
-                                                    }
-                                        },
-                                        afterDeselect: function () {
-
-                                          var $el=$("#ms-selected_comesub");
-
-                                        $('#totaldefultselected_1').html($el.find('[class*="ms-elem-selection ms-selected"]').length);
-
-                                            this.qs1.cache(), this.qs2.cache()
-                                            if(this.qs2.matchedResultsCount!=0)
-                                                    {
-                                                    $('.haveapartially').prop("disabled", false);
-                                                    }
-                                                    else
-                                                    {
-                                                    $('.haveapartially').prop("disabled", true);
-                                                    }
+                                         $('#selected_comesub').multiSelect({
+                                            selectableHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
+                                            selectionHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
+                                            afterInit: function (t) {
+                                                var e = this,
+                                                    n = e.$selectableUl.prev(),
+                                                    a = e.$selectionUl.prev(),
+                                                    i = "#" + e.$container.attr("id") + " .ms-elem-selectable:not(.ms-selected)",
+                                                    s = "#" + e.$container.attr("id") + " .ms-elem-selection.ms-selected";
+                                                e.qs1 = n.quicksearch(i).on("keydown", function (t) {
+                                                    if (40 === t.which) return e.$selectableUl.focus(), !1
+                                                }), e.qs2 = a.quicksearch(s).on("keydown", function (t) {
+                                                    if (40 == t.which) return e.$selectionUl.focus(), !1
+                                                })
+                                            },
+                                            afterSelect: function (values) {
+                                                var $el = $("#ms-selected_comesub");
                                         
-                                        }
+                                                $('#totaldefultselected_1').html($el.find('[class*="ms-elem-selection ms-selected"]').length);
+                                        
+                                                this.qs1.cache();
+                                                this.qs2.cache();
+                                        
+                                                if (this.qs2.matchedResultsCount != 0) {
+                                                    $('.haveapartially').prop("disabled", false);
+                                                } else {
+                                                    $('.haveapartially').prop("disabled", true);
+                                                    
+                                                }
+                                                this.$selectableUl.prev().val('');
+                                                     this.$selectionUl.prev().val('');
+                                        
+                                                // Trigger a search to refresh the list immediately
+                                                this.qs1.search('');
+                                            },
+                                        
+                                            afterDeselect: function () {
+                                                var $el = $("#ms-selected_comesub");
+                                        
+                                                $('#totaldefultselected_1').html($el.find('[class*="ms-elem-selection ms-selected"]').length);
+                                        
+                                                this.qs1.cache();
+                                                this.qs2.cache();
+                                        
+                                                if (this.qs2.matchedResultsCount != 0) {
+                                                    $('.haveapartially').prop("disabled", false);
+                                                } else {
+                                                    $('.haveapartially').prop("disabled", true);
+                                                }
+                                        
+                                                // Trigger a search to refresh the list immediately
+                                                this.$selectableUl.prev().val('');     //merge bheema
+                                                this.$selectionUl.prev().val('');
+                                                this.qs2.search('');
+                                            }
                                         });
-
-                                                
-                                       
-                                    }    
-                                    
-
-                  
+                                        
+                                            
+                                    } 
+                                    //code ends here   
 
 
 
@@ -2354,6 +2422,11 @@ function get_district_popup_sublist(data)
 {
     var seleted = $('#applyon').val();
     var clickpopup = $('#submergedata #clickpopup').val();
+    if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Addition' || clickpopup=='Rename' || clickpopup=='Deletion' || clickpopup=='Reshuffle') && data.value!='')
+        {
+            manageParsleyErrors(data);
+        }
+
 
     var fstids = $('select[name="stategetsub[]"] option:selected').map(function () {
                 return this.value;
@@ -2748,8 +2821,11 @@ var mul = data.id.split('_');
 
 var seleted = $('#applyon').val();
 var clickpopup = $('#clickpopup').val();
-
-
+//This value Required -arun
+    if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Addition' || clickpopup=='Rename' || clickpopup=='Deletion' || clickpopup=='Reshuffle') )
+        {
+            manageParsleyErrors(data);
+        }
 
 
 var fstids = $('select[name="fromstate[]"] option:selected').map(function () {
@@ -3167,19 +3243,20 @@ else{
                                             // // ends here 
 
                                             // code changed for split bheema
-                                            if(finalresult[3]=='Reshuffle')
+                                            // JC_11 modified by arul for add button
+                                            // if(finalresult[3]=='Reshuffle')
+                                            // {
+                                            //     $('#action1,#actiona2').val('Reshuffle').trigger('change');    
+                                            // }
+                                            // Ends
+                                            if(finalresult[3]=='Create')
                                             {
-                                                // JC_11
-                                                // $('#action1,#actiona2').val('Reshuffle').trigger('change');    
-                                            }
-                                            else if(finalresult[3]=='Create')
-                                            {
-                                                $('#action1,#actiona2').val('').trigger('change');    
+                                                 $('#action1,#actiona2').val('Split').trigger('change');    
                                             }
                                             else
-                                            {
-                                                $('#action1,#actiona2').val('').trigger('change');
-                                            }
+                                            // {
+                                            //     $('#action1,#actiona2').val('').trigger('change');
+                                            // }
                                             
                                             if($('#partiallyids1').val()=='')
                                             {
@@ -3259,14 +3336,14 @@ else{
                                        
 
                                             });
-
-                                            if(finalresult[3]=='Reshuffle')
-                                            {
-                                                // JC_11
-                                                //  $("#action"+mul[1]+"").val('Reshuffle').trigger('change'); 
+                                            // JC_11 modified by arul for add button
+                                            // if(finalresult[3]=='Reshuffle')
+                                            // {
+                                            //      $("#action"+mul[1]+"").val('Reshuffle').trigger('change');
                                             
-                                            }
-                                             else if(finalresult[3]=='Create')
+                                            // }
+                                            // Ends
+                                            if(finalresult[3]=='Create')
                                             {
                                                 $("#action"+mul[1]+"").val('').trigger('change');    
                                             }
@@ -3512,11 +3589,15 @@ else
 
 function get_sub_district_popup_new(data,clickpopup,i) {
 
-       
+    // JC_11
+    var rn = $('#rowno').val();
+    // Ends
         var seleted = $('#applyon').val();
 var clickpopup = $('#clickpopup').val();
-// JC_11
-var rn = $('#rowno').val();
+if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Addition' || clickpopup=='Rename' || clickpopup=='Deletion' || clickpopup=='Reshuffle') && data.value!='')
+{
+    manageParsleyErrors(data);
+}
 
         var fstids = $('select[name="fromstate[]"] option:selected').map(function () {
         if(this.value!='')
@@ -3588,7 +3669,7 @@ $('.namefrom').each(function(){
         }).done(function (result) {
 
          var finalresult = result.split("|");
-        console.log(finalresult);
+       //  console.log(finalresult);
       
 
        if(clickpopup=='Create')
@@ -3672,243 +3753,220 @@ $('.namefrom').each(function(){
 
                     if(finalresult[2]=='Village / Town')
                     {
-
+               // multi village refresh bheema
                          if(i!=1)
                          {
-                             var idscount=i;
-                          
+                            var idscount=i;
+                         
 
-                                  $("#did2021"+i+"").html('');
-                                   $("#did2021"+i+"").html(finalresult[3]);
-
-
-                                    $('.AC').css("margin-left","16%");
-                              // $('.haveapartially').prop("disabled", true);
-                                $("#id2021"+i+"").multiSelect({
-                                selectableHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
-                                selectionHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
-                                afterInit: function (t) {
-                                   
-                                var e = this,
-                                n = e.$selectableUl.prev(),
-                                a = e.$selectionUl.prev(),
-                                i = "#" + e.$container.attr("id") + " .ms-elem-selectable:not(.ms-selected)",
-                                s = "#" + e.$container.attr("id") + " .ms-elem-selection.ms-selected";
-                                e.qs1 = n.quicksearch(i).on("keydown", function (t) {
-                                if (40 === t.which) return e.$selectableUl.focus(), !1
-                                }), e.qs2 = a.quicksearch(s).on("keydown", function (t) {
-                                if (40 == t.which) return e.$selectionUl.focus(), !1
-                                })
-                                },
-                                afterSelect: function (values) {
-
-                                var check = this.$container.attr("id");
-                                var checkdata = check.split('_');
-                                 var $el=$("#ms-id2021"+i+"");
-                                 $('#totaldefultselected_'+i+'').html($el.find('[class*="ms-elem-selection ms-selected"]').length);
-
-                                this.qs1.cache(), this.qs2.cache()
-                                var data=[];
-                                var data1=[];
-                                var $el=$("#id2021"+i+"");
-                                $el.find('[class*="ms-elem-selection ms-selected"]').each(function(){
-
-                                data.push($(this).text() );
-                                 var ii = this.id;
-                               var idd = ii.split('-');
-                                 //  var idddata = idd[0].join("-selectable")
-                                data1.push(idd[0]);
-                                });
-
-                                // && $.inArray( $(this).text(), data1 )!= -1
-
-                                for(var m=0;m<=idscount;m++)
-                                {
-
-                                if(checkdata[1]!=m)
-                                {
-                                $("#id2021"+i+"").find('[class*="ms-elem-selectable"]').each(function(){
-                                    var j = this.id.split('-');
-                                if($.inArray( $(this).text(), data )!= -1 && $.inArray( j[0],data1 )!= -1)
-                                {
-                                $(this).addClass("disabled");
-                                }
-                                });
-                                }
-                                }
-
-                                if(this.qs2.matchedResultsCount!=0)
-                                {
-                                $("#id2021"+i+"").prop("disabled", false);
-                                }
-                                else
-                                {
-                                $("#id2021"+i+"").prop("disabled", true);
-                                }
-
-                                },
-                                afterDeselect: function () {
-
-                                var check = this.$container.attr("id");
-                                var checkdata = check.split('_');
-
-                                var data=[];
-                                // var $el=$("#selected_come");
-                                 var $el=$("#ms-id2021"+i+"");
-                                 $('#totaldefultselected_'+i+'').html($el.find('[class*="ms-elem-selection ms-selected"]').length);
-                                $el.find('[class*="ms-elem-selection ms-selected"]').each(function(){
-
-                                data.push($(this).text() );
-                                });
-
-                                for(var m=0;m<=idscount;m++)
-                                {
-
-                                if(checkdata[1]!=m)
-                                {
-                                $("#id2021"+i+"").find('[class*="ms-elem-selectable"]').each(function(){
-
-                                if($.inArray( $(this).text(), data )== -1)
-                                {
-                                $(this).removeClass("disabled");
-                                }
-                                });
-                                }
-                                }
-
-                                this.qs1.cache(), this.qs2.cache()
-                                if(this.qs2.matchedResultsCount!=0)
-                                {
-                                $("#id2021"+i+"").prop("disabled", false);
-                                }
-                                else
-                                {
-                                $("#id2021"+i+"").prop("disabled", true);
-                                }
-                                }
-
-                                });
+                                 $("#did2021"+i+"").html('');
+                                  $("#did2021"+i+"").html(finalresult[3]);
 
 
-                          }
+                                   $('.AC').css("margin-left","16%");
+                             // $('.haveapartially').prop("disabled", true);
+                               $("#id2021"+i+"").multiSelect({
+                               selectableHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
+                               selectionHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
+                               afterInit: function (t) {
+                                  
+                               var e = this,
+                               n = e.$selectableUl.prev(),
+                               a = e.$selectionUl.prev(),
+                               i = "#" + e.$container.attr("id") + " .ms-elem-selectable:not(.ms-selected)",
+                               s = "#" + e.$container.attr("id") + " .ms-elem-selection.ms-selected";
+                               e.qs1 = n.quicksearch(i).on("keydown", function (t) {
+                               if (40 === t.which) return e.$selectableUl.focus(), !1
+                               }), e.qs2 = a.quicksearch(s).on("keydown", function (t) {
+                               if (40 == t.which) return e.$selectionUl.focus(), !1
+                               })
+                               },
+                               afterSelect: function (values) {
+
+                               var check = this.$container.attr("id");
+                               var checkdata = check.split('_');
+                                var $el=$("#ms-id2021"+i+"");
+                                $('#totaldefultselected_'+i+'').html($el.find('[class*="ms-elem-selection ms-selected"]').length);
+
+                               this.qs1.cache(), this.qs2.cache()
+                               var data=[];
+                               var data1=[];
+                               var $el=$("#id2021"+i+"");
+                               $el.find('[class*="ms-elem-selection ms-selected"]').each(function(){
+
+                               data.push($(this).text() );
+                                var ii = this.id;
+                              var idd = ii.split('-');
+                                //  var idddata = idd[0].join("-selectable")
+                               data1.push(idd[0]);
+                               });
+                               this.qs1.search('');
+                               this.$selectableUl.prev().val('');
+                               this.$selectionUl.prev().val('');
+                                           
+                               
+
+                               // && $.inArray( $(this).text(), data1 )!= -1
+
+                               for(var m=0;m<=idscount;m++)
+                               {
+
+                               if(checkdata[1]!=m)
+                               {
+                               $("#id2021"+i+"").find('[class*="ms-elem-selectable"]').each(function(){
+                                   var j = this.id.split('-');
+                               if($.inArray( $(this).text(), data )!= -1 && $.inArray( j[0],data1 )!= -1)
+                               {
+                               $(this).addClass("disabled");
+                               }
+                               });
+                               }
+                               }
+
+                               if(this.qs2.matchedResultsCount!=0)
+                               {
+                               $("#id2021"+i+"").prop("disabled", false);
+                               }
+                               else
+                               {
+                               $("#id2021"+i+"").prop("disabled", true);
+                               }
+
+                               },
+                               afterDeselect: function () {
+
+                               var check = this.$container.attr("id");
+                               var checkdata = check.split('_');
+
+                               var data=[];
+                               // var $el=$("#selected_come");
+                                var $el=$("#ms-id2021"+i+"");
+                                $('#totaldefultselected_'+i+'').html($el.find('[class*="ms-elem-selection ms-selected"]').length);
+                               $el.find('[class*="ms-elem-selection ms-selected"]').each(function(){
+
+                               data.push($(this).text() );
+                               });
+                               this.qs2.search('');
+                               this.$selectableUl.prev().val('');
+                               this.$selectionUl.prev().val('');
+
+                               for(var m=0;m<=idscount;m++)
+                               {
+
+                               if(checkdata[1]!=m)
+                               {
+                               $("#id2021"+i+"").find('[class*="ms-elem-selectable"]').each(function(){
+
+                               if($.inArray( $(this).text(), data )== -1)
+                               {
+                               $(this).removeClass("disabled");
+                               }
+                               });
+                               }
+                               }
+
+                               this.qs1.cache(), this.qs2.cache()
+                               if(this.qs2.matchedResultsCount!=0)
+                               {
+                               $("#id2021"+i+"").prop("disabled", false);
+                               }
+                               else
+                               {
+                               $("#id2021"+i+"").prop("disabled", true);
+                               }
+                               }
+                               
+
+                               });
+
+
+                         }
                           else
-                          {
-                                var idscount=1;
-                                $("#comefromdata").html('');
-                                $('#comefromdata').html(finalresult[3]);
-
-                                $('.AC').css("margin-left","auto");
-                                // $('.haveapartially').prop("disabled", true);
-                                $('#selected_come').multiSelect({
+                          //code changed by bheema
+                          {  var idscount = 1;
+                            $("#comefromdata").html('');
+                            $('#comefromdata').html(finalresult[3]);
+                            
+                            $('.AC').css("margin-left", "auto");
+                            
+                            $('#selected_come').multiSelect({
                                 selectableHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
                                 selectionHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
                                 afterInit: function (t) {
-
-                                var e = this,
-                                n = e.$selectableUl.prev(),
-                                a = e.$selectionUl.prev(),
-                                i = "#" + e.$container.attr("id") + " .ms-elem-selectable:not(.ms-selected)",
-                                s = "#" + e.$container.attr("id") + " .ms-elem-selection.ms-selected";
-                                e.qs1 = n.quicksearch(i).on("keydown", function (t) {
-                                if (40 === t.which) return e.$selectableUl.focus(), !1
-                                }), e.qs2 = a.quicksearch(s).on("keydown", function (t) {
-                                if (40 == t.which) return e.$selectionUl.focus(), !1
-                                })
+                                    var e = this,
+                                        n = e.$selectableUl.prev(),
+                                        a = e.$selectionUl.prev(),
+                                        i = "#" + e.$container.attr("id") + " .ms-elem-selectable:not(.ms-selected)",
+                                        s = "#" + e.$container.attr("id") + " .ms-elem-selection.ms-selected";
+                            
+                                    e.qs1 = n.quicksearch(i).on("keydown", function (t) {
+                                        if (40 === t.which) return e.$selectableUl.focus(), !1
+                                    });
+                            
+                                    e.qs2 = a.quicksearch(s).on("keydown", function (t) {
+                                        if (40 == t.which) return e.$selectionUl.focus(), !1
+                                    });
                                 },
                                 afterSelect: function (values) {
-
-                                var check = this.$container.attr("id");
-                                var checkdata = check.split('_');
-
-
-                                this.qs1.cache(), this.qs2.cache()
-                                var data=[];
-                                var data1=[];
-                                var $el=$("#ms-selected_come");
-
-                                 $('#totaldefultselected_1').html($el.find('[class*="ms-elem-selection ms-selected"]').length);
-                                $el.find('[class*="ms-elem-selection ms-selected"]').each(function(){
-
-                                data.push($(this).text() );
-                                 var ii = this.id;
-                               var idd = ii.split('-');
-                                 //  var idddata = idd[0].join("-selectable")
-                                data1.push(idd[0]);
-                                });
-
-                                // && $.inArray( $(this).text(), data1 )!= -1
-
-
-
-
-                                for(var m=0;m<=idscount;m++)
-                                {
-
-                                if(checkdata[1]!=m)
-                                {
-                                $('#selected_come').find('[class*="ms-elem-selectable"]').each(function(){
-                                    var j = this.id.split('-');
-                                if($.inArray( $(this).text(), data )!= -1 && $.inArray( j[0],data1 )!= -1)
-                                {
-                                $(this).addClass("disabled");
-                                }
-                                });
-                                }
-                                }
-
-                                if(this.qs2.matchedResultsCount!=0)
-                                {
-                                $('#selected_come').prop("disabled", false);
-                                }
-                                else
-                                {
-                                $('#selected_come').prop("disabled", true);
-                                }
-
+                                    var check = this.$container.attr("id");
+                                    var checkdata = check.split('_');
+                            
+                                    this.qs1.cache();
+                                    this.qs2.cache();
+                                    var data = [];
+                                    var data1 = [];
+                                    var $el = $("#ms-selected_come");
+                            
+                                    $el.find('[class*="ms-elem-selection ms-selected"]').each(function () {
+                                        data.push($(this).text());
+                                        var ii = this.id;
+                                        var idd = ii.split('-');
+                                        data1.push(idd[0]);
+                                    });
+                            
+                                    $('#totaldefultselected_1').html(data.length); // Update the count of selected items
+                            
+                                    for (var m = 0; m <= idscount; m++) {
+                                        if (checkdata[1] != m) {
+                                            $('#selected_come').find('[class*="ms-elem-selectable"]').each(function () {
+                                                var j = this.id.split('-');
+                                                if ($.inArray($(this).text(), data) !== -1 && $.inArray(j[0], data1) !== -1) {
+                                                    $(this).addClass("disabled");
+                                                }
+                                            });
+                                        }
+                                    }
+                            
+                                    // Re-initialize the multi-select dropdown after updating the list of selected items
+                                    $('#selected_come').multiSelect('refresh');
                                 },
                                 afterDeselect: function () {
-
-                                var check = this.$container.attr("id");
-                                var checkdata = check.split('_');
-
-                                var data=[];
-                                var $el=$("#ms-selected_come");
-
-                                 $('#totaldefultselected_1').html($el.find('[class*="ms-elem-selection ms-selected"]').length);
-                                $el.find('[class*="ms-elem-selection ms-selected"]').each(function(){
-
-                                data.push($(this).text() );
-                                });
-
-                                for(var m=0;m<=idscount;m++)
-                                {
-
-                                if(checkdata[1]!=m)
-                                {
-                                $('#selected_come').find('[class*="ms-elem-selectable"]').each(function(){
-
-                                if($.inArray( $(this).text(), data )== -1)
-                                {
-                                $(this).removeClass("disabled");
+                                    var check = this.$container.attr("id");
+                                    var checkdata = check.split('_');
+                                    var data = [];
+                                    var $el = $("#ms-selected_come");
+                            
+                                    $el.find('[class*="ms-elem-selection ms-selected"]').each(function () {
+                                        data.push($(this).text());
+                                    });
+                            
+                                    $('#totaldefultselected_1').html(data.length); // Update the count of selected items
+                            
+                                    for (var m = 0; m <= idscount; m++) {
+                                        if (checkdata[1] != m) {
+                                            $('#selected_come').find('[class*="ms-elem-selectable"]').each(function () {
+                                                if ($.inArray($(this).text(), data) === -1) {
+                                                    $(this).removeClass("disabled");
+                                                }
+                                            });
+                                        }
+                                    }
+                            
+                                    // Re-initialize the multi-select dropdown after updating the list of selected items
+                                    $('#selected_come').multiSelect('refresh');
                                 }
-                                });
-                                }
-                                }
-
-                                this.qs1.cache(), this.qs2.cache()
-                                if(this.qs2.matchedResultsCount!=0)
-                                {
-                                $('#selected_come').prop("disabled", false);
-                                }
-                                else
-                                {
-                                $('#selected_come').prop("disabled", true);
-                                }
-                                }
-
-                                });
-
-                          }
+                            });
+                            
                         //   $('select[name="namefrom[]"]').change(function() {
                         //     var i = 1; 
                         //     var finalresult = []; 
@@ -3944,7 +4002,8 @@ $('.namefrom').each(function(){
                        
 
                        
-
+                    }
+                    //code changed by bheema
 
                     }
                     else
@@ -4059,32 +4118,32 @@ $('.namefrom').each(function(){
                 // jc_02 ends here
                 
                 // JC_11
-                var action = $('#row_'+rn).find('select[name^="action"] option:selected').map(function () {
-                    if (this.value != '') {
-                        return this.value;
-                    }
-                
-                }).get();
-                var namefrom = $('#row_'+rn).find('select[name^="namefrom"] option:selected').map(function () {
-                    if (this.value != '') {
-                        return this.value;
-                    }
-                
-                }).get();
-                if(namefrom.length > 0 && action.length > 0){
-                    EnabledButton();
-                } else {
-                    DisabledButton();
+            var action = $('#row_' + rn).find('select[name^="action"] option:selected').map(function () {
+                if (this.value != '') {
+                    return this.value;
                 }
-                $('select[name^="namefrom"]').change(function () {
-                    var value = $(this).val();
-                    if(value.length > 0 && action.length > 0){
-                        EnabledButton();
-                    } else {
-                        DisabledButton();
-                    }
-                });
-                // 
+
+            }).get();
+            var namefrom = $('#row_' + rn).find('select[name^="namefrom"] option:selected').map(function () {
+                if (this.value != '') {
+                    return this.value;
+                }
+
+            }).get();
+            if (namefrom.length > 0 && action.length > 0) {
+                EnableAddButton1();
+            } else {
+                DisableAddButton1();
+            }
+            $('select[name^="namefrom"]').change(function () {
+                var value = $(this).val();
+                if (value.length > 0 && action.length > 0) {
+                    EnableAddButton1();
+                } else {
+                    DisableAddButton1();
+                }
+            });
+            // Ends
         
     });
 
@@ -4395,6 +4454,11 @@ var clickpopup = $('#clickpopup').val();
 function getstatus(data,i)
 {
     var clickpopup = $('#clickpopup').val();
+    if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Addition' || clickpopup=='Rename' || clickpopup=='Deletion' || clickpopup=='Reshuffle') && data.value!='')
+    {
+        manageParsleyErrors(data);
+    }
+
     if(clickpopup=='Rename')
     {
         // alert($('#ovstatus_'+i+'').val());
@@ -4453,6 +4517,10 @@ function getstatus(data,i)
 function get_sub(data,i)
 {
     var clickpopup = $('#clickpopup').val();
+    if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Addition' || clickpopup=='Rename' || clickpopup=='Deletion' || clickpopup=='Reshuffle') && data.value!='')
+    {
+        manageParsleyErrors(data);
+    }
 
 
 
@@ -4524,9 +4592,11 @@ var vtids = $('#named2021').val();
                                 }
   
                                   $("#vstatus"+i+"").val(jj).trigger('change');
+                                 
                               }
                             else
                             {
+                                $('#name2021').val('').trigger('change');// code added by srikanth to refresh
                               $("#vstatus"+i+"").val('').trigger('change');
                             }
 
@@ -4589,6 +4659,20 @@ function getvtlist(data,i) {
       
         var seleted = $('#applyon').val();
 var clickpopup = $('#clickpopup').val();
+if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Addition' || clickpopup=='Rename' || clickpopup=='Deletion' || clickpopup=='Reshuffle') && data.value!='')
+{
+    manageParsleyErrors(data);
+}
+
+
+//code modified by srikanth to trigger village status and level
+if(data.value == '' && (clickpopup =='Rename' || clickpopup =='Merge' ||  clickpopup == 'Deletion' || clickpopup == 'Addition') && seleted =='Village / Town')
+{
+    $('#named2021').val('').trigger('change');
+    
+    
+}
+//
 if(clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Rename'  ||clickpopup=='Deletion' || clickpopup=='Reshuffle')
 {
  var fstids = $('select[name="statenew[]"] option:selected').map(function () {
@@ -4772,18 +4856,33 @@ if(clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Rename'  ||c
     return false;
 }
 else
-{
-    if(clickpopup=='Addition')
-    {
-$("#vStatus2021_"+i+"").val('VILLAGE').trigger('change'); 
-    }
-    else
-    {
-    $("#vStatus2021_"+i+"").val('').trigger('change');   
-    }
+// {
+//     if(clickpopup=='Addition')
+//     {
+// $("#vStatus2021_"+i+"").val('VILLAGE').trigger('change'); 
+//     }
+//     else
+//     {
+//     $("#vStatus2021_"+i+"").val('').trigger('change');   
+//     }
     
-}
-     
+// }
+{
+
+    //modified by srikanth to trigger
+        if(clickpopup=='Addition')
+        {
+            $('#name2021').val('').trigger('change');  
+            {
+    $("#vStatus2021_"+i+"").val('').trigger('change'); 
+            }
+        }
+        else
+        {
+        $("#vStatus2021_"+i+"").val('').trigger('change');   
+        }
+        
+    }
        
 
 }
@@ -4794,6 +4893,10 @@ function getvtlist_more(data,j) {
     
         var seleted = $('#applyon').val();
 var clickpopup = $('#clickpopup').val();
+if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Addition' || clickpopup=='Rename' || clickpopup=='Deletion' || clickpopup=='Reshuffle') && data.value!='')
+{
+    manageParsleyErrors(data);
+}
 if(clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Rename')
 {
  var fstids = $('#statenew'+j+'').val();
@@ -5325,6 +5428,7 @@ var seleted = $('#applyon').val();
 
         if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Reshuffle') && data.value!='')
         {
+            manageParsleyErrors(data);
             $.ajax({
         type: "POST",
         url: "insert_data.php",
@@ -5422,33 +5526,47 @@ $('#statenew1').val('').trigger('change');
     });
 
         }
-
         // JC_104 Modified by Arul for district refresh in M/PM
-    else if (clickpopup == "Merge" && data.value === "" && seleted == "District") {
-        $("#id2021" + no + "")
-            .children()
-            .remove();
-        $("#id2021" + no + "").append(
-            $("<option>", {
-                value: "",
-                text: "Select District",
-            })
-        );
-        $("#id2021" + no + "")
-            .val("")
-            .trigger("change");
-        $("#action" + no + "")
-            .val("")
-            .trigger("change");
-    }
-    // Ends...
+        else if(clickpopup == "Merge" && data.value === "" && seleted == "District"){
+            $("#id2021" + no + "")
+                  .children()
+                  .remove();
+                $("#id2021" + no + "").append(
+                  $("<option>", {
+                    value: "",
+                    text: "Select District",
+                  })
+                );
+                $("#id2021" + no + "")
+                .val("")
+                .trigger("change");
+                $("#action" + no + "")
+                .val("")
+                .trigger("change");
+           }
+           // Ends...
 
 }
+//This value required- Arun
+function manageParsleyErrors(data) {
+    var errorList = $(data).siblings('ul.parsley-errors-list');
+    if (data.value !== "" && errorList.length > 0) {
+        errorList.children('li').hide();
+    } else {
+        errorList.children('li').show();
+    }
+    errorList.children().remove();
+}
+
 
 function get_district_popupto_ii(data,clickpopup,i) {
 var seleted = $('#applyon').val();
 
-
+//This value required- Arun
+if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Addition' || clickpopup=='Rename' || clickpopup=='Deletion' || clickpopup=='Reshuffle') && data.value!='')
+        {
+            manageParsleyErrors(data);
+}
         if((clickpopup=='Create' || clickpopup=='Addition' || clickpopup=='Rename') && data.value!='')
         {
             $.ajax({
@@ -5601,6 +5719,15 @@ var seleted = $('#applyon').val();
     });
 
     }
+        //srikanth to refresh village list 
+   else if((clickpopup =='Merge' || clickpopup=='Rename') && data.value =='' && seleted == 'Village / Town')
+   {
+           $('#districtnew' +i+ '').val('').trigger('change');
+           {
+           $('#named2021' +i+'').val('').trigger('change');
+           }
+          }
+          //ends here
         else
         {
 
@@ -5633,27 +5760,27 @@ var seleted = $('#applyon').val();
 
 function get_district_popupto(data,clickpopup,i) {
 
-    //JC_11
+    // JC_11
     var rn = $('#rowno').val();
-    var namefrom = $('#row_'+rn).find('select[name^="namefrom"] option:selected').map(function () {
+    var namefrom = $('#row_' + rn).find('select[name^="namefrom"] option:selected').map(function () {
         if (this.value != '') {
             return this.value;
         }
-    
+
     }).get();
-    var action = $('#row_'+rn).find('select[name^="action"] option:selected').map(function () {
+    var action = $('#row_' + rn).find('select[name^="action"] option:selected').map(function () {
         if (this.value != '') {
             return this.value;
         }
-    
+
     }).get();
-    // 
+    // Ends
 var seleted = $('#applyon').val();
 var clickpopup = $('#clickpopup').val();
 
         if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Addition' || clickpopup=='Rename'  ||clickpopup=='Deletion' || clickpopup=='Reshuffle') && data.value!='')
         {
-
+            manageParsleyErrors(data);
 
         var fstids = $('#fstids').val();
         var fdtids = $('#fdtids').val();
@@ -5903,13 +6030,13 @@ var clickpopup = $('#clickpopup').val();
         // JC_11 Modified by Arul for M/pm Add Button
     if (action.length > 0 && namefrom.length > 0) {
 
-        $(".add_button").prop("disabled", false);
+        EnableAddButton1();
     }
-    if ((clickpopup === "Merge"||clickpopup === "Reshuffle") && data.value !== "" &&
+    if ((clickpopup === "Merge" || clickpopup === "Reshuffle") && data.value !== "" &&
         (seleted === "District" || seleted === "Village / Town" || seleted === "Sub-District") && namefrom.length > 0 && action.length > 0) {
         DisableRow(rn);
 
-    } else if ((clickpopup === "Merge"||clickpopup === "Reshuffle") && data.value == "" &&
+    } else if ((clickpopup === "Merge" || clickpopup === "Reshuffle") && data.value == "" &&
         (seleted === "District" || seleted === "Village / Town" || seleted === "Sub-District") && namefrom.length > 0 && action.length > 0) {
         EnableRow(rn);
     }
@@ -5927,8 +6054,6 @@ var clickpopup = $('#clickpopup').val();
         $("select[name*='newnamem[]']").val("").trigger("change");
     }
     // Ends...
-
-
 }
 
 
@@ -5938,6 +6063,7 @@ function get_sddistrict_popupto_ii(data,clickpopup,i) {
 var seleted = $('#applyon').val();
         if((clickpopup=='Create' || clickpopup=='Addition' || clickpopup=='Rename' || clickpopup=='Deletion') && data.value!='')
         {
+            manageParsleyErrors(data);
             $.ajax({
         type: "POST",
         url: "insert_data.php",
@@ -6119,6 +6245,7 @@ var seleted = $('#applyon').val();
 var clickpopup = $('#clickpopup').val();
         if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Addition' || clickpopup=='Rename' || clickpopup=='Deletion' || clickpopup=='Reshuffle') && data.value!='')
         {
+            manageParsleyErrors(data);
              var fstids = $('#fstids').val();
         var fdtids = $('#fdtids').val();
         var fsdids = $('#fsdids').val();
@@ -6404,6 +6531,10 @@ var seleted = $('#applyon').val();
 // alert(data.value);
 
 var clickpopup = $('#clickpopup').val();
+if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Addition' || clickpopup=='Rename' || clickpopup=='Deletion' || clickpopup=='Reshuffle') && data.value!='')
+        {
+            manageParsleyErrors(data);
+}
 // && data.value!=''
         if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Reshuffle') )
         {
@@ -6696,7 +6827,7 @@ else
     $(".newname").prop('required',false);
     $('.newnamem').css("display", "none");
     $(".newnamem").prop('required',false);
-        
+   
 
     }
     else
@@ -6736,6 +6867,17 @@ if(seleted=='District')
         $("#subdistrictget").prop('required',false);
         $("#villageget").prop('required',false);
         $(".newnamecheck").prop('required',true);
+        
+        $('.newnamem').change(function(){
+
+            var value = $(this).val();
+        // This value required removed -Arun  
+            if(value !='')
+            {
+                $(this).parsley().removeError('required',{updateClass: true});
+            }
+        });
+
 
     }
     else
@@ -6743,10 +6885,45 @@ if(seleted=='District')
         //  $('.ORR').css("display", "none");
      
      $(".mainvaldata").prop('required',true);
+     $(".mainvaldata").prop('required',true);
+     $('.mainvaldata').change(function(){
+
+        var value = $(this).val();
+    // This value required removed -Arun  
+        if(value !='')
+        {
+            $(this).parsley().removeError('required',{updateClass: true});
+        }
+    });
+
      $(".actiondata").prop('required',true);
+     $('.actiondata').change(function(){
+
+        var value = $(this).val();
+    // This value required removed -Arun  
+        if(value !='')
+        {
+            $(this).parsley().removeError('required',{updateClass: true});
+        }
+    });
+
  
      $('.fromstate').css("display", "block");
      $(".fromstate").prop('required',true);
+     $('.fromstate').change(function(){
+
+        var value = $(this).val();
+    // This value required removed -Arun  
+        if(value !='')
+        {
+            $(this).parsley().removeError('required',{updateClass: true});
+        }
+    });
+
+     //$(".actiondata").prop('required',true);
+ 
+    //  $('.fromstate').css("display", "block");
+    //  $(".fromstate").prop('required',true);
  
      $('.districtstatus').css("display", "none");
      $(".districtstatus").prop('required',false);
@@ -6761,6 +6938,17 @@ if(seleted=='District')
  
      $('.stnew').css("display", "block");
      $(".stnew").prop('required',true);
+     $('.stnew').change(function(){
+
+        var value = $(this).val();
+    // This value required removed -Arun  
+        if(value !='')
+        {
+            $(this).parsley().removeError('required',{updateClass: true});
+        }
+    });
+
+
  
      $('.dtnew').css("display", "none");
      $(".dtnew").prop('required',false);
@@ -7004,7 +7192,27 @@ else
             if(createfrom=='Create' || createfrom=='Merge' || createfrom=='Rename')
             {
                 $('.statestatus1').css("display", "block");
+               // $(".Statusyear").prop('required',true);
                 $(".Statusyear").prop('required',true);
+                $('.Statusyear').change(function(){
+                    var value = $(this).val();
+                // This value required removed -Arun  
+                    if(value !='')
+                    {
+                        $(this).parsley().removeError('required',{updateClass: true});
+                    }
+                });
+
+                $('.newnamem').change(function(){
+                    var value = $(this).val();
+                // This value required removed -Arun  
+                    if(value !='')
+                    {
+                        $(this).parsley().removeError('required',{updateClass: true});
+                    }
+                });
+
+
                 if(createfrom=='Rename')
                 {
                         $('.FAC').css("display", "none");
@@ -7015,6 +7223,36 @@ else
                 {
                     $('.FAC').css("display", "block");
                     $(".FAC").prop('required',true);
+                    $('.FAC').change(function(){
+                        var value = $(this).val();
+                    // This value required removed -Arun  
+                        if(value !='')
+                        {
+                            $(this).parsley().removeError('required',{updateClass: true});
+                        }
+                        
+                    });
+
+                    $('.mainvaldata').change(function(){
+                        var value = $(this).val();
+                    // This value required removed -Arun  
+                        if(value !='')
+                        {
+                            $(this).parsley().removeError('required',{updateClass: true});
+                        }
+                        
+                    });
+
+                    $('.actiondata').change(function(){
+                        var value = $(this).val();
+                    // This value required removed -Arun  
+                        if(value !='')
+                        {
+                            $(this).parsley().removeError('required',{updateClass: true});
+                        }
+                        
+                    });
+
 
                 }
                 
@@ -8956,38 +9194,174 @@ $(".newnamecheck").keyup(function(){
 
  
 
-    $("#name2021").keyup(function () {
-        var value = $(this).val();
-        var come = $('#comefromcheck').val();
-        var rn = $('#rowno').val();
-        if (come == 'District' || come == 'Sub-District' || come == 'Village / Town') {
-    
-    
-    
-            var namefrom = $('#row_'+rn).find('select[name^="namefrom"] option:selected').map(function () {
-                if (this.value != '') {
-                    return this.value;
-                }
-    
-            }).get();
+ $("#name2021").keyup(function(){  
+    // JC_11
+//             var value = $(this).val();
+//             var come = $('#comefromcheck').val();
+//            if(come=='District' || come=='Sub-District' || come=='Village / Town')
+//            {
+
+  
+
+//                 // var fromaction = document.getElementsByName('namefrom[]');
+// var fromaction = $('select[name="namefrom[]"] option:selected').map(function () {
+//                     if(this.value!='')
+//                     {
+//                         return this.value;    
+//                     }
+                    
+//             }).get();
+
+// var action = $('select[name="action[]"] option:selected').map(function () {
+//                         return this.value;    
+                   
+                    
+//             }).get();
+
+
+
+
+
+
+
+// var fromaction1 = $('select[name="action[]"]').map(function () {
+//                     if(this.value=='Full Merge')
+//                     {
+//                         return this.value;    
+//                     }
+                    
+//             }).get();
             
-            var action = $('#row_'+rn).find('select[name^="action"] option:selected').map(function () {
-                if (this.value != '') {
-                    return this.value;
-                }
+//            //  alert(fromaction.length);
+
+
+//                 if(value!='' && value.length>0 && fromaction.length>1 )
+//                 {
+                
+
+//                     if(fromaction1.length>=1)
+//                     {
+
+//                     $('.add_button').attr('disabled', false);
+//                     $('.add_button_name').attr('disabled', true);
+//                     }
+//                     else
+//                     {
+
+//                         if(come=='District')
+//                         {
+//                              $('.add_button').attr('disabled', false);
+//                     $('.add_button_name').attr('disabled', true);
+//                         }
+                        
+//                         else
+//                         {
+
+//                           $('#row_1').find('input, textarea, button, select').attr('disabled','disabled');  
+//    $("#ms-selected_come [class*=ms-elem-selectable]").addClass("disabled");
+//                         $("#ms-selected_come [class*=ms-elem-selection]").addClass("disabled");
+//                              $('.add_button').attr('disabled', false);
+//                     $('.add_button_name').attr('disabled', true);
+//                         }
+                   
+                    
+//                     }
+//                 }
+
+//                 else
+//                 {
+                  
+
+//                         if(value!='' && fromaction.length==1 && fromaction1.length==0)
+//                         {
+                        
+//                           if(action.length==1)
+//                           {
+
+                            
+//                               $('.add_button').attr('disabled', true);
+//                             $('.add_button_name').attr('disabled', false);
+//  $('#row_1').find('input, textarea, button, select').attr('disabled','disabled');   
+//                              $("#ms-selected_come [class*=ms-elem-selectable]").addClass("disabled");
+//                         $("#ms-selected_come [class*=ms-elem-selection]").addClass("disabled");
+
+//                           }
+//                           else
+//                           {
+//                           //  $('.add_button').attr('disabled', false);
+//                             $('.add_button_name').attr('disabled', true);
+
+                              
+
+//                           }
+                            
+
+
+//                         }
+//                         else
+//                         {
+
+//                                 if(come=='Village / Town' && $('#clickpopup').val()=='Addition')
+//                                 {
+//                                 $('.add_button').attr('disabled', true);
+//                                 $('.add_button_name').attr('disabled', false);
+//                                 }
+//                                 else
+//                                 {
+                                
+//                                   $('#row_1').find('input, textarea, button, select').removeAttr('disabled','disabled'); 
+//                                       $('.add_button').attr('disabled', false);
+//                             $('.add_button_name').attr('disabled', true);
+//                              $("#ms-selected_come [class*=ms-elem-selectable]").removeClass("disabled");
+//                         $("#ms-selected_come [class*=ms-elem-selection]").removeClass("disabled");
+//                                 }
+                          
+
+//                         }
+//                 }
+//             }
+    var rn = $('#rowno').val();
+    var value = $(this).val();
+    var come = $('#comefromcheck').val();
+    var clickpopup = $('#clickpopup').val();
     
-            }).get();
-            if (value.length > 0 && namefrom.length >= 1 && action.length >=1) {
-                DisableRow(rn);
+    if ((come == 'District' || come == 'Sub-District' || come == 'Village / Town') && clickpopup == 'Create') {
+
+        var namefrom = $('#row_' + rn).find('select[name^="namefrom"] option:selected').map(function () {
+            if (this.value != '') {
+                return this.value;
             }
-            else if(value.length == 0 && namefrom.length >= 1 && action.length >=1) {
-                EnableRow(rn);
+
+        }).get();
+
+        var action = $('#row_' + rn).find('select[name^="action"] option:selected').map(function () {
+            if (this.value != '') {
+                return this.value;
             }
+
+        }).get();
+        
+        if (value.length > 0 && namefrom.length >= 1 && action.length >= 1) {
+            DisableRow(rn);
         }
-    
-    
-    
-    });
+        else if (value.length == 0 && namefrom.length >= 1 && action.length >= 1) {
+            EnableRow(rn);
+        }
+    } 
+    var sddistrictnew = $('#todataaction_' + rn).find('select[name^="sddistrictnew"] option:selected').map(function () {
+        if (this.value != '') {
+            return this.value;
+        }
+
+    }).get();
+    if(come == 'Village / Town' && clickpopup == 'Addition' && sddistrictnew.length >= 1 && value != ''){
+        EnableAddButton2();
+    } else {
+        DisableAddButton2();
+    }
+    // Ends            
+
+    });  
 
 
 
@@ -9100,7 +9474,9 @@ var fromaction1 = $('select[name="action[]"]').map(function () {
 
  $('.actiondata').change(function(){
     var value = $(this).val();
+    // JC_11
     var rn = $('#rowno').val();
+    // Ends
 
 var fromaction1 = $('select[name="action[]"]').map(function () {
                     if(this.value=='Full Merge')
@@ -9117,22 +9493,39 @@ if(fromaction1.length>=1)
          $('.field_wrapper_name').html('');
 }
 
-var toaction = document.getElementsByName('newname[]');
 // JC_11
-var namefrom = $('#row_'+rn).find('select[name^="namefrom"] option:selected').map(function () {
-    if (this.value != '') {
-        return this.value;
-    }
+// var toaction = document.getElementsByName('newname[]');
 
-}).get();
-    if((value!='' && value != null) && namefrom.length > 0)
-    {
-        EnabledButton();
+
+   
+
+//     if(value!='' && toaction.length==1)
+//     {
+
+//         $('.add_button').attr('disabled', false);
+        
+//          $('.add_button_name').attr('disabled', true);
+//     }
+//     else
+//     {
+
+//         $('.add_button').attr('disabled', true);
+//          $('.add_button_name').attr('disabled', false);
+//     }
+
+    var namefrom = $('#row_' + rn).find('select[name^="namefrom"] option:selected').map(function () {
+        if (this.value != '') {
+            return this.value;
+        }
+
+    }).get();
+    if ((value != '' && value != null) && namefrom.length > 0) {
+        EnableAddButton1();
     }
-    else
-    {
-        DisabledButton();
+    else {
+        DisableAddButton1();
     }
+    // Ends...
 return false;
   });
 
@@ -9147,30 +9540,30 @@ return false;
  var fromaction = document.getElementsByName('namefrom[]');
 
 // Modified by Arul for JC_11
-    var rn = $('#rowno').val();
-    if ($('#applyon').val() == "State" && $('#clickpopup').val() == "Create") {
+var rn = $('#rowno').val();
+if ($('#applyon').val() == "State" && $('#clickpopup').val() == "Create") {
 
-        var namefrom = $('#row_'+rn).find('select[name^="namefrom"] option:selected').map(function () {
-            if (this.value != '') {
-                return this.value;
-            }
-
-        }).get();
-        
-        var action = $('#row_'+rn).find('select[name^="action"] option:selected').map(function () {
-            if (this.value != '') {
-                return this.value;
-            }
-
-        }).get();
-        if (value.length > 0 && namefrom.length >= 1 && action.length >=1) {
-            DisableRow(rn);
+    var namefrom = $('#row_' + rn).find('select[name^="namefrom"] option:selected').map(function () {
+        if (this.value != '') {
+            return this.value;
         }
-        else if(value.length == 0 && namefrom.length >= 1 && action.length >=1) {
-            EnableRow(rn);
+
+    }).get();
+
+    var action = $('#row_' + rn).find('select[name^="action"] option:selected').map(function () {
+        if (this.value != '') {
+            return this.value;
         }
+
+    }).get();
+    if (value.length > 0 && namefrom.length >= 1 && action.length >= 1) {
+        DisableRow(rn);
     }
-    // Ends..
+    else if (value.length == 0 && namefrom.length >= 1 && action.length >= 1) {
+        EnableRow(rn);
+    }
+}
+// Ends..
 
    // var fromaction = $('select[name="namefrom[]"] option:selected').map(function () {
    //                  if(this.value!='')
@@ -9247,6 +9640,25 @@ return false;
 function getdata_action(valu,i)
 {
 
+    if (valu.value != "") {
+        $('.form-select').change(function(){
+        var value = $(this).val();
+       // This value required removed -Arun
+        if(value !='')
+        {
+            $(this).parsley().removeError('required',{updateClass: true});
+        }
+    });
+    $('.actiondata').change(function(){
+        var value = $(this).val();
+       // This value required removed -Arun
+        if(value !='')
+        {
+            $(this).parsley().removeError('required',{updateClass: true});
+        }
+    });
+       }
+
 
    if(valu.value!='')
    {
@@ -9298,27 +9710,33 @@ function getdata_action(valu,i)
 // }
 
 //modifiied by srikanth to hide new status 2021//
-if ($('#comefromcheck').val() == 'State' && $('#clickpopup').val() == 'Merge' && valu.value == 'Merge')
- {
-    $("#fstatus" + i + "").attr('disabled', true);
-    $("#fstatus" + i + "").prop('required', false);
-    $("#fstatus" + i + "").val($('#ostate' + i + '').val()).trigger('change');
-    $('#fstatus' + i + '').find("option[value='" + fla + "']").prop('disabled', false);
-} 
-else if ($('#comefromcheck').val() == 'State' && $('#clickpopup').val() == 'Merge')
- {
-    
-    $("#fstatus" + i + "").attr('disabled', false);
-    $('#fstatus' + i + '').find("option[value='" + fla + "']").prop('disabled', false);
+if($('#comefromcheck').val()=='State' && $('#clickpopup').val()=='Merge' && valu.value=='Merge')
+{
+
+
+   $("#fstatus"+i+"").val($('#ostate'+i+'').val()).trigger('change');
+    $('#fstatus'+i+'').find("option[value='"+fla+"']").prop('disabled',false); 
+   $("#fstatus"+i+"").attr('disabled', true);
+     $("#fstatus"+i+"").prop('required', false);
 }
- else 
- {
-    
-    $('.add_button_name').attr('disabled', true);
+else
+{
+
+   if($('#comefromcheck').val()=='State' && $('#clickpopup').val()=='Merge' && valu.value == 'Partially Merge')
+   {
+
+    $("#fstatus"+i+"").attr('disabled', false);
+    $("#fstatus"+i+"").prop('required', true);
+
+   }
+
+}
+}
+else
+{
+ $('.add_button_name').attr('disabled', true);
 }
 
-    
-   }
 }
 //ends here
 
@@ -9418,6 +9836,9 @@ var comefrom = $('#applyon').val();
                         {
                             $(ck).prop("disabled", false);
                         }
+                        this.$selectableUl.prev().val('');   // Sub Merge multi level Bheema
+                        this.$selectionUl.prev().val('');
+                        this.qs1.search('');
                     
                     },
 
@@ -9434,6 +9855,9 @@ var comefrom = $('#applyon').val();
                         {
                             $(ck).prop("disabled", false);
                         }
+                        this.$selectableUl.prev().val('');    // Sub Merge multi level Bheema
+                        this.$selectionUl.prev().val('');
+                        this.qs2.search('');
 
                     }
 
@@ -9640,10 +10064,16 @@ var comefrom = $('#applyon').val();
                     },
                     afterSelect: function (values) {
                         this.qs1.cache(), this.qs2.cache()
+                        this.$selectableUl.prev().val('');   // State create multi level
+                        this.$selectionUl.prev().val('');
+                        this.qs1.search('');
 
                     },
                     afterDeselect: function () {
                         this.qs1.cache(), this.qs2.cache()
+                        this.$selectableUl.prev().val(''); // State create multi level
+                        this.$selectionUl.prev().val('');
+                        this.qs2.search('');
                     }
                     });
 
@@ -9706,71 +10136,143 @@ function getactiondata(thisdata,i,dist)
     return false;
 }
 
-function actionoremove(valueof,x)
-{
+// function actionoremove(valueof,x)
+// {
    
 
-         if(valueof!='')
-   {
-     var fla='';
-      var fla11='';
-     var fla1='';
-       if($('#ostate'+x+'').val()=='ST')
-       {
-            fla='UT';
-            fla1='Union Territory';
-             fla11='UT';
-       }
-        else
-        {
-            fla='ST';
-            fla1='State';
-            fla11='ST';
-        }
+//          if(valueof!='')
+//    {
+//      var fla='';
+//       var fla11='';
+//      var fla1='';
+//        if($('#ostate'+x+'').val()=='ST')
+//        {
+//             fla='UT';
+//             fla1='Union Territory';
+//              fla11='UT';
+//        }
+//         else
+//         {
+//             fla='ST';
+//             fla1='State';
+//             fla11='ST';
+//         }
 
-    if($('#comefromcheck').val()=='State' && $('#clickpopup').val()=='Merge' && valueof=='Merge')
-    {
-       // fstatus1
+//     if($('#comefromcheck').val()=='State' && $('#clickpopup').val()=='Merge' && valueof=='Merge')
+//     {
+//        // fstatus1
 
-       $("#fstatus"+x+"").val($('#ostate'+x+'').val()).trigger('change');
-       $('#fstatus'+x+'').find("option").prop('disabled',false);
-       $('#fstatus'+x+'').find("option[value='"+fla11+"']").prop('disabled',false); //modified by sahana to remove freezed status in merge
-      //  $("#fstatus"+x+"").attr('disabled', true);
-         $("#fstatus"+x+"").prop('required', false);
-    }
-    else
-    {
+//        $("#fstatus"+x+"").val($('#ostate'+x+'').val()).trigger('change');
+//        $('#fstatus'+x+'').find("option").prop('disabled',false);
+//        $('#fstatus'+x+'').find("option[value='"+fla11+"']").prop('disabled',false); //modified by sahana to remove freezed status in merge
+//       //  $("#fstatus"+x+"").attr('disabled', true);
+//          $("#fstatus"+x+"").prop('required', false);
+//     }
+//     else
+//     {
      
         
-             if($('#comefromcheck').val()=='State' && $('#clickpopup').val()=='Merge')
-       {
-        $('#fstatus'+x+'').find("option[value='"+fla11+"']").prop('disabled',false); //modified by sahana in merge
-       }
+//              if($('#comefromcheck').val()=='State' && $('#clickpopup').val()=='Merge')
+//        {
+//         $('#fstatus'+x+'').find("option[value='"+fla11+"']").prop('disabled',false); //modified by sahana in merge
+//        }
 
 
+//     }
+//    }
+
+
+//         if(valueof!='')
+//         {
+//              $('.add_button').attr('disabled', false);
+
+       
+//              $('#oremove'+x+'').attr('disabled', false);
+       
+//         }
+//         else
+//         {
+//             $('.add_button').attr('disabled', true);
+//                  $('#oremove'+x+'').attr('disabled', true);
+//         }
+// return false;
+
+// }
+
+//modified by srikanth to disable new status 2021 when merge is selected//
+function actionoremove(valueof,x)
+{
+    if(valueof.value!=''){
+        $('.form-select').change(function(){
+            var value = $(this).val();
+        // This value required removed -Arun
+            if(value !='')
+            {
+                $(this).parsley().removeError('required',{updateClass: true});
+            }
+        });
     }
-   }
+ 
 
-
-        if(valueof!='')
-        {
-             $('.add_button').attr('disabled', false);
-
-       
-             $('#oremove'+x+'').attr('disabled', false);
-       
+    if (valueof != "") {
+        var fla = "";
+        var fla11 = "";
+        var fla1 = "";
+        if ($("#ostate" + x + "").val() == "ST") {
+            fla = "UT";
+            fla1 = "Union Territory";
+            fla11 = "UT";
+        } else {
+            fla = "ST";
+            fla1 = "State";
+            fla11 = "ST";
         }
-        else
-        {
-            $('.add_button').attr('disabled', true);
-                 $('#oremove'+x+'').attr('disabled', true);
-        }
-return false;
 
+        if (
+            $("#comefromcheck").val() == "State" &&
+            $("#clickpopup").val() == "Merge" &&
+            valueof == "Merge"
+        ) {
+        
+
+            $("#fstatus" + x + "")
+                .val($("#ostate" + x + "").val())
+                .trigger("change");
+            $("#fstatus" + x + "")
+                .find("option")
+                .prop("disabled", false);
+            $("#fstatus" + x + "")
+                .find("option[value='" + fla11 + "']")
+                .prop("disabled", false);
+            $("#fstatus" + x + "").attr('disabled', true);
+            $("#fstatus" + x + "").prop("required", false);
+        } else {
+            if (
+                $("#comefromcheck").val() == "State" &&
+                $("#clickpopup").val() == "Merge" && valueof == "Partially Merge"
+            ) {
+                $("#fstatus" + x + "")
+                    .find("option[value='" + fla11 + "']")
+                    .prop("disabled", false); 
+                $("#fstatus" + x + "").attr('disabled', false);
+                $("#fstatus" + x + "").prop("required", true);
+            }
+        }
+    }
+
+    if (valueof != "") {
+        $(".add_button").attr("disabled", false);
+
+        $("#oremove" + x + "").attr("disabled", false);
+    } else {
+        $(".add_button").attr("disabled", true);
+        $("#oremove" + x + "").attr("disabled", true);
+    }
+    return false;
 }
 
 
-
+//ends here
 
 
 
@@ -11254,6 +11756,10 @@ $(function () {
 
 $("#assigndata").submit(function (e) {
 
+    // JC_11
+    ResetRowNumber();
+    // Ends...
+
         $('#assigndata').find('input, textarea, button, select').removeAttr('disabled','disabled'); 
 
         var dataform = new FormData(this);
@@ -11783,6 +12289,9 @@ if($('#clickpopup').val()=='Merge' || $('#clickpopup').val()=='Partiallysm' || $
                                  //  var idddata = idd[0].join("-selectable")
                                 data1.push(idd[0]);
                                 });
+                                this.$selectableUl.prev().val('');//changed by bheema
+                               this.$selectionUl.prev().val('');
+                               this.qs1.search('');
 
                                 // && $.inArray( $(this).text(), data1 )!= -1
 
@@ -11823,6 +12332,9 @@ if($('#clickpopup').val()=='Merge' || $('#clickpopup').val()=='Partiallysm' || $
 
                                 data.push($(this).text() );
                                 });
+                                  this.$selectableUl.prev().val('');
+                                   this.$selectionUl.prev().val('');
+                                     this.qs2.search('');
 
                                 for(var m=0;m<=idscount;m++)
                                 {
@@ -11857,9 +12369,10 @@ if($('#clickpopup').val()=='Merge' || $('#clickpopup').val()=='Partiallysm' || $
                                     $('#backbtnnew').css("visibility", "hidden");
 
                               }
-                             
-
-                        }
+                                 
+    
+                            }
+                            //code changed by bheema//
                         else if($('#clickpopup').val()=='Rename')
                         {
                               var dataarray = JSON.parse(res[1]);
@@ -12261,9 +12774,9 @@ mainaction +='<tr><td><strong class="trinstrong1">'+toname[k]+' <span class="tri
 
                                 
                                 // Command: toastr["success"]("Successfully added "+res[2]+".");
-
+                                               //code changed by bheema
                                 $("#addnewdocument .close").click();
-                                if(res[6]!='true')
+                                if (res[6] !== 'true') 
                                 {
                                     var idscount = (res[4]-1);
 
@@ -12314,6 +12827,9 @@ mainaction +='<tr><td><strong class="trinstrong1">'+toname[k]+' <span class="tri
                                  //  var idddata = idd[0].join("-selectable")
                                 data1.push(idd[0]);
                                 });
+                                this.$selectableUl.prev().val('');
+                                  this.$selectionUl.prev().val('');
+                                  this.qs1.search('');
 
                                 // && $.inArray( $(this).text(), data1 )!= -1
 
@@ -12356,6 +12872,9 @@ mainaction +='<tr><td><strong class="trinstrong1">'+toname[k]+' <span class="tri
 
                                 data.push($(this).text() );
                                 });
+                                this.$selectableUl.prev().val('');
+                                     this.$selectionUl.prev().val(''); // code changed by bheemn
+                                     this.qs2.search('');
 
                                 for(var m=0;m<=idscount;m++)
                                 {
@@ -12404,7 +12923,7 @@ mainaction +='<tr><td><strong class="trinstrong1">'+toname[k]+' <span class="tri
                                 $('#backbtnnew').css("visibility", "hidden");
 
 
-                                }
+                                }//code changed by bheema
                                 else
                                 {
                               
@@ -15739,9 +16258,11 @@ $("#assigndatamergep").submit(function (e) {
                                                                             sssflag = dataarray['applyon'];
                                                                         }
 
-                                                                        fmsg = fmsg+' <br> AND <br> '+ fromnamenew+' name changed to <strong class="trinstrong">'+returndata['newnamecheck'][0]+'</strong> <strong><span class="trinspam">('+returndata['comefromcheck']+')</span></strong>'; //modified by sahana status merge state 1509
-                                            }
-                                   
+                                                                         // Now ST/UT by arun  
+                                                                        //                             fmsg = fmsg+' <br> AND <br> '+ fromnamenew+' name changed to <strong class="trinstrong">'+returndata['newnamecheck'][0]+'</strong> <strong><span class="trinspam">('+returndata['comefromcheck']+')</span></strong>'; //modified by sahana status merge state 1509
+                                                                        fmsg = fmsg+' <br> AND <br> '+ fromnamenew+' name changed to <strong class="trinstrong">'+returndata['newnamecheck'][0]+'</strong> <strong><span class="trinspam">'+toflag+'</span></strong>';                    
+                                                                    }
+                                    
                                     var maintitaldata = fmsg;
 
                                    
@@ -19181,12 +19702,6 @@ var tablesdist = $("#tSD-datatable").DataTable({ "order": [], "scrollX": "100%",
 });
 
 // JC_11
-function DisabledButton(){
-    $('.add_button').prop('disabled', true);
-}
-function EnabledButton(){
-    $('.add_button').prop('disabled', false);
-}
 
 function DisableRow(rn) {
     if (rn == 1) {
@@ -19200,8 +19715,8 @@ function DisableRow(rn) {
         $('#row_1').find('input, textarea, button, select').attr('disabled', 'disabled');
         $('#row_' + rn + '').find('input, textarea, button, select').attr('disabled', 'disabled');
     }
-    $(".add_button").prop("disabled", true);
-    $(".add_button_name").prop("disabled", false);
+    DisableAddButton1();
+    EnableAddButton2();
 }
 function EnableRow(rn) {
     if (rn == 1) {
@@ -19215,12 +19730,33 @@ function EnableRow(rn) {
         $('#row_' + rn + '').find('input, textarea, button, select').removeAttr('disabled', 'disabled');
     }
     if ($('#action' + rn + '').val() == '' || $('#action' + rn + '').val() == null) {
-        $(".add_button").prop("disabled", true);
-        $(".add_button_name").prop("disabled", false);
+        DisableAddButton1();
+        EnableAddButton2();
     }
     else {
-        $(".add_button").prop("disabled", false);
-        $(".add_button_name").prop("disabled", true);
+        EnableAddButton1();
+        DisableAddButton2();
     }
 }
 
+function DisableAddButton1() {
+    $('.add_button').prop('disabled', true);
+}
+function EnableAddButton1() {
+    $('.add_button').prop('disabled', false);
+}
+function DisableAddButton2() {
+    $('.add_button_name').prop('disabled', true);
+}
+function EnableAddButton2() {
+    $('.add_button_name').prop('disabled', false);
+}
+function ResetRowNumber(){
+    $('#rowno').val(1);
+}
+//JC_11
+$('.closepopup').click(function(){
+    $('#rowno').val(1);
+});
+
+// Ends
