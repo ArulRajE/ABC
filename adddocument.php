@@ -2180,24 +2180,24 @@ if(clickpopup=='Reshuffle')
     var idindex = this.id;
     var i = idindex.split('_');
 
+// JC_11
+//  var fromaction = document.getElementsByName('namefrom[]');
 
- var fromaction = document.getElementsByName('namefrom[]');
-
-if(value!='' && fromaction.length==1)
-    {
+// if(value!='' && fromaction.length==1)
+//     {
         
-        $('.add_button').attr('disabled', true);
+//         $('.add_button').attr('disabled', true);
 
         
-         $('.add_button_name').attr('disabled', false);
-    }
-    else
-    {
-         //$('#oremove1').attr('disabled', true);
-     //    $('.field_wrapper').empty();
-        $('.add_button').attr('disabled', false);
-        $('.add_button_name').attr('disabled', true);
-    }
+//          $('.add_button_name').attr('disabled', false);
+//     }
+//     else
+//     {
+//          //$('#oremove1').attr('disabled', true);
+//      //    $('.field_wrapper').empty();
+//         $('.add_button').attr('disabled', false);
+//         $('.add_button_name').attr('disabled', true);
+//     }
 
    // var fromaction = $('select[name="namefrom[]"] option:selected').map(function () {
    //                  if(this.value!='')
@@ -2208,7 +2208,12 @@ if(value!='' && fromaction.length==1)
    //          }).get();
     // alert($('#toStatus_'+i[1]+'').val());
     // alert(value);
-  
+    
+    if(value != ''){
+            EnableAddButton2();
+        } else {
+            DisableAddButton2();
+        }
   if($('#clickpopup').val()=='Rename')
   {
     if($('#toStatus_'+i[1]+'').val() !='' && $('#toStatus_'+i[1]+'').val()!=value)
