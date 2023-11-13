@@ -5757,6 +5757,10 @@ if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || 
            }
           }
           //ends here
+          // JC_11 
+          else if((clickpopup == "Create" && seleted == "District" && data.value == '')){
+            DisableAddButton2();
+          }
         else
         {
 
@@ -6061,7 +6065,11 @@ var clickpopup = $('#clickpopup').val();
 
         EnableAddButton1();
     }
-    if ((clickpopup === "Merge" || clickpopup === "Reshuffle") && data.value !== "" &&
+    if(clickpopup === "Create" && seleted == "District" && data.value == ""){
+        EnableRow(rn);
+        DisableAddButton2();
+    }
+    else if ((clickpopup === "Merge" || clickpopup === "Reshuffle") && data.value !== "" &&
         (seleted === "District" || seleted === "Village / Town" || seleted === "Sub-District") && namefrom.length > 0 && action.length > 0) {
         DisableRow(rn);
 
@@ -9373,7 +9381,14 @@ $(".newnamecheck").keyup(function(){
             }
     
         }).get();
+        
+        var statusyear  = $('#todataaction_1').find('select[name^="Statusyear "] option:selected').map(function () {
+            if (this.value != '') {
+                return this.value;
+            }
     
+        }).get();
+
         var statenew = $('#todataaction_1').find('select[name^="statenew"] option:selected').map(function () {
             if (this.value != '') {
                 return this.value;
@@ -9394,7 +9409,16 @@ $(".newnamecheck").keyup(function(){
             }
     
         }).get();
-        if ((come == 'District') ) {
+        if(come == 'State') {
+            if(value.length > 0  && statusyear >= 1 ){
+                console.log(1);
+                EnableAddButton2();
+            } else if(value.length == 0  && statusyear >= 1 ){
+                console.log(0);
+                DisableAddButton2();
+            }
+        }
+        else if (come == 'District') {
             if (value.length > 0 && namefrom.length >= 1 && statenew.length >= 1  && action.length >= 1 && clickpopup == 'Create') {
                 DisableRow(rn);
                 if(rn < 2){
@@ -9406,7 +9430,7 @@ $(".newnamecheck").keyup(function(){
                 DisableAddButton2();
             }
         }
-        if ((come == 'Sub-District') ) {
+        else if (come == 'Sub-District') {
             console.log('value.length', value.length);
             console.log('namefrom.length', namefrom.length);
             console.log('action.length', action.length);
@@ -9431,7 +9455,7 @@ $(".newnamecheck").keyup(function(){
                 DisableAddButton2();
             }
         } 
-        if ((come == 'Village / Town') ) {
+        else if (come == 'Village / Town') {
     
             
             if (value.length > 0 && namefrom.length >= 1 && sddistrictnew.length >= 1 && action.length >= 1 && clickpopup == 'Create') {
@@ -9552,13 +9576,64 @@ function checkdataoftext(val,r){
         //                 }
         //         }
         //     }
-        if(val != ''){
-            EnableAddButton2();
-        } else {
-            DisableAddButton2();
+        var come = $('#comefromcheck').val();
+        var currentRowId = '#'+$(val).closest('.row').attr('id');
+        
+        var stateStatus = $(currentRowId).find('select[name^="StateStatus"] option:selected').map(function () {
+            if(this.value!='')
+            {
+                return this.value;    
+            }
+            
+        }).get();
+
+        var statenew = $(currentRowId).find('select[name^="statenew"] option:selected').map(function () {
+                        if(this.value!='')
+                        {
+                            return this.value;    
+                        }
+                        
+                }).get();
+        var districtnew = $(currentRowId).find('select[name^="districtnew"] option:selected').map(function () {
+                    if(this.value!='')
+                    {
+                        return this.value;    
+                    }
+                    
+            }).get();
+        var sddistrictnew = $(currentRowId).find('select[name^="sddistrictnew"] option:selected').map(function () {
+                if(this.value!='')
+                {
+                    return this.value;    
+                }
+                
+        }).get();
+                
+        if(come == "State"){
+            if(val.value != '' && stateStatus.length >= 1){
+                EnableAddButton2();
+            } else if(val.value == '' && stateStatus.length >= 0) {
+                DisableAddButton2();
+            }
+        } else if(come=='District'){
+            if(val.value != '' && statenew.length >= 1){
+                EnableAddButton2();
+            } else if(val.value == '' && statenew.length >= 0) {
+                DisableAddButton2();
+            }
+        } else if(come == 'Sub-District'){
+            if(val.value != '' && districtnew.length >= 1){
+                EnableAddButton2();
+            } else if(val.value == '' && districtnew.length >= 0) {
+                DisableAddButton2();
+            }
+        } else if(come == 'Village / Town'){
+            if(val.value != '' && sddistrictnew.length >= 1){
+                EnableAddButton2();
+            } else if(val.value == '' && sddistrictnew.length >= 0) {
+                DisableAddButton2();
+            }
         }
-            
-            
 
    } 
 
@@ -9640,6 +9715,7 @@ return false;
 // Modified by Arul for JC_11
 var rn = $('#rowno').val();
 var rowId = $(this).closest('.row').attr('id');
+var name2021 = $('#name2021').val();
         console.log(rowId);
 if ($('#applyon').val() == "State" && $('#clickpopup').val() == "Create") {
 
@@ -9656,13 +9732,13 @@ if ($('#applyon').val() == "State" && $('#clickpopup').val() == "Create") {
         }
 
     }).get();
-    if (value.length > 0 && namefrom.length >= 1 && action.length >= 1) {
+    if (value.length > 0 && name2021.length > 0 && namefrom.length >= 1 && action.length >= 1) {
         DisableRow(rn);
         if(rn < 2){
             EnableAddButton2();
         }
     }
-    else if (value.length == 0 && namefrom.length >= 1 && action.length >= 1) {
+    else if (value.length == 0 && name2021.length >= 0 && namefrom.length >= 1 && action.length >= 1) {
         
         EnableRow(rn);
         DisableAddButton2();

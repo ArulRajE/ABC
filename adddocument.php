@@ -2179,7 +2179,6 @@ if(clickpopup=='Reshuffle')
      var value = $(this).val();
     var idindex = this.id;
     var i = idindex.split('_');
-
 // JC_11
 //  var fromaction = document.getElementsByName('namefrom[]');
 
@@ -2208,10 +2207,10 @@ if(clickpopup=='Reshuffle')
    //          }).get();
     // alert($('#toStatus_'+i[1]+'').val());
     // alert(value);
-    
-    if(value != ''){
+    var newname = $('#name2021'+i[1]).val();
+    if(value != '' && newname.length >= 1){
             EnableAddButton2();
-        } else {
+        } else if(value == '' && newname.length >= 0) {
             DisableAddButton2();
         }
   if($('#clickpopup').val()=='Rename')
