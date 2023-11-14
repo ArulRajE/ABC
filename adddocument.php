@@ -518,6 +518,7 @@ $rowaction = pg_fetch_all($resultaction);
   <input type="hidden" name="dtselected" id="dtselected" value="">
     <input type="hidden" name="sdidsselected" id="sdidsselected" value=""> -->
      
+  
   <input type="hidden" name="fstids" id="fstids" value="">
   <input type="hidden" name="fdtids" id="fdtids" value="">
   <input type="hidden" name="fsdids" id="fsdids" value="">
@@ -1024,6 +1025,7 @@ $(function() {
             x++;
             // JC_11 Modified By Arul For Add Button 
             $('#rowno').val(x);
+
 
  var seleted = $('#applyon').val();
 var clickpopup = $('#clickpopup').val();
@@ -2179,40 +2181,42 @@ if(clickpopup=='Reshuffle')
      var value = $(this).val();
     var idindex = this.id;
     var i = idindex.split('_');
-// JC_11
-//  var fromaction = document.getElementsByName('namefrom[]');
 
-// if(value!='' && fromaction.length==1)
-//     {
-        
-//         $('.add_button').attr('disabled', true);
 
-        
-//          $('.add_button_name').attr('disabled', false);
-//     }
-//     else
-//     {
-//          //$('#oremove1').attr('disabled', true);
-//      //    $('.field_wrapper').empty();
-//         $('.add_button').attr('disabled', false);
-//         $('.add_button_name').attr('disabled', true);
-//     }
+        //  var fromaction = document.getElementsByName('namefrom[]');
 
-   // var fromaction = $('select[name="namefrom[]"] option:selected').map(function () {
-   //                  if(this.value!='')
-   //                  {
-   //                      return this.value;    
-   //                  }
-                    
-   //          }).get();
-    // alert($('#toStatus_'+i[1]+'').val());
-    // alert(value);
-    var newname = $('#name2021'+i[1]).val();
-    if(value != '' && newname.length >= 1){
+        // if(value!='' && fromaction.length==1)
+        //     {
+                
+        //         $('.add_button').attr('disabled', true);
+
+                
+        //          $('.add_button_name').attr('disabled', false);
+        //     }
+        //     else
+        //     {
+        //          //$('#oremove1').attr('disabled', true);
+        //      //    $('.field_wrapper').empty();
+        //         $('.add_button').attr('disabled', false);
+        //         $('.add_button_name').attr('disabled', true);
+        //     }
+
+        //    // var fromaction = $('select[name="namefrom[]"] option:selected').map(function () {
+        //    //                  if(this.value!='')
+        //    //                  {
+        //    //                      return this.value;    
+        //    //                  }
+                            
+        //    //          }).get();
+        //     // alert($('#toStatus_'+i[1]+'').val());
+        //     // alert(value);
+        // JC_11 Arul 
+if(value != ''){
             EnableAddButton2();
-        } else if(value == '' && newname.length >= 0) {
+        } else {
             DisableAddButton2();
         }
+
   if($('#clickpopup').val()=='Rename')
   {
     if($('#toStatus_'+i[1]+'').val() !='' && $('#toStatus_'+i[1]+'').val()!=value)
@@ -2251,6 +2255,10 @@ var status = $('#oremovenew'+i[1]+'').is(":checked");
 
     }); 
 
+
+
 });
+
+
 
 </script>

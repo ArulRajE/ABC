@@ -12121,39 +12121,39 @@ else
 				// pg_query($db,$insertforread1);
 				// }
 				
-				//By sahana village split many to one, full merge many to one, and split and full merge many to one 0111
-				 $auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
-				 $actions = $finaldata['action'];
-				 $namefrom_values = [];
+				// By sahana village split many to one, full merge many to one, and split and full merge many to one 0111
+				// $auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+				// $actions = $finaldata['action'];
+				 // $namefrom_values = [];
 				
-				 foreach ($finaldata as $key => $value) {
-				 	if (preg_match('/^namefrom\d*$/', $key)) {
-					$namefrom_values[] = $value;
-				 	}
-				 }
+				// foreach ($finaldata as $key => $value) {
+				 //	if (preg_match('/^namefrom\d*$/', $key)) {
+				//	$namefrom_values[] = $value;
+				 //	}
+				 // }
 
-				 foreach ($actions as $action) {
-				 	if (empty($namefrom_values)) {
-				 		break; 
-				 	}
+				 // foreach ($actions as $action) {
+				 //	if (empty($namefrom_values)) {
+				 //		break; 
+				 //	}
 				
-				 	$namefrom = array_shift($namefrom_values);
+				 //	$namefrom = array_shift($namefrom_values);
 				
-				 	foreach ($namefrom as $item) {
-				 		$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
+				 //	foreach ($namefrom as $item) {
+				 //		$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
 				
-				 		if ($au) {
-							$row = pg_fetch_assoc($au);
-				 			$auflag_value = $row['auflag'];
-							$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "VTID" = $3', array($auflag_value, $action, $item));
-							if (!$update_vt) {
-				 				echo "UPDATE query failed: " . pg_last_error($db);
-						}
-				 		} else {
-							echo "SELECT query failed: " . pg_last_error($db);
-			 		}
-					}
-				 }
+				// 		if ($au) {
+				//			$row = pg_fetch_assoc($au);
+				 //			$auflag_value = $row['auflag'];
+				//			$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "VTID" = $3', array($auflag_value, $action, $item));
+				//			if (!$update_vt) {
+				 //				echo "UPDATE query failed: " . pg_last_error($db);
+				//		}
+				 //		} else {
+				//			echo "SELECT query failed: " . pg_last_error($db);
+			 	//	}
+				//	}
+				 // }
 
 				if($finaldata['partiallyids1']!='')
 				{
@@ -18126,5 +18126,61 @@ else if($_POST['formname']=='finaladddocument')
 
                                 // }
 
-
+//By sahana for AU state level.
+else if ($_POST['formname'] == 'austform') {
+	$id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+	$tableName = 'dt' . (int)$_SESSION['activeyears'];
+	$sql = 'SELECT "STID" FROM "' . $tableName . '" WHERE "STIDR" = $1';
+	$sqlquery = pg_query_params($db, $sql, array($id));
+	
+	if ($sqlquery) {
+		$data = pg_fetch_array($sqlquery);
+		if ($data) {
+			$ids = $data['STID'];
+			$response = array('ids' => $ids);
+			echo json_encode($response);
+		} else {
+			$response = array('error' => 'No result found for STIDR ' . $id);
+			echo json_encode($response);
+		}
+	}
+}
+//By sahana for AU District level.
+else if ($_POST['formname'] == 'audtform') {
+	$id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+	$tableName = 'sd' . (int)$_SESSION['activeyears'];
+	$sql = 'SELECT "DTID" FROM "' . $tableName . '" WHERE "DTIDR" = $1';
+	$sqlquery = pg_query_params($db, $sql, array($id));
+	
+	if ($sqlquery) {
+		$data = pg_fetch_array($sqlquery);
+		if ($data) {
+			$ids = $data['DTID'];
+			$response = array('ids' => $ids);
+			echo json_encode($response);
+		} else {
+			$response = array('error' => 'No result found for STIDR ' . $id);
+			echo json_encode($response);
+		}
+	}
+}
+//By sahana for AU Sub-District level.
+else if ($_POST['formname'] == 'ausdform') {
+	$id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+	$tableName = 'vt' . (int)$_SESSION['activeyears'];
+	$sql = 'SELECT "SDID" FROM "' . $tableName . '" WHERE "SDIDR" = $1';
+	$sqlquery = pg_query_params($db, $sql, array($id));
+	
+	if ($sqlquery) {
+		$data = pg_fetch_array($sqlquery);
+		if ($data) {
+			$ids = $data['SDID'];
+			$response = array('ids' => $ids);
+			echo json_encode($response);
+		} else {
+			$response = array('error' => 'No result found for STIDR ' . $id);
+			echo json_encode($response);
+		}
+	}
+}
                                 ?>

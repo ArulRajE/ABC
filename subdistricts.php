@@ -349,7 +349,17 @@ function s2ab(s) {
                                                 }
                                             }
                                             else if ($data2['auaction']== 'Merge'){
-                                                if($data['STID']!=$data2['STID']){
+                                                if($data['STID']!=$data2['STID'] && $data['DTID']==$data2['DTID'] ){ //1311
+                                                    
+                                                    echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
+                                                    
+                                                }
+                                                else if($data['STID']==$data2['STID'] && $data['DTID']!=$data2['DTID']){ //1311
+                                                    
+                                                    echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
+                                                    
+                                                }
+                                                else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['STID2011']==$data['STID']){ //1311
                                                     
                                                     echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
                                                     
@@ -441,9 +451,19 @@ function s2ab(s) {
                                                 }
                                             }
                                         else if ($data2['auaction']== 'Merge'){
-                                            if($data['STID']!=$data2['STID']){
+                                            if($data['STID']!=$data2['STID'] && $data['DTID']==$data2['DTID'] ){ //1311
                                                 
                                                 echo $data['SDName'.$_SESSION['logindetails']['baseyear'].'']; 
+                                                
+                                            }
+                                            else if($data['STID']==$data2['STID'] && $data['DTID']!=$data2['DTID']){ //1311
+                                                    
+                                                echo $data['SDName'.$_SESSION['logindetails']['baseyear'].'']; 
+                                                
+                                            }
+                                            else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['STID2011']==$data['STID']){ //1311
+                                                    
+                                                echo $data['SDName'.$_SESSION['logindetails']['baseyear'].''];  
                                                 
                                             }
                                             else {
@@ -525,9 +545,19 @@ function s2ab(s) {
                                                 }
                                             }
                                             else if ($data2['auaction']== 'Merge'){
-                                                if($data['STID']!=$data2['STID']){
+                                                if($data['STID']!=$data2['STID'] && $data['DTID']==$data2['DTID'] ){ //1311
                                                     
                                                     echo $data['Villages'.$_SESSION['logindetails']['baseyear'].'']; 
+                                                    
+                                                }
+                                                else if($data['STID']==$data2['STID'] && $data['DTID']!=$data2['DTID']){ //1311
+                                                    
+                                                    echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
+                                                    
+                                                }
+                                                else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['STID2011']==$data['STID']){ //1311
+                                                    
+                                                    echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
                                                     
                                                 }
                                                 else {
@@ -609,8 +639,18 @@ function s2ab(s) {
                                                 }
                                             }
                                         else if ($data2['auaction']== 'Merge'){
-                                            if($data['STID']!=$data2['STID']){
+                                            if($data['STID']!=$data2['STID'] && $data['DTID']==$data2['DTID'] ){ //1311
                                                 
+                                                echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
+                                                
+                                            }
+                                            else if($data['STID']==$data2['STID'] && $data['DTID']!=$data2['DTID']){ //1311
+                                                    
+                                                echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
+                                                
+                                            }
+                                            else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['STID2011']==$data['STID']){ //1311
+                                                    
                                                 echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
                                                 
                                             }

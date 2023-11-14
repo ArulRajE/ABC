@@ -833,6 +833,14 @@ function s2ab(s) {
                                             { 
                                                 echo $data['MDDS_VT'];
                                             } 
+                                            else if($data['STID2011']=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID']) 
+                                            { 
+                                                echo $data['MDDS_VT'];
+                                            } 
+                                            else if($data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['SDID']==$data2['SDID']) 
+                                            { 
+                                                echo $data['MDDS_VT'];
+                                            } 
                                             else 
                                             {
                                                  echo ""; 
@@ -928,6 +936,10 @@ function s2ab(s) {
                                             { 
                                                 echo $data['VTName']; 
                                             } 
+                                            else if($data['STID2011']=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID']) 
+                                            { 
+                                                echo $data['VTName']; 
+                                            } 
                                             else 
                                             {
                                                  echo ""; 
@@ -1014,7 +1026,11 @@ function s2ab(s) {
                                             else if($data['STID2011']!=$data['STID'] && $data['SDID2011']==$data['SDID']) 
                                             { 
                                                 echo $data['Level']; 
-                                            } 
+                                            }
+                                            else if($data['STID2011']=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID']) 
+                                            { 
+                                                echo $data['Level']; 
+                                            }  
                                             else 
                                             {
                                                  echo ""; 
@@ -1097,7 +1113,11 @@ function s2ab(s) {
                                             else if($data['STID2011']!=$data['STID'] && $data['SDID2011']==$data['SDID']) 
                                             { 
                                                 echo $sta; 
-                                            } 
+                                            }
+                                            else if($data['STID2011']=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID']) 
+                                            { 
+                                                echo $sta; 
+                                            }  
                                             else 
                                             {
                                                  echo ""; 
@@ -1178,6 +1198,10 @@ function s2ab(s) {
                                                 echo $data['Pop'];
                                             } 
                                             else if($data['STID2011']!=$data['STID'] && $data['SDID2011']==$data['SDID']) 
+                                            { 
+                                                echo $data['Pop']; 
+                                            } 
+                                            else if($data['STID2011']=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID']) 
                                             { 
                                                 echo $data['Pop']; 
                                             } 

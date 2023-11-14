@@ -59,7 +59,7 @@
                                 
                                     <div class="modal-header bg-primary">
                                         <h5 class="modal-title text-white" id="maintitle"></h5>
-                                        <button type="button" class="close closepopup" data-dismiss="modal" aria-label="Close"> <!-- JC -->
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
@@ -333,7 +333,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary btn-rounded waves-effect width-xl closepop1 closepopup" data-dismiss="modal"
-                                            aria-label="Close">Cancel</button><!-- JC_11 -->
+                                            aria-label="Close">Cancel</button>
                                         <button type="submit" name="submit" id="assignbtn" class="btn btn-info btn-rounded width-xl waves-effect waves-light">Assign</button>
                                     </div>
                                 </form>
@@ -419,7 +419,7 @@
                                     
                                     <div class="modal-header bg-primary">
                                         <h5 class="modal-title text-white" id="maintitlesub"></h5>
-                                        <button type="button" class="close closepopup" data-dismiss="modal" aria-label="Close"> <!-- JC_11 -->
+                                        <button type="button" class="close closepopup" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
@@ -511,7 +511,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary btn-rounded waves-effect width-xl closepop1 closepopup" data-dismiss="modal"
-                                            aria-label="Close">Cancel</button> <!-- JC_11 -->
+                                            aria-label="Close">Cancel</button>
                                         <button type="submit" name="submit" class="btn btn-info btn-rounded width-xl waves-effect waves-light">Assign</button>
                                     </div>
                                 </form>
