@@ -6861,8 +6861,7 @@ else
 
 }
 
-function createnew(createfrom) {
-
+function createnew(createfrom, stateId, stateName) {
 var seleted = $('#applyon').val();
 var flagof = $('#flagof').val();
  $('.add_button_name').attr('disabled', true);  
@@ -7682,7 +7681,7 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
 
                                 $("#statenew1").append($('<option>', {
                             value: '',
-                            text: 'Select State / UT',
+                            text: 'Select State / UT1',
                             }));
 
                             $(JSON.parse(finalresult[8])).each(function () {
@@ -7733,7 +7732,7 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
 
                                 $("#fromstate1").append($('<option>', {
                             value: '',
-                            text: 'Select State / UT',
+                            text: 'Select State / UT2',
                             }));
 
                             $(JSON.parse(finalresult[7])).each(function () {
@@ -7821,19 +7820,33 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
                             text: 'Select '+finalresult[2]+'',
                             }));
                             }
-                           
+                           console.log('stateId',stateId);
+                           console.log('stateName',stateName);
+                            if(stateId != '' && stateName){
+                                $("#selected_come").append($('<option>', {
+                                    value: stateId,
+                                    text: stateName,
+                                    selected: true
+                                    }));
+                            } else {
 
-                            $(JSON.parse(finalresult[0])).each(function () {
-
-                            $("#selected_come").append($('<option>', {
-                            value: this.id,
-                            text: this.Name,
-                            }));
-
-                            });
+                                $(JSON.parse(finalresult[0])).each(function () {
+    
+                                $("#selected_come").append($('<option>', {
+                                value: this.id,
+                                text: this.Name,
+                                }));
+    
+                                });
+                            }
                                  if($('#flagof').val()=='true')
                                 {
                                     $('#selected_come').val(fstids).trigger('change');
+                                }
+                                // JC_111
+                                else if(stateId != ''){
+
+                                    $('#selected_come').val(stateId).trigger('change');
                                 }
                                 else
                                 {
@@ -8029,7 +8042,7 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
 
                                 $("#statenew1").append($('<option>', {
                                 value: '',
-                                text: 'Select State / UT',
+                                text: 'Select State / UT3',
                                 }));
 
                                 $(JSON.parse(finalresult[8])).each(function () {
@@ -8075,7 +8088,7 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
 
                                 $("#fromstate1").append($('<option>', {
                             value: '',
-                            text: 'Select State / UT',
+                            text: 'Select State / UT4',
                             }));
 
                             $(JSON.parse(finalresult[7])).each(function () {
@@ -8545,7 +8558,7 @@ $("#maintitlesub").html("Submerge "+finalresult[2]+"");
                 $("#stategetsub").children().remove();
                  $("#stategetsub").append($('<option>', {
                 value: '',
-                text: 'Select State / UT',
+                text: 'Select State / UT5',
                 }));
                
                 $(JSON.parse(finalresult[0])).each(function () {
@@ -17339,7 +17352,6 @@ $(document).ready(function () {
         if (!isSubmitting) {
             isSubmitting = true;
             $("#submitButton").prop("disabled", true);
-            console.log('Save Button is now disabled.');
 
             toastr.options = {
                 "closeButton": false,
@@ -17381,7 +17393,7 @@ $(document).ready(function () {
                 processData: false, // To send DOMDocument or non-processed data file, it is set to false
                 success: function (data) {
                     var res = data.split('|');
-
+                    console.log(res);
                     if (res[0] == 'adddata') {
                         if (res[6] == 0) {
                             // Modified by sahana for linked document sweetalerts
@@ -17412,6 +17424,10 @@ $(document).ready(function () {
                             $('#pdf').css("display", "block")
                             $('#viewerlast').attr('src', res[2]);
                             $('#uploadeddocument').val(res[2]);
+                            // JC_111
+                            $('#stateid').val(res[4]);
+                            // Ends...
+
                         }
                     } else if (res[0] == 'aleradydatedata') {
                         // console.log(res);

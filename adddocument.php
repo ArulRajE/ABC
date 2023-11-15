@@ -72,6 +72,10 @@ $array4 = array('ST','1');
 $resultaction = pg_query_params($db, "select * from detailforread where comefrom=$1  and is_deleted=$2 order by statuslevel ASC",$array4);
 $rowaction = pg_fetch_all($resultaction); 
 
+echo "<pre>";
+var_dump($result);
+echo "</pre>";
+die();
 }
 
 
@@ -152,6 +156,9 @@ $rowaction = pg_fetch_all($resultaction);
                 <input type="hidden" name="formname" id="formname" value="adddocumentdata">
                 <input type="hidden" name="adddocnew" id="adddocnew" value="">
                 <input type="hidden" name="doctype" id="doctype" value="<?php if(isset($_GET['doctype'])) { echo $_GET['doctype']; }  ?>">
+                <!-- JC_111 -->
+                <input type="hidden" name="stateid" id="stateid" value="<?php if(isset($_GET['stateid'])) { echo $_GET['stateid']; }  ?>">
+
                                                                <fieldset class="let">
                                 <legend class="chha">Select Pending Document</legend> 
                                                                 <div class="form-group row mb-3">
@@ -449,7 +456,7 @@ $rowaction = pg_fetch_all($resultaction);
 
                                                                         <div class="col-sm-12 col-md-6 col-lg-6 pl-0 pt-2 col-xl-4">
 
-                                                                            <button type="button"  onclick="createnew('Create')" name="createnew" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Create" >Create New</button>
+                                                                            <button type="button"  onclick="createnew('Create','<?php echo $element['STID']; ?>', '<?php echo $element['STName']; ?>')" name="createnew" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Create" >Create New</button>
 
                                                                         </div>
                                                                         <div class="col-sm-12 col-md-6 col-lg-6 pl-0 pt-2 col-xl-4">
