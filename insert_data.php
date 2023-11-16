@@ -5569,7 +5569,7 @@ else if($_POST['formname']=='getdataofpopup')
 									// print_r($_POST);
 									// exit;
 													$arra=array(1);
-													$query = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1 LIMIT 1';
+													$query = 'select "STID" as "id","STName" as "Name" from "st'.$_SESSION['activeyears'].'" where is_deleted=$1  order by "STName" ASC';
 												 	$resultstatelk = pg_query_params($db, $query,$arra);
 													if(pg_numrows($resultstatelk)>0)
 													{

@@ -24,8 +24,6 @@ if($header!=0 && $rows['assignlist']!=null)
 {
 // $where = ' AND  "STID" in ('.$rows['assignlist'].')';
 // $where11 = ' AND  "docstid" in ('.$rows['assignlist'].')';
-
-
 $qu = 'select * from "documentdata'.$_SESSION['activeyears'].'" ';
 $result = pg_query($db,$qu );
 
@@ -48,6 +46,10 @@ $rowdoc111= pg_fetch_all($resultstatelkdoc1);
 $array44 = array('ST','1');
 $resultaction = pg_query_params($db, "select * from detailforread where comefrom=$1  and is_deleted=$2 order by statuslevel ASC",$array44);
 $rowaction = pg_fetch_all($resultaction);
+
+// JC_111
+$selectedstate = ['STID'=> '', 'STName' => ''];
+// Ends...
 }
 else {
     $qu = 'select * from "documentdata'.$_SESSION['activeyears'].'" ';
@@ -71,11 +73,32 @@ $rowdoc111= pg_fetch_all($resultstatelkdoc1);
 $array4 = array('ST','1');
 $resultaction = pg_query_params($db, "select * from detailforread where comefrom=$1  and is_deleted=$2 order by statuslevel ASC",$array4);
 $rowaction = pg_fetch_all($resultaction); 
+if(isset($_GET['idsdoc'])){
+    $qry = 'SELECT "STID", "STName" FROM "st' . $_SESSION['activeyears'] . '" WHERE "STID" = (SELECT "docstid" FROM "documentdata' . $_SESSION['activeyears'] . '" WHERE "docids" = ' . $_GET['idsdoc'] . ')';
+    $qryres = pg_query($db, $qry);
+    $selectedstate = pg_fetch_all($qryres)[0];
+}
 
-echo "<pre>";
-var_dump($result);
-echo "</pre>";
-die();
+
+// echo "<br>";
+// echo "<br>";
+// echo "<br>";
+// echo "<br>";
+// echo "<br>";
+// echo "<br>";
+// echo "<br>";
+// echo "<br>";
+// echo "<br>";
+// echo "<br>";
+// echo "<br>";
+// echo "<br>";
+// echo "<br>";
+// echo "<br>";
+// echo "<br>";
+// echo '<pre>';
+// var_dump($_GET['idsdoc']);
+// echo '</pre>';
+// die();
 }
 
 
@@ -155,10 +178,9 @@ die();
                 novalidate data-parsley-trigger="keyup" id="adddocument">
                 <input type="hidden" name="formname" id="formname" value="adddocumentdata">
                 <input type="hidden" name="adddocnew" id="adddocnew" value="">
+                <input type="hidden" name="stateid" id="stateid" value="<?= $selectedstate['STID'] ?>">
+                <input type="hidden" name="statename" id="statename" value="<?= $selectedstate['STName'] ?>">
                 <input type="hidden" name="doctype" id="doctype" value="<?php if(isset($_GET['doctype'])) { echo $_GET['doctype']; }  ?>">
-                <!-- JC_111 -->
-                <input type="hidden" name="stateid" id="stateid" value="<?php if(isset($_GET['stateid'])) { echo $_GET['stateid']; }  ?>">
-
                                                                <fieldset class="let">
                                 <legend class="chha">Select Pending Document</legend> 
                                                                 <div class="form-group row mb-3">
@@ -456,42 +478,42 @@ die();
 
                                                                         <div class="col-sm-12 col-md-6 col-lg-6 pl-0 pt-2 col-xl-4">
 
-                                                                            <button type="button"  onclick="createnew('Create','<?php echo $element['STID']; ?>', '<?php echo $element['STName']; ?>')" name="createnew" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Create" >Create New</button>
+                                                                        <button type="button"  onclick="createnew('Create', $('#stateid').val(), $('#statename').val())" name="createnew" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Create" >Create New</button>
 
                                                                         </div>
                                                                         <div class="col-sm-12 col-md-6 col-lg-6 pl-0 pt-2 col-xl-4">
                                                                             
-                                                                            <button type="button" onclick="createnew('Merge')" name="mergenew" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Mergebt">Merge / Partially Merge</button>
+                                                                            <button type="button" onclick="createnew('Merge', $('#stateid').val(), $('#statename').val())" name="mergenew" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Mergebt">Merge / Partially Merge</button>
 
                                                                         </div>
                                                                         <div class=" col-sm-12 col-md-6 col-lg-6 pl-0 pt-2 col-xl-4">
 
-                                                                            <button type="button" onclick="createnew('Partiallysm')" name="mergenew" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Partiallysm">Partially Incomplete</button>
+                                                                            <button type="button" onclick="createnew('Partiallysm', $('#stateid').val(), $('#statename').val())" name="mergenew" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Partiallysm">Partially Incomplete</button>
 
                                                                         </div>
                                                                          <div class="col-sm-12 col-md-6 col-lg-6 pl-0 pt-2 col-xl-4">
                                                                             
-                                                                            <button type="button" name="Rename" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" onclick="createnew('Rename')" id="Rename">Rename/Status Change</button>
+                                                                            <button type="button" name="Rename" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" onclick="createnew('Rename', $('#stateid').val(), $('#statename').val())" id="Rename">Rename/Status Change</button>
 
                                                                         </div>
                                                                         <div class="col-sm-12 col-md-6 col-lg-6 pl-0 pt-2 col-xl-4">
                                                                             
-                                                                            <button type="button" onclick="submerge('submerge')" name="mergenew" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="submerge">Sub-Merge</button>
+                                                                            <button type="button" onclick="submerge('submerge', $('#stateid').val(), $('#statename').val())" name="mergenew" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="submerge">Sub-Merge</button>
 
                                                                         </div>
                                                                          <div class="col-sm-12 col-md-6 col-lg-6 pl-0 pt-2 col-xl-4">
                                                                             
-                                                                            <button type="button" onclick="createnew('Reshuffle')" name="mergenew" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Reshuffle">Move / Reshuffle</button>
+                                                                            <button type="button" onclick="createnew('Reshuffle', $('#stateid').val(), $('#statename').val())" name="mergenew" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Reshuffle">Move / Reshuffle</button>
 
                                                                         </div>
                                                                        <div class="col-sm-12 col-md-6 col-lg-6 pl-0 pt-2 col-xl-4">
                                                                             
-                                                                            <button type="button" name="Addition" onclick="createnew('Addition')" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Addition">Addition</button>
+                                                                            <button type="button" name="Addition" onclick="createnew('Addition', $('#stateid').val(), $('#statename').val())" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Addition">Addition</button>
 
                                                                         </div>
                                                                         <div class="col-sm-12 col-md-6 col-lg-6 pl-0 pt-2 col-xl-4">
                                                                             
-                                                                            <button type="button" name="Deletion" onclick="createnew('Deletion')" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Deletion">Deletion</button>
+                                                                            <button type="button" name="Deletion" onclick="createnew('Deletion', $('#stateid').val(), $('#statename').val())" class="btn btn-primary btn-rounded waves-effect waves-light width-xl disbut" id="Deletion">Deletion</button>
 
                                                                         </div>
                                                                         <div class="col-sm-12 col-md-6 col-lg-6 pl-0 pt-2 col-xl-4">

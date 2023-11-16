@@ -42,7 +42,7 @@ else
    
       if($_SESSION['login_type']==0 && ($filename=="units.php" || $filename=="index.php" || $filename=="users.php" || $filename=="adddocument.php" || $filename=="profile.php" || $filename=="reports.php" || $filename=="districts.php" || $filename=="subdistricts.php" || $filename=="villagelist.php" || $filename=="villages.php"  || $filename=="circulars.php" || $filename=="document.php" || $filename=="map.php" || $filename=="forread.php" || $filename=="setdates.php" || $filename=="map.php"))
     {
-                if(time() - $_SESSION['login_time'] < 1200)
+                if(time() - $_SESSION['login_time'] < 4800)
                 {
                 $_SESSION['login_time']=time();
                 }
