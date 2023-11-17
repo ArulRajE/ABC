@@ -3917,8 +3917,9 @@ function get_sub_district_popup_new(data, clickpopup, i) {
             } else {
                 DisableAddButton1();
             }
-            if ((clickpopup == 'Merge' || clickpopup == 'Create') && seleted == "Village / Town") {
+            if ((clickpopup == 'Merge' || clickpopup == 'Create' || clickpopup == 'Reshuffle') && seleted == "Village / Town") {
                 $('select[name^="namefrom"]').change(function () {
+                    console.log('change');
                     var action1 = $('#row_' + rn).find('select[name^="action"] option:selected').map(function () {
                         if (this.value != '') {
                             return this.value;
@@ -7190,7 +7191,7 @@ function createnew(createfrom, stateid, statename) {
                         text: 'Select State / UT1',
                     }));
 
-                    // JC_111
+                    // JC_16 Modified By Arul For Add Document
                     if(stateid != '' && statename != '' && createfrom == 'Rename'){
                         $("#statenew1").append($('<option>', {
                             value: stateid,
@@ -7214,7 +7215,7 @@ function createnew(createfrom, stateid, statename) {
                     if (flagof == 'true') {
                         $('#statenew1').val(tstids).trigger('change');
                     }
-                    // JC_111
+                    // JC_16 Modified By Arul For Add Document
                     else if (stateid != '' && createfrom == 'Rename') {
 
                         $('#statenew1').val(stateid).trigger('change');
@@ -7255,7 +7256,7 @@ function createnew(createfrom, stateid, statename) {
                         text: 'Select State / UT2',
                     }));
 
-                    // JC_111
+                    // JC_16 Modified By Arul For Add Document
                     if (stateid != '' && statename != '') {
                         $("#fromstate1").append($('<option>', {
                             value: stateid,
@@ -7277,7 +7278,7 @@ function createnew(createfrom, stateid, statename) {
                     if (flagof == 'true') {
                         $('#fromstate1').val(fstids).trigger('change');
                     }
-                    // JC_111
+                    // JC_16 Modified By Arul For Add Document
                     else if (stateid != '') {
                         $('#fromstate1').val(stateid).trigger('change');
                     }
@@ -7352,7 +7353,7 @@ function createnew(createfrom, stateid, statename) {
                 }));
             }
 
-            // JC_111
+            // JC_16 Modified By Arul For Add Document
             if (stateid != '' && statename != '') {
                 $("#selected_come").append($('<option>', {
                     value: stateid,
@@ -7371,7 +7372,7 @@ function createnew(createfrom, stateid, statename) {
             if ($('#flagof').val() == 'true') {
                 $('#selected_come').val(fstids).trigger('change');
             }
-            // JC_111
+            // JC_16 Modified By Arul For Add Document
             else if (stateid != '') {
 
                 $('#selected_come').val(stateid).trigger('change');
@@ -7402,13 +7403,15 @@ function createnew(createfrom, stateid, statename) {
 
 
                 if (createfrom != 'Create' && finalresult[2] != 'District') {
-                    // JC_111
-                    if(stateid != '' && statename != ''){
-                        $("#named2021").append($('<option>', {
-                            value: stateid,
-                            text: statename,
-                        }));
-                        $('#named2021').val(stateid).trigger('change');
+                    // JC_16 Modified By Arul For Add Document
+                    if(stateid != '' && statename != '' && finalresult[2] == 'State'){
+                        if(createfrom != 'Merge'){
+                            $("#named2021").append($('<option>', {
+                                value: stateid,
+                                text: statename,
+                            }));
+                            $('#named2021').val(stateid).trigger('change');
+                        }
                     }
                     else {
 
@@ -7420,7 +7423,7 @@ function createnew(createfrom, stateid, statename) {
                             }));
     
                         });
-                    $('#named2021').val('').trigger('change');
+                    $('#named2021').val(finalresult[9]).trigger('change');
 
                     }
                     // Ends...
@@ -7567,7 +7570,7 @@ function createnew(createfrom, stateid, statename) {
                     text: 'Select State / UT3',
                 }));
 
-                // JC_111
+                // JC_16 Modified By Arul For Add Document
                 if(stateid != '' && statename != '' && (createfrom == 'Rename' || createfrom == 'Addition' || createfrom == 'Deletion')){
                     $("#statenew1").append($('<option>', {
                         value: stateid,
@@ -7585,7 +7588,7 @@ function createnew(createfrom, stateid, statename) {
     
                     });
                 }
-                // JC_111
+                // JC_16 Modified By Arul For Add Document
                 if ($('#flagof').val() == 'true') {
                     $('#statenew1').val(tstids).trigger('change');
                 }
@@ -7627,7 +7630,7 @@ function createnew(createfrom, stateid, statename) {
                     text: 'Select State / UT4',
                 }));
 
-                // JC_111
+                // JC_16 Modified By Arul For Add Document
                 if (stateid != '' && statename != '') {
                     $("#fromstate1").append($('<option>', {
                         value: stateid,
@@ -7647,7 +7650,7 @@ function createnew(createfrom, stateid, statename) {
                 if ($('#flagof').val() == 'true') {
                     $('#fromstate1').val(fstids).trigger('change');
                 }
-                // JC_111
+                // JC_16 Modified By Arul For Add Document
                 else if (stateid != '') {
 
                     $('#fromstate1').val(stateid).trigger('change');
@@ -8090,7 +8093,7 @@ function submerge(createfrom, stateid, statename) {
                 text: 'Select State / UT5',
             }));
 
-            // JC_111
+            // JC_16 Modified By Arul For Add Document
             if(stateid != '' && statename != ''){
                 $("#stategetsub").append($('<option>', {
                     value: stateid,
@@ -16531,7 +16534,7 @@ $(function () {
                                 $('#viewerlast').attr('src', res[2]);
                                 $('#uploadeddocument').val(res[2]);
 
-                                // JC_111
+                                // JC_16 Modified By Arul For Add Document
                                 $('#stateid').val(res[4]);
                                 $('#statename').val(res[3].split(',')[0]);
                                 // Ends...

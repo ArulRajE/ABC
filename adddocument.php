@@ -47,7 +47,7 @@ $array44 = array('ST','1');
 $resultaction = pg_query_params($db, "select * from detailforread where comefrom=$1  and is_deleted=$2 order by statuslevel ASC",$array44);
 $rowaction = pg_fetch_all($resultaction);
 
-// JC_111
+// JC_16 Modified By Arul For Add Document
 $selectedstate = ['STID'=> '', 'STName' => ''];
 // Ends...
 }
@@ -96,7 +96,10 @@ if(isset($_GET['idsdoc'])){
 // echo "<br>";
 // echo "<br>";
 // echo '<pre>';
-// var_dump($_GET['idsdoc']);
+// var_dump('time',time());
+//             var_dump('login time', $_SESSION['login_time']);
+//             var_dump('less time', time() - $_SESSION['login_time']);
+//             var_dump('bool', time() - $_SESSION['login_time'] < 60);
 // echo '</pre>';
 // die();
 }
@@ -1054,6 +1057,10 @@ $(function() {
             x++;
             // JC_11 Modified By Arul For Add Button 
             $('#rowno').val(x);
+            // Ends..
+            // JC_16 Modified By Arul For Add Document
+            var stateid = $('#stateid').val();
+            var statename = $('#statename').val();
 
 
  var seleted = $('#applyon').val();
@@ -1257,7 +1264,7 @@ var clickpopup = $('#clickpopup').val();
                     }).done(function (result) {
 
                          var finalresult = result.split("|");
-                           //  console.log(finalresult);
+                            console.log(finalresult);
                                            
                                    // alert(finalresult[7]);         
 
@@ -1277,27 +1284,42 @@ var clickpopup = $('#clickpopup').val();
                                                 return el != null && el != "";
                                                 });
 
-                                                $(JSON.parse(finalresult[7])).each(function () {
-                                                if($.inArray(this.id, filtered) == -1 && finalresult[2]=='State')
-                                                {
-                                                $("#fromstate"+x+"").append($('<option>', {
-                                                value: this.id,
-                                                text: this.Name,
+                                                // JC_16 Modified By Arul For Add Document
+                                                if(stateid != '' && statename != ''){
+                                                    $("#fromstate"+x+"").append($('<option>', {
+                                                    value: stateid,
+                                                    text: statename,
                                                 }));
                                                 }
-                                                else
-                                                {
-                                                  $("#fromstate"+x+"").append($('<option>', {
-                                                value: this.id,
-                                                text: this.Name,
-                                                }));
-                                                   
+                                                else{
+
+                                                    $(JSON.parse(finalresult[7])).each(function () {
+                                                    if($.inArray(this.id, filtered) == -1 && finalresult[2]=='State')
+                                                    {
+                                                    $("#fromstate"+x+"").append($('<option>', {
+                                                    value: this.id,
+                                                    text: this.Name,
+                                                    }));
+                                                    }
+                                                    else
+                                                    {
+                                                      $("#fromstate"+x+"").append($('<option>', {
+                                                    value: this.id,
+                                                    text: this.Name,
+                                                    }));
+                                                       
+                                                    }
+                                                    });
                                                 }
-                                                });
+                                                // Ends...
                                                 if(finalresult[9]!='')
                                                 {
                                                     $("#fromstate"+x+"").val(finalresult[9]).trigger('change');
 
+                                                }
+                                                // JC_16 Modified By Arul For Add Document
+                                                else if(stateid != '' && statename != ''){
+                                                    $("#fromstate"+x+"").val(stateid).trigger('change');
                                                 }
                                                 else
                                                 {
@@ -1306,7 +1328,6 @@ var clickpopup = $('#clickpopup').val();
                                                 
                                             }
                                            //  alert(finalresult[2]);
-                                            
                                                 $("#id2021"+x+"").children().remove();
                                                 if(seleted=='State')
                                                 {
@@ -1464,7 +1485,11 @@ var clickpopup = $('#clickpopup').val();
             x1++;
    var clickpopup = $('#clickpopup').val();
 var seleted = $('#applyon').val();
-        
+
+// JC_16 Modified By Arul For Add Document
+var stateid = $('#stateid').val();
+var statename = $('#statename').val();
+
         var lasttital
         if(seleted=='Village / Town' && clickpopup=='Addition')
         {
@@ -1978,7 +2003,7 @@ if(clickpopup=='Reshuffle')
                     }).done(function (result) {
 
                          var finalresult = result.split("|");
-                         // console.log(finalresult);
+                          console.log(finalresult);
                           $('.add_button_name').attr('disabled', true);
                                  if(finalresult[8]!='null')
                             {
@@ -2057,27 +2082,43 @@ if(clickpopup=='Reshuffle')
                                 return el != null && el != "";
                                 });
                               
-                                $(JSON.parse(finalresult[8])).each(function () {
-                                    if($.inArray(this.id, filtered) == -1 && finalresult[2]!="Sub-District")
-                                    {
-                                                $("#statenew"+x1+"").append($('<option>', {
-                                value: this.id,
-                                text: this.Name,
-                                }));
-                                    }
-                                    else
-                                    {
-                                            $("#statenew"+x1+"").append($('<option>', {
-                                value: this.id,
-                                text: this.Name,
-                                }));
-                                    }
-                            
 
-                                });
+                                // JC_16 Modified By Arul For Add Document
+                                if(stateid != '' && statename !='')
+                                {
+                                    $("#statenew"+x1+"").append($('<option>', {
+                                value: stateid,
+                                text: statename,
+                                }));
+                                } else {
+
+                                    $(JSON.parse(finalresult[8])).each(function () {
+                                        if($.inArray(this.id, filtered) == -1 && finalresult[2]!="Sub-District")
+                                        {
+                                                    $("#statenew"+x1+"").append($('<option>', {
+                                    value: this.id,
+                                    text: this.Name,
+                                    }));
+                                        }
+                                        else
+                                        {
+                                                $("#statenew"+x1+"").append($('<option>', {
+                                    value: this.id,
+                                    text: this.Name,
+                                    }));
+                                        }
+                                
+    
+                                    });
+                                }
                                 if(finalresult[9]!='')
                                 {
                                          $("#statenew"+x1+"").val(finalresult[9]).trigger('change');
+                                        }
+                                        // JC_16 Modified By Arul For Add Document
+                                        else if(stateid !=''){
+                                    $("#statenew"+x1+"").val(stateid).trigger('change');
+
                                 }
                                
 
