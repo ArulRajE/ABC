@@ -10667,7 +10667,8 @@ else
 
 
 							$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarray[0].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarray[0].'; ';
-							$frcomment .='<strong style="color:blue;"><u>Sub District:</u></strong> '.$finaldata['newname'][0].' Created from '.$finaldata['namefromtext'].';';
+							$frcomment .='<strong style="color:blue;"><u>Sub District:</u></strong> '.$finaldata['newname'][0].' Created from '.$finaldata['namefromtext'].' ('.$finaldata['action'][0].') ;';
+//full merge(20_11)
 							$frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> - ; <strong style="color:#15bed2;"><u>Village:</u></strong> - ;';
 
 							$forread = array($finaldata['namefrom'][$j],$finaldata['action'][$j],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][$j],$finaldata['districtget'][$j],$finaldata['namefrom'][$j],$finaldata['statenew'][0],$finaldata['districtnew'][0],$idsof,$sqlda[$j]['STIDR'],$sqlda[$j]['DTIDR'],$sqlda[$j]['SDIDR'],$_SESSION['login_id']);
@@ -10832,8 +10833,8 @@ else
 						
 						
 						$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarray[$j].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarray[$j].'; ';
-
-						$frcomment .='<strong style="color:blue;"><u>Sub District:</u></strong> '.$finaldata['newname'][$j].' Created from '.$finaldata['namefromtext'].';';
+// fullmerge(20_11)
+						$frcomment .='<strong style="color:blue;"><u>Sub District:</u></strong> '.$finaldata['newname'][$j].' Created from '.$finaldata['namefromtext'].' ('.$finaldata['action'][0].');';
 
 
 						
