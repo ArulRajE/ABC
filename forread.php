@@ -93,7 +93,7 @@ $rowDT = pg_fetch_all($resultDT);
                                     </div> -->
 
                                     <!-- pagination issue Gowthami -->
-                                     <div class=" col-md-12 col-form-label row">
+                                    <div class=" col-md-12 col-form-label row">
                                  <div class="col-md-3 mt-3">
                                       <select onchange="return get_filter_new(this.value,'stselect','ST');" id="STID"
                                             name="STID">
@@ -106,7 +106,7 @@ $rowDT = pg_fetch_all($resultDT);
                                           </option>
                                             <?php } ?>
                                         </select>
-                                    </div>  
+                                    </div> 
                                     
                                     <div class="col-md-3 mt-3">
                                         <select id="DTID" name="DTID"

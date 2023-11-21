@@ -278,251 +278,122 @@ return false;
 }
 
 
-// //modified by sahana for reuse of document || modified by sahana JC_22
-// function getdoc_list(docids, stids) {
-//     // Show the modal popup
-//     $('#con-link-document').modal('show');
+//modified by sahana for reuse of document || modified by sahana JC_22
+function getdoc_list(docids, stids) {
+    // Show the modal popup
+    $('#con-link-document').modal('show');
   
-//     // Create a DataTable
-//     var tablejig = $('#alreadydoc-datatable-list').DataTable({
-//       // Specify DataTable options
-//       "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-//       "processing": true,
-//       "serverSide": true,
-//       "bServerSide": true,
-//       "bDestroy": true,
-//       "ajax": {
-//         // Set the URL to which the AJAX request will be sent
-//         "url": "insert_data.php",
-//         // Specify data to be sent with the AJAX request
-//         "type": "POST",
-//         "data": function (d) {
-//           d.formname = "getdocalreadyuploadlist_doc";
-//           d.docids = docids;
-//         }
-//       },
-//       // Specify DataTable columns and column options
-//       'columnDefs': [
-//         {
-//             'targets': 0,
-//             'checkboxes': {
-//               'selectRow': true,
-//               'selectAll': false,
-//             },
-//             'render': function (data, type, row, meta) {
-//             if  (row[14] == 0) {
-//               if (row[13] == 1) {
-//                 return '<input class="delivery_option_checkbox" type="checkbox" data-key="76," data-id_address="22" value="76," style="margin-top: 10px; cursor: pointer" required>';
-//               } else {
-//                 return '<input class="delivery_option_checkbox" type="checkbox" data-key="76," data-id_address="22" value="76," style="margin-top: 10px; cursor: not-allowed" disabled required>';
-//               } 
-//             }
-//             else {
-//                 return '<input class="delivery_option_checkbox" type="checkbox" data-key="76," data-id_address="22" value="76," style="margin-top: 10px; cursor: not-allowed" disabled required>';
-//             }
-//             }
-//           },
-//         { 'targets': 1, "visible": false, },
-//         { 'targets': 4, 'className': "wrap" },
-//         { 'targets': 5, 'className': "wrap" },
-//         {
-//           'targets': 2,
-//           render: function (dataa, type, row, meta) {
-//             if (type === 'display') {
-//               data = '<a href="Alldocuments/' + stids + '/' + encodeURIComponent(dataa) + '" target="_blank"><i class="fas fa-file-alt fa-2x mb-2" data-toggle="tooltip" data-placement="top" style="color:#4667cc;" title="" data-original-title=""></i></a>';
-//             }
-//             return data;
-//           }
-//         },
-//         //modified by yogesh and sahana to delete pending link document  
-//         {
-//             'targets': 13,
-//             'render': function (data, type, row, meta) {
-//                 var deleteButton = '';
-//                 if (row[13] == 0) {
-//                     deleteButton = '<a href="javascript:void(0);" class="btn btn-danger delete-btn" onclick="deletependoc(' + row[1] + ', \'deletetablerowpen\')"><i class="fa fa-trash"></i></a>';
-//                   } else {
-//                     deleteButton = '<a href="javascript:void(0);" class="btn btn-danger delete-btn" disabled style="cursor: not-allowed;"><i class="fa fa-trash" style="cursor: not-allowed;"></i></a>';
-//                   }
-//                   return deleteButton;
-//             }  
+    // Create a DataTable
+    var tablejig = $('#alreadydoc-datatable-list').DataTable({
+      // Specify DataTable options
+      "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+      "processing": true,
+      "serverSide": true,
+      "bServerSide": true,
+      "bDestroy": true,
+      "ajax": {
+        // Set the URL to which the AJAX request will be sent
+        "url": "insert_data.php",
+        // Specify data to be sent with the AJAX request
+        "type": "POST",
+        "data": function (d) {
+          d.formname = "getdocalreadyuploadlist_doc";
+          d.docids = docids;
+        }
+      },
+      // Specify DataTable columns and column options
+      'columnDefs': [
+        {
+            'targets': 0,
+            'checkboxes': {
+              'selectRow': true,
+              'selectAll': false,
+            },
+            'render': function (data, type, row, meta) {
+            if  (row[14] == 0) {
+              if (row[13] == 1) {
+                return '<input class="delivery_option_checkbox" type="checkbox" data-key="76," data-id_address="22" value="76," style="margin-top: 10px; cursor: pointer" required>';
+              } else {
+                return '<input class="delivery_option_checkbox" type="checkbox" data-key="76," data-id_address="22" value="76," style="margin-top: 10px; cursor: not-allowed" disabled required>';
+              } 
+            }
+            else {
+                return '<input class="delivery_option_checkbox" type="checkbox" data-key="76," data-id_address="22" value="76," style="margin-top: 10px; cursor: not-allowed" disabled required>';
+            }
+            }
+          },
+        { 'targets': 1, "visible": false, },
+        { 'targets': 4, 'className': "wrap" },
+        { 'targets': 5, 'className': "wrap" },
+        {
+          'targets': 2,
+          render: function (dataa, type, row, meta) {
+            if (type === 'display') {
+              data = '<a href="Alldocuments/' + stids + '/' + encodeURIComponent(dataa) + '" target="_blank"><i class="fas fa-file-alt fa-2x mb-2" data-toggle="tooltip" data-placement="top" style="color:#4667cc;" title="" data-original-title=""></i></a>';
+            }
+            return data;
+          }
+        },
+        //modified by yogesh and sahana to delete pending link document  
+        {
+            'targets': 13,
+            'render': function (data, type, row, meta) {
+                var deleteButton = '';
+                if (row[13] == 0) {
+                    deleteButton = '<a href="javascript:void(0);" class="btn btn-danger delete-btn" onclick="deletependoc(' + row[1] + ', \'deletetablerowpen\')"><i class="fa fa-trash"></i></a>';
+                  } else {
+                    deleteButton = '<a href="javascript:void(0);" class="btn btn-danger delete-btn" disabled style="cursor: not-allowed;"><i class="fa fa-trash" style="cursor: not-allowed;"></i></a>';
+                  }
+                  return deleteButton;
+            }  
            
-//         },
-//         { 'targets': 14, "visible": false, },
-//         { 'targets': 15, "visible": false, } //modified by sahana to differentaite with action and without action in link document status
-//       ],
-//       // Enable row selection with checkboxes (cannot select other row when one checkbox row is been selected)
-//     //   'select': {
-//         // 'style': 'os',
-//         // 'selector': 'td:not(:first-child)'
-//         // 'selector': 'td:first-child'
-//     //   },
-//       'order': [[1, 'asc']],
-//       "initComplete": function (settings, json) {
-//         // Set the value of the first data ID to a hidden input field
-//         if (json.data.length > 0) {
-//           $('#dataids').val(json.data[0][2]);
-//         }
-//       }
-//     });
+        },
+        { 'targets': 14, "visible": false, },
+        { 'targets': 15, "visible": false, } //modified by sahana to differentaite with action and without action in link document status
+      ],
+      // Enable row selection with checkboxes (cannot select other row when one checkbox row is been selected)
+    //   'select': {
+        // 'style': 'os',
+        // 'selector': 'td:not(:first-child)'
+        // 'selector': 'td:first-child'
+    //   },
+      'order': [[1, 'asc']],
+      "initComplete": function (settings, json) {
+        // Set the value of the first data ID to a hidden input field
+        if (json.data.length > 0) {
+          $('#dataids').val(json.data[0][2]);
+        }
+      }
+    });
   
-// // modified by sahana for Disable other checkboxes when one is selected 
-// //if the checkbox is already checked and the row has the 'selected' class, clicking on it again won't uncheck the checkbox.
-// $('#alreadydoc-datatable-list').on('change', 'input[type="checkbox"]', function() {
-//     var checkbox = $(this);
-//     var checked = checkbox.prop('checked');
-//     var checkboxes = $('#alreadydoc-datatable-list input[type="checkbox"]').not(checkbox);
-//     var row = checkbox.closest('tr');
+// modified by sahana for Disable other checkboxes when one is selected 
+//if the checkbox is already checked and the row has the 'selected' class, clicking on it again won't uncheck the checkbox.
+$('#alreadydoc-datatable-list').on('change', 'input[type="checkbox"]', function() {
+    var checkbox = $(this);
+    var checked = checkbox.prop('checked');
+    var checkboxes = $('#alreadydoc-datatable-list input[type="checkbox"]').not(checkbox);
+    var row = checkbox.closest('tr');
   
-//     if (checked && !row.hasClass('selected')) {
-//       row.addClass('selected');
-//       checkboxes.prop('disabled', true);
-//       checkboxes.css('cursor', 'not-allowed');
-//       checkbox.prop('checked', true);
+    if (checked && !row.hasClass('selected')) {
+      row.addClass('selected');
+      checkboxes.prop('disabled', true);
+      checkboxes.css('cursor', 'not-allowed');
+      checkbox.prop('checked', true);
   
-//       var table = $('#alreadydoc-datatable-list').DataTable();
-//       table.rows().deselect();
-//       table.row(row).select();
+      var table = $('#alreadydoc-datatable-list').DataTable();
+      table.rows().deselect();
+      table.row(row).select();
   
-//       showInput();
-//     } else if (!checked && row.hasClass('selected')) {
-//       checkbox.prop('checked', true);
-//     }
-//     return false;   
-//   });
+      showInput();
+    } else if (!checked && row.hasClass('selected')) {
+      checkbox.prop('checked', true);
+    }
+    return false;   
+  });
   
  
-//     return false;
-    
-// }
-
-//SR No. 9 By sahana 
-// //modified by sahana for reuse of document || modified by sahana JC_22
-async function getdoc_list(docids, stids) {
-    $('#con-link-document').modal('show');
-
-    try {
-        var response = await $.ajax({
-            type: "POST",
-            url: "insert_data.php",
-            data: { formname: "sessiondetails" },
-        });
-        var sessiondetails;
-        try {
-            sessiondetails = JSON.parse(response);
-        } catch (parseError) {
-            console.error("Error parsing JSON response:", parseError);
-            return false;
-        }
-
-        // Create a DataTable
-        var tablejig = $('#alreadydoc-datatable-list').DataTable({
-            // Specify DataTable options
-            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-            "processing": true,
-            "serverSide": true,
-            "bServerSide": true,
-            "bDestroy": true,
-            "ajax": {
-                // Set the URL to which the AJAX request will be sent
-                "url": "insert_data.php",
-                // Specify data to be sent with the AJAX request
-                "type": "POST",
-                "data": function (d) {
-                    d.formname = "getdocalreadyuploadlist_doc";
-                    d.docids = docids;
-                }
-            },
-            // Specify DataTable columns and column options
-            'columnDefs': [
-                {
-                    'targets': 0,
-                    'checkboxes': {
-                      'selectRow': true,
-                      'selectAll': false,
-                    },
-                    'render': function (data, type, row, meta) {
-                    if  (row[14] == 0) {
-                      if (row[13] == 1) {
-                        return '<input class="delivery_option_checkbox" type="checkbox" data-key="76," data-id_address="22" value="76," style="margin-top: 10px; cursor: pointer" required>';
-                      } else {
-                        return '<input class="delivery_option_checkbox" type="checkbox" data-key="76," data-id_address="22" value="76," style="margin-top: 10px; cursor: not-allowed" disabled required>';
-                      } 
-                    }
-                    else {
-                        return '<input class="delivery_option_checkbox" type="checkbox" data-key="76," data-id_address="22" value="76," style="margin-top: 10px; cursor: not-allowed" disabled required>';
-                    }
-                    }
-                  },
-                { 'targets': 1, "visible": false, },
-                { 'targets': 4, 'className': "wrap" },
-                { 'targets': 5, 'className': "wrap" },
-                {
-                  'targets': 2,
-                  render: function (dataa, type, row, meta) {
-                    if (type === 'display') {
-                      data = '<a href="Alldocuments/' + stids + '/' + encodeURIComponent(dataa) + '" target="_blank"><i class="fas fa-file-alt fa-2x mb-2" data-toggle="tooltip" data-placement="top" style="color:#4667cc;" title="" data-original-title=""></i></a>';
-                    }
-                    return data;
-                  }
-                },
-                //modified by yogesh and sahana to delete pending link document  
-                {
-                    'targets': 13,
-                    'render': function (data, type, row, meta) {
-                        var deleteButton = '';
-                        if (row[13] == 0 && row[7] === sessiondetails.login_email) {
-                            deleteButton = '<a href="javascript:void(0);" class="btn btn-danger delete-btn" onclick="deletependoc(' + row[1] + ', \'deletetablerowpen\')"><i class="fa fa-trash"></i></a>';
-                          } else {
-                            deleteButton = '<a href="javascript:void(0);" class="btn btn-danger delete-btn" disabled style="cursor: not-allowed;"><i class="fa fa-trash" style="cursor: not-allowed;"></i></a>';
-                          }
-                          return deleteButton;
-                    }  
-                   
-                },
-                { 'targets': 14, "visible": false, },
-                { 'targets': 15, "visible": false, } //modified by sahana to differentaite with action and without action in link document status
-              ],
-            'order': [[1, 'asc']],
-            "initComplete": function (settings, json) {
-                // Set the value of the first data ID to a hidden input field
-                if (json.data.length > 0) {
-                    $('#dataids').val(json.data[0][2]);
-                }
-            }
-        });
-
-        // Modified by sahana for Disable other checkboxes when one is selected
-        //if the checkbox is already checked and the row has the 'selected' class, clicking on it again won't uncheck the checkbox.
-        $('#alreadydoc-datatable-list').on('change', 'input[type="checkbox"]', function () {
-            var checkbox = $(this);
-            var checked = checkbox.prop('checked');
-            var checkboxes = $('#alreadydoc-datatable-list input[type="checkbox"]').not(checkbox);
-            var row = checkbox.closest('tr');
-
-            if (checked && !row.hasClass('selected')) {
-                row.addClass('selected');
-                checkboxes.prop('disabled', true);
-                checkboxes.css('cursor', 'not-allowed');
-                checkbox.prop('checked', true);
-
-                var table = $('#alreadydoc-datatable-list').DataTable();
-                table.rows().deselect();
-                table.row(row).select();
-
-                showInput();
-            } else if (!checked && row.hasClass('selected')) {
-                checkbox.prop('checked', true);
-            }
-            return false;
-        });
-
-    } catch (error) {
-
-        console.error(error);
-    }
-
     return false;
+    
 }
 
 //modified by sahana to delete pending link document
@@ -928,92 +799,101 @@ $("#SDID").children().remove();
 }
 
 
-function reportfilterst(valdata,come)
+function reportfilterst(valdata,come,flag)
 {
-    //modified by sahana to refresh concordance dropdown
-    if (come === 'ST') { 
-        $("#DTID").val('').trigger('change');
-        $("#SDID").val('').trigger('change');
-    }
-
-// modified by sahana, If the state dropdown is changed, reset the district and sub-district dropdowns
-if (come === 'ST') {
-    $("#DTID").val('').trigger('change');
-    $("#SDID").val('').trigger('change');
-}
+    //modified by gowthami issue related to concordance dropdown refreshing and repeatiing of option
 
 if($('#STID').val()!='')
 {
       if($('#STID').val()!='' && $('#DTID').val()=='' && $('#SDID').val()=='')
  {
-  $("#DTID").children().remove();
+    if(flag=='ST'){
+        $("#DTID").children().remove();
 
-                $("#DTID").append($('<option>', {
-                value: '',
-                text: 'Select District Name',
-                }));
+        $("#DTID").append($('<option>', {
+        value: '',
+        text: 'Select District Name',
+        }));
 
-               
+       
 
 $("#SDID").children().remove();
 
-                $("#SDID").append($('<option>', {
-                value: '',
-                text: 'Select Sub-District Name',
-                }));
+        $("#SDID").append($('<option>', {
+        value: '',
+        text: 'Select Sub-District Name',
+        }));
 
+    }
+ 
  }
  else if($('#STID').val()!='' && $('#DTID').val()!='' && $('#SDID').val()=='')
  {
+    if(flag=='ST'){
+        $("#DTID").children().remove();
 
-                $("#SDID").children().remove();
+        $("#DTID").append($('<option>', {
+        value: '',
+        text: 'Select District Name',
+        }));
+        
+        $("#SDID").children().remove();
 
-                $("#SDID").append($('<option>', {
-                value: '',
-                text: 'Select Sub-District Name',
-                }));
+        $("#SDID").append($('<option>', {
+        value: '',
+        text: 'Select Sub-District Name',
+        }));
+        $('#DTID').val('').trigger('change')
+        $('#SDID').val('').trigger('change')
+    }  else if(flag=='DT')
+    {
+         $("#SDID").children().remove();
 
-
-  
+    $("#SDID").append($('<option>', {
+    value: '',
+    text: 'Select Sub-District Name',
+    }));
+      $('#SDID').val('').trigger('change')
+    }
+ 
   
  }
  else if($('#STID').val()!='' && $('#DTID').val()!='' && $('#SDID').val()!='')
  {              
 
-                if(come=='ST')
-                {
+    if(flag=='ST'){
+        $("#DTID").children().remove();
 
-                  $("#DTID").append($('<option>', {
-                value: '',
-                text: 'Select District Name',
-                }));
+        $("#DTID").append($('<option>', {
+        value: '',
+        text: 'Select District Name',
+        }));
+        
+        $("#SDID").children().remove();
 
-                     $("#SDID").children().remove();
+        $("#SDID").append($('<option>', {
+        value: '',
+        text: 'Select Sub-District Name',
+        }));
+        $('#DTID').val('').trigger('change')
+        $('#SDID').val('').trigger('change')
+    }  else if(flag=='DT')
+    {
+         $("#SDID").children().remove();
 
-                $("#SDID").append($('<option>', {
-                value: '',
-                text: 'Select Sub-District Name',
-                }));
-
-                }
-                else if(come=='DT')
-                {
-                     $("#SDID").children().remove();
-
-                $("#SDID").append($('<option>', {
-                value: '',
-                text: 'Select Sub-District Name',
-                }));
-                  $('#SDID').val('').trigger('change')
-                }
-               
-                
+    $("#SDID").append($('<option>', {
+    value: '',
+    text: 'Select Sub-District Name',
+    }));
+      $('#SDID').val('').trigger('change')
+    }
+ 
   
   
  }
 
 
-
+ 
  
                 // $('#SDID').val('').trigger('change');
 
@@ -1036,9 +916,12 @@ $("#SDID").children().remove();
                 "type": "POST",
                 "data": function (d) {
                     d.formname = "getreportPCA";
+                    d.come = come;
+                    d.valdata=valdata;
                     d.stids = $('#STID').val();
                     d.dtids = $('#DTID').val();
                     d.sdids = $('#SDID').val();
+                    d.flag = flag;
                 }
             },
              'order': [[0, 'asc'],[2, 'asc'],[4, 'asc'],[6, 'asc']],
@@ -1063,8 +946,16 @@ $("#SDID").children().remove();
           {
                           if($('#STID').val()!='' && $('#DTID').val()=='' && $('#SDID').val()=='')
                           {
-                             $(response.other).each(function () {
+                            $("#DTID").children().remove();
 
+                          $("#DTID").append($('<option>', {
+                           value: '',
+                         text: 'Select District Name',
+                             }));
+
+
+                             $(response.other).each(function () {
+                                
                             $("#DTID").append($('<option>', {
                             value: this.DTID,
                             text: this.DTName,
@@ -1078,9 +969,17 @@ $("#SDID").children().remove();
                           else if($('#STID').val()!='' && $('#DTID').val()!='' && $('#SDID').val()=='')
                           {
 
+                            // $("#SDID").empty();
+                            
+                     $("#SDID").children().remove();
 
+                     $("#SDID").append($('<option>', {
+                     value: '',
+                     text: 'Select Sub-District Name',
+                     }));
+                      
                               $(response.other).each(function () {
-
+                               
                             $("#SDID").append($('<option>', {
                             value: this.SDID,
                             text: this.SDName,
@@ -1807,7 +1706,7 @@ function selectyears(ids, name) {
 
 function get_fromvalue1(value,i)
 {
-     // JC_11 Arul
+     // JC_11 Modified By Arul For Add Button
      var rn = $('#rowno').val();
      // Ends
 
@@ -2129,7 +2028,7 @@ function get_fromvalue1(value,i)
      }
 
     }
-  // JC_11 Arul
+  // JC_11 Modified By Arul For Add Button
   else if ($('#clickpopup').val()=='Create' && $('#comefromcheck').val()=='Sub-District') {
     var action = $('#row_' + rn).find('select[name^="action"] option:selected').map(function () {
         if (this.value != '') {
@@ -2176,7 +2075,7 @@ function get_fromvalue1(value,i)
 
 function get_to_data(value,i)
 {
-    // JC_11 Arul
+    // JC_11 Modified By Arul For Add Button
     var rn = $('#rowno').val();
     var namefrom = $('#row_' + rn).find('select[name^="namefrom"] option:selected').map(function () {
         if (this.value != '') {
@@ -2228,7 +2127,7 @@ function get_to_data(value,i)
     });
 
 
-// JC_11 Modified by Arul for disable add M/PM
+// JC_11 Modified By Arul For Add Button
 if(namefrom.length > 0 && action.length > 0){
     DisableRow(rn);
 }
@@ -2344,7 +2243,7 @@ if(namefrom.length > 0 && action.length > 0){
 else if($("#clickpopup").val() == "Merge" && $("#comefromcheck").val() == "State" &&  value.value == ""){
 $("#Statusyear_1").val('').trigger("change");
 $("#toStatus_1").val('');
-//JC_11
+// JC_11 Modified By Arul For Add Button
 if(namefrom.length > 0 && action.length > 0){
     EnableRow(rn);
     }
@@ -3398,7 +3297,7 @@ else{
                                             // // ends here 
 
                                             // code changed for split bheema
-                                            //JC_11 modified by arul for add button
+                                            // JC_11 Modified By Arul For Add Button modified by arul for add button
                                             // if(finalresult[3]=='Reshuffle')
                                             // {
                                             //     $('#action1,#actiona2').val('Reshuffle').trigger('change');    
@@ -3415,7 +3314,7 @@ else{
                                             
                                             if($('#partiallyids1').val()=='')
                                             {
-                                            $('#statenew1').val('').trigger('change'); 
+                                            $('#statenew1').val('').trigger('change');
                                             }
                                             // ends here jc_02
                                             else
@@ -3441,7 +3340,7 @@ else{
                                             // modified by srikanth to trigger 2021 dco login
                                             if($('#partiallyids1').val()=='')
                                             {
-                                            $('#statenew1').val('').trigger('change'); 
+                                            $('#statenew1').val('').trigger('change');
                                             }
 
                                     }
@@ -3492,7 +3391,7 @@ else{
 
                                             });
 
-                                           // JC_11 modified by arul for add button
+                                            // JC_11 Modified By Arul For Add Button
                                             // if(finalresult[3]=='Reshuffle')
                                             // {
                                             //      $("#action"+mul[1]+"").val('Reshuffle').trigger('change');
@@ -3508,7 +3407,7 @@ else{
                                              $("#action"+mul[1]+"").val('').trigger('change');
                                             }
                                           
-                                      // $('#statenew1').val('').trigger('change');  JC_16
+                                      $('#statenew1').val('').trigger('change');
                                   
                                     }
                                    
@@ -3603,7 +3502,7 @@ else{
                                                       }
 
 // JIGGGGG
-                                          // $('#statenew1').val('').trigger('change');  JC_16
+                                          $('#statenew1').val('').trigger('change');
                                                       
                                                       // JIGARGO
                                                     
@@ -3744,7 +3643,7 @@ else
 
 
 function get_sub_district_popup_new(data,clickpopup,i) {
-    // JC_11 Arul
+    // JC_11 Modified By Arul For Add Button
     var rn = $('#rowno').val();
     // Ends
 
@@ -3921,6 +3820,14 @@ $('.namefrom').each(function(){
 
 
                                    $('.AC').css("margin-left","16%");
+
+                                   //This value required -Arun 
+                             $('#id20212').on('change', function() {
+                                if ($(this).val()) {
+                                  $(this).parsley().removeError('required',{updateClass: true});
+                                } 
+                              });
+
                              // $('.haveapartially').prop("disabled", true);
                                $("#id2021"+i+"").multiSelect({
                                selectableHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
@@ -4045,6 +3952,13 @@ $('.namefrom').each(function(){
                             $('#comefromdata').html(finalresult[3]);
                             
                             $('.AC').css("margin-left", "auto");
+
+                            // this value required - Arun
+                            // $('#selected_come').on('change', function() {
+                            //     if ($(this).val()) {
+                            //       $(this).parsley().removeError('required',{updateClass: true});
+                            //     } 
+                            //   });
                             
                             $('#selected_come').multiSelect({
                                 selectableHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
@@ -4216,7 +4130,7 @@ $('.namefrom').each(function(){
                         $('#selected_come').val('').trigger('change');
                 }
 
-                 // $('#statenew1').val('').trigger('change');  JC_16
+                 $('#statenew1').val('').trigger('change');
 
                     }
 
@@ -4270,11 +4184,11 @@ $('.namefrom').each(function(){
                 else
                 // jc_02 Partially Split & Merge autoselect
                 {
-                    $('#action'+i+'').val('Partially Split & Merge').trigger('change');    
+                    //$('#action'+i+'').val('Partially Split & Merge').trigger('change');    
                 }
                 // jc_02 ends here
 
-                // JC_11 Arul
+            //    JC_11 Modified By Arul For Add Button
             var action = $('#row_' + rn).find('select[name^="action"] option:selected').map(function () {
                 if (this.value != '') {
                     return this.value;
@@ -4292,14 +4206,28 @@ $('.namefrom').each(function(){
             } else {
                 DisableAddButton1();
             }
-            $('select[name^="namefrom"]').change(function () {
-                var value = $(this).val();
-                if (value.length > 0 && action.length > 0) {
-                    EnableAddButton1();
-                } else {
-                    DisableAddButton1();
-                }
-            });
+            if((clickpopup == 'Merge' || clickpopup == 'Create') && seleted == "Village / Town") {
+                $('select[name^="namefrom"]').change(function () {
+                    var action1 = $('#row_' + rn).find('select[name^="action"] option:selected').map(function () {
+                        if (this.value != '') {
+                            return this.value;
+                        }
+        
+                    }).get();
+                    var value = $(this).val();
+                    if (value.length > 0 && action1.length > 0) {
+                        EnableAddButton1();
+                    } else {
+                        DisableAddButton1();
+                    }
+                    if(value.length>0){
+                        $(this).parsley().removeError('required',{updateClass: true});
+                    }else {
+                        $(this).parsley().addError('required',{updateClass: true});
+
+                    }
+                });
+            }
             // Ends
                 
         
@@ -4311,7 +4239,7 @@ $('.namefrom').each(function(){
    {
 
 
- // $('#statenew1').val('').trigger('change');  JC_16
+ $('#statenew1').val('').trigger('change');
 
   $("#action"+i+"").children().remove();
                     $("#action"+i+"").append($('<option>', {
@@ -4817,12 +4745,14 @@ function getvtlist(data,i) {
       
         var seleted = $('#applyon').val();
 var clickpopup = $('#clickpopup').val();
+// JC_11 Modified By Arul For Add Button
+var rn = $('#rowno').val();
+// Ends...
+var action = $('#row_' + rn).find('select[name^="action"]').prop('disabled');
 if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Addition' || clickpopup=='Rename' || clickpopup=='Deletion' || clickpopup=='Reshuffle') && data.value!='')
 {
     manageParsleyErrors(data);
 }
-
-
 //code modified by srikanth to trigger village status and level
 if(data.value == '' && (clickpopup =='Rename' || clickpopup =='Merge' ||  clickpopup == 'Deletion' || clickpopup == 'Addition') && seleted =='Village / Town')
 {
@@ -4831,7 +4761,15 @@ if(data.value == '' && (clickpopup =='Rename' || clickpopup =='Merge' ||  clickp
     
     
 }
-//
+// Ends 
+// JC_11 Modified By Arul For Add Button
+else if(data.value == '' && clickpopup == 'Create' && action == true && seleted == "Village / Town"){
+    EnableRow(rn);
+    DisableAddButton2();
+
+}
+// Ends...
+
 if(clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Rename'  ||clickpopup=='Deletion' || clickpopup=='Reshuffle')
 {
  var fstids = $('select[name="statenew[]"] option:selected').map(function () {
@@ -5595,7 +5533,7 @@ var seleted = $('#applyon').val();
     }).done(function (result) {
 
          var finalresult = result.split("|");
-// $('#statenew1').val('').trigger('change');  JC_16
+$('#statenew1').val('').trigger('change');
       //    console.log(finalresult);
                 if(finalresult[1]=='Sub-District' || finalresult[1]=='Village / Town')
                 {
@@ -5625,7 +5563,7 @@ var seleted = $('#applyon').val();
               //  } 
 
                     });
-                    $("#districtget_"+finalresult[3]+"").val('').trigger('change');
+                   // $("#districtget_"+finalresult[3]+"").val('').trigger('change');
                      if(finalresult[1]=='Sub-District')
                      {
                          $('#did2021'+finalresult[3]+'').html('');
@@ -5888,7 +5826,10 @@ if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || 
            }
           }
           //ends here
-      
+    // JC_11 Modified By Arul For Add Button
+    else if((clickpopup == "Create" && seleted == "District" && data.value == '')){
+        DisableAddButton2();
+      }
                  
         else
         {
@@ -5921,7 +5862,7 @@ if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || 
 
 
 function get_district_popupto(data,clickpopup,i) {
-    // JC_11 Arul
+    // JC_11 Modified By Arul For Add Button
     var rn = $('#rowno').val();
     var namefrom = $('#row_' + rn).find('select[name^="namefrom"] option:selected').map(function () {
         if (this.value != '') {
@@ -6189,12 +6130,16 @@ var clickpopup = $('#clickpopup').val();
 
         }
 
-       // JC_11 Modified by Arul for M/pm Add Button
+       // JC_11 Modified By Arul For Add Button
     if (action.length > 0 && namefrom.length > 0) {
 
         EnableAddButton1();
     }
-    if ((clickpopup === "Merge" || clickpopup === "Reshuffle") && data.value !== "" &&
+    if(clickpopup === "Create" && seleted == "District" && data.value == ""){
+        EnableRow(rn);
+        DisableAddButton2();
+    }
+    else if ((clickpopup === "Merge" || clickpopup === "Reshuffle") && data.value !== "" &&
         (seleted === "District" || seleted === "Village / Town" || seleted === "Sub-District") && namefrom.length > 0 && action.length > 0) {
         DisableRow(rn);
 
@@ -6405,6 +6350,10 @@ function get_sddistrict_popupto(data,clickpopup) {
 
 var seleted = $('#applyon').val();
 var clickpopup = $('#clickpopup').val();
+// JC_11 Modified By Arul For Add Button
+var rn = $('#rowno').val();
+var action = $('#row_' + rn).find('select[name^="action"]').prop('disabled');
+// Ends...
         if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Addition' || clickpopup=='Rename' || clickpopup=='Deletion' || clickpopup=='Reshuffle') && data.value!='')
         {
             manageParsleyErrors(data);
@@ -6671,8 +6620,15 @@ var clickpopup = $('#clickpopup').val();
      {      
          $('#named2021').val('').trigger('change');
          $('#newnamecheck').val('').trigger('change');
-     }  
+     }
      //ends here
+    // JC_11 Modified By Arul For Add Button
+     else if(data.value == '' && clickpopup == 'Create' && seleted == 'Sub-District' && action == true){
+        $('#name2021').val('');
+            EnableRow(rn);
+            DisableAddButton2();
+     }
+     // Ends...
         else
         {
 
@@ -6750,17 +6706,18 @@ if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || 
                           });
                         }
                       
-                    if($('#flagof').val()=='true')
-                        {
-                             $('#districtget').val(fdtids).trigger('change');
+                    //Commented -Arun
+                    // if($('#flagof').val()=='true')
+                    //     {
+                    //          $('#districtget').val(fdtids).trigger('change');
                            
-                        }
-                        else
-                        {
+                    //     }
+                    //     else
+                    //     {
 
 
-                            $('#districtget').val('').trigger('change');
-                        }
+                    //         $('#districtget').val('').trigger('change');
+                    //     }
 
                     
 
@@ -6774,9 +6731,9 @@ if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || 
                     // modified by srikanth to trigger 2021 dco login
                      if($('#partiallyids1').val()=='')
                   {
-                    $('#statenew1').val('').trigger('change'); 
+                    $('#statenew1').val('').trigger('change');
                   }
-                     // $('#statenew1').val('').trigger('change');  JC_16
+                     $('#statenew1').val('').trigger('change');
 
                }
                else  if(finalresult[1]=='Village / Town')
@@ -6800,17 +6757,17 @@ if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || 
                           });
                         }
 
-                    if($('#flagof').val()=='true')
-                        {
-                             $('#districtget').val(fdtids).trigger('change');
+                    // if($('#flagof').val()=='true')
+                    //     {
+                    //          $('#districtget').val(fdtids).trigger('change');
                            
-                        }
-                        else
-                        {
+                    //     }
+                    //     else
+                    //     {
 
 
-                            $('#districtget').val('').trigger('change');
-                        }
+                    //         $('#districtget').val('').trigger('change');
+                    //     }
 
                     $("#sddistrictget_1").children().remove();
                     $("#sddistrictget_1").append($('<option>', {
@@ -6844,7 +6801,7 @@ if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || 
                   $('select').select2(); 
                   $(".AC").css({ 'margin-left' : ''});   
 
-                   // $('#statenew1').val('').trigger('change');  JC_16
+                   $('#statenew1').val('').trigger('change');
 
                }
                else
@@ -6880,7 +6837,7 @@ if((clickpopup=='Create' || clickpopup=='Merge' || clickpopup=='Partiallysm' || 
                             // modified by srikanth to trigger 2021 dco login
                   if($('#partiallyids1').val()=='')
                   {
-                    $('#statenew1').val('').trigger('change'); 
+                    $('#statenew1').val('').trigger('change');
                   }
                  
               
@@ -7784,23 +7741,23 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
 
                             // JC_16 Modified By Arul For Add Document
                             if(stateid != '' && statename != '' && createfrom == 'Rename'){
+                            $("#statenew1").append($('<option>', {
+                                value: stateid,
+                                text: statename,
+                            }));
+                            }
+                            else {
+
+                            $(JSON.parse(finalresult[8])).each(function () {
+        
                                 $("#statenew1").append($('<option>', {
-                                    value: stateid,
-                                    text: statename,
+                                    value: this.id,
+                                    text: this.Name,
                                 }));
-                                }
-                                else {
-    
-                                $(JSON.parse(finalresult[8])).each(function () {
-            
-                                    $("#statenew1").append($('<option>', {
-                                        value: this.id,
-                                        text: this.Name,
-                                    }));
-            
-                                });
-                                 }
-                                // Ends...
+        
+                            });
+                             }
+                            // Ends...
                         //  JC_38
 
                             if(flagof=='true')
@@ -7809,6 +7766,7 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
                             }
                             // JC_16 Modified By Arul For Add Document
                             else if (stateid != '' && createfrom == 'Rename') {
+
                                 $('#statenew1').val(stateid).trigger('change');
                             }
                             // Ends...
@@ -7821,7 +7779,7 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
 
                              if(createfrom=='Rename')
                              {
-                                //$('#statenew1').val(finalresult[9]).trigger('change');
+                                $('#statenew1').val(finalresult[9]).trigger('change');
                              }
                             else
                             //code changed by bheema
@@ -7850,24 +7808,24 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
                             }));
 
                            // JC_16 Modified By Arul For Add Document
-                           if (stateid != '' && statename != '') {
-                            $("#fromstate1").append($('<option>', {
-                                value: stateid,
-                                text: statename,
-                            }));
-
-                        }
-                        else {
-                            $(JSON.parse(finalresult[7])).each(function () {
-
+                            if (stateid != '' && statename != '') {
                                 $("#fromstate1").append($('<option>', {
-                                    value: this.id,
-                                    text: this.Name,
+                                    value: stateid,
+                                    text: statename,
                                 }));
 
-                            });
-                        }
-                        // Ends...
+                            }
+                            else {
+                                $(JSON.parse(finalresult[7])).each(function () {
+
+                                    $("#fromstate1").append($('<option>', {
+                                        value: this.id,
+                                        text: this.Name,
+                                    }));
+
+                                });
+                            }
+                            // Ends...
                             if(flagof=='true')
                             {
                              $('#fromstate1').val(fstids).trigger('change');
@@ -8032,11 +7990,7 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
 
                                     }
                                     // Ends...
-
-                                    }
-
-
-                                    $('#named2021').val('').trigger('change');
+                                }
                                     if(createfrom!='Create' && finalresult[2]!='District')
                                     {
                                     $('#fromdata').val(finalresult[8]);
@@ -8250,7 +8204,6 @@ $("select[name*='vStateStatus[]']").append(`<option value="TOWN">
                                 // }
                                  
                                 // Ends...
-                                 
 
 
                                 $("#fromstate1").children().remove();
@@ -8750,36 +8703,34 @@ $("#maintitlesub").html("Submerge "+finalresult[2]+"");
                 }));
                
                 // JC_16 Modified By Arul For Add Document
-                if(stateid != '' && statename != ''){
+            if(stateid != '' && statename != ''){
+                $("#stategetsub").append($('<option>', {
+                    value: stateid,
+                    text: statename,
+                }));
+            }
+            else {
+
+                $(JSON.parse(finalresult[0])).each(function () {
+    
                     $("#stategetsub").append($('<option>', {
-                        value: stateid,
-                        text: statename,
+                        value: this.id,
+                        text: this.Name,
                     }));
-                }
-                else {
+    
+                });
+            }
+            if(stateid != ''){
+                $('#stategetsub').val(stateid).trigger('change');
+            }
+            else {
+                var result1 = JSON.parse(finalresult[0]);
+                var result = result1.id;
+                $('#stategetsub').val('').trigger('change');
+                console.log(result);
 
-                    $(JSON.parse(finalresult[0])).each(function () {
-        
-                        $("#stategetsub").append($('<option>', {
-                            value: this.id,
-                            text: this.Name,
-                        }));
-        
-                    });
-                }
-                if(stateid != ''){
-                    $('#stategetsub').val(stateid).trigger('change');
-                }
-                else {17
-                    var result1 = JSON.parse(finalresult[0]);
-                    var result = result1.id;
-                    $('#stategetsub').val('').trigger('change');
-                    console.log(result);
-
-                }
-                // Ends...
-                
-               
+            }
+            // Ends...
 
        
 
@@ -9496,7 +9447,8 @@ $(".newnamecheck").keyup(function(){
  
 
     $("#name2021").keyup(function(){  
-        // JC_11
+    // JC_11 Modified By Arul For Add Button
+
     //             var value = $(this).val();
     //             var come = $('#comefromcheck').val();
     //            if(come=='District' || come=='Sub-District' || come=='Village / Town')
@@ -9638,7 +9590,14 @@ $(".newnamecheck").keyup(function(){
             }
     
         }).get();
+        
+        var statusyear  = $('#todataaction_1').find('select[name^="Statusyear "] option:selected').map(function () {
+            if (this.value != '') {
+                return this.value;
+            }
     
+        }).get();
+
         var statenew = $('#todataaction_1').find('select[name^="statenew"] option:selected').map(function () {
             if (this.value != '') {
                 return this.value;
@@ -9659,7 +9618,14 @@ $(".newnamecheck").keyup(function(){
             }
     
         }).get();
-        if ((come == 'District') ) {
+        if(come == 'State') {
+            if(value.length > 0  && statusyear >= 1 ){
+                EnableAddButton2();
+            } else if(value.length == 0  && statusyear >= 1 ){
+                DisableAddButton2();
+            }
+        }
+        else if (come == 'District') {
             if (value.length > 0 && namefrom.length >= 1 && statenew.length >= 1  && action.length >= 1 && clickpopup == 'Create') {
                 DisableRow(rn);
                 if(rn < 2){
@@ -9671,14 +9637,7 @@ $(".newnamecheck").keyup(function(){
                 DisableAddButton2();
             }
         }
-        if ((come == 'Sub-District') ) {
-            console.log('value.length', value.length);
-            console.log('namefrom.length', namefrom.length);
-            console.log('action.length', action.length);
-            console.log('districtnew.length', districtnew.length);
-    
-    
-            
+        else if (come == 'Sub-District') {
             if (value.length > 0 && namefrom.length >= 1 && districtnew.length >= 1 && action.length >= 1 && clickpopup == 'Create') {
                 DisableRow(rn);
                 if(rn < 2){
@@ -9696,7 +9655,7 @@ $(".newnamecheck").keyup(function(){
                 DisableAddButton2();
             }
         } 
-        if ((come == 'Village / Town') ) {
+        else if (come == 'Village / Town') {
     
             
             if (value.length > 0 && namefrom.length >= 1 && sddistrictnew.length >= 1 && action.length >= 1 && clickpopup == 'Create') {
@@ -9724,7 +9683,7 @@ $(".newnamecheck").keyup(function(){
 
 
         function checkdataoftext(val,r){
-            //  JC_11
+                // JC_11 Modified By Arul For Add Button
                 //     var value = val;
                 //     var come = $('#comefromcheck').val();
                 //    if(come=='District' || come=='Sub-District' || come=='Village / Town')
@@ -9817,11 +9776,64 @@ $(".newnamecheck").keyup(function(){
                 //                 }
                 //         }
                 //     }
-                if(val != ''){
-                    EnableAddButton2();
-                } else {
-                    DisableAddButton2();
+                var come = $('#comefromcheck').val();
+        var currentRowId = '#'+$(val).closest('.row').attr('id');
+        
+        var stateStatus = $(currentRowId).find('select[name^="StateStatus"] option:selected').map(function () {
+            if(this.value!='')
+            {
+                return this.value;    
+            }
+            
+        }).get();
+
+        var statenew = $(currentRowId).find('select[name^="statenew"] option:selected').map(function () {
+                        if(this.value!='')
+                        {
+                            return this.value;    
+                        }
+                        
+                }).get();
+        var districtnew = $(currentRowId).find('select[name^="districtnew"] option:selected').map(function () {
+                    if(this.value!='')
+                    {
+                        return this.value;    
+                    }
+                    
+            }).get();
+        var sddistrictnew = $(currentRowId).find('select[name^="sddistrictnew"] option:selected').map(function () {
+                if(this.value!='')
+                {
+                    return this.value;    
                 }
+                
+        }).get();
+                
+        if(come == "State"){
+            if(val.value != '' && stateStatus.length >= 1){
+                EnableAddButton2();
+            } else if(val.value == '' && stateStatus.length >= 0) {
+                DisableAddButton2();
+            }
+        } else if(come=='District'){
+            if(val.value != '' && statenew.length >= 1){
+                EnableAddButton2();
+            } else if(val.value == '' && statenew.length >= 0) {
+                DisableAddButton2();
+            }
+        } else if(come == 'Sub-District'){
+            if(val.value != '' && districtnew.length >= 1){
+                EnableAddButton2();
+            } else if(val.value == '' && districtnew.length >= 0) {
+                DisableAddButton2();
+            }
+        } else if(come == 'Village / Town'){
+            if(val.value != '' && sddistrictnew.length >= 1){
+                EnableAddButton2();
+            } else if(val.value == '' && sddistrictnew.length >= 0) {
+                DisableAddButton2();
+            }
+        }
                     
                     
         
@@ -9836,25 +9848,22 @@ $(".newnamecheck").keyup(function(){
 
 
  $('.actiondata').change(function(){
-    var value = $(this).val();
-    // JC_11 Arul
-    var rn = $('#rowno').val();
-    // Ends
+// JC_11 Modified By Arul For Add Button
 
-var fromaction1 = $('select[name="action[]"]').map(function () {
-                    if(this.value=='Full Merge')
-                    {
-                        return this.value;    
-                    }
+// var fromaction1 = $('select[name="action[]"]').map(function () {
+//                     if(this.value=='Full Merge')
+//                     {
+//                         return this.value;    
+//                     }
                     
-            }).get();
-if(fromaction1.length>=1)
-{
-     $('.add_button').attr('disabled', false);
+//             }).get();
+// if(fromaction1.length>=1)
+// {
+//      $('.add_button').attr('disabled', false);
         
-         $('.add_button_name').attr('disabled', true);
-         $('.field_wrapper_name').html('');
-}
+//          $('.add_button_name').attr('disabled', true);
+//          $('.field_wrapper_name').html('');
+// }
 
 // var toaction = document.getElementsByName('newname[]');
 
@@ -9874,7 +9883,8 @@ if(fromaction1.length>=1)
 //         $('.add_button').attr('disabled', true);
 //          $('.add_button_name').attr('disabled', false);
 //     }
-//JC_11 Arul
+var value = $(this).val();
+var rn = $('#rowno').val();
 var namefrom = $('#row_' + rn).find('select[name^="namefrom"] option:selected').map(function () {
     if (this.value != '') {
         return this.value;
@@ -9899,7 +9909,7 @@ return false;
     var i = idindex.split('_');
 
 
- var fromaction = document.getElementsByName('namefrom[]');
+ // var fromaction = document.getElementsByName('namefrom[]');
  //trigger in state code added by bheema//
  if(value == ''){
     $('#name2021').val('');
@@ -9907,9 +9917,9 @@ return false;
 
 //ends here
 
-// Modified by Arul for JC_11
+// JC_11 Modified By Arul For Add Button
 var rn = $('#rowno').val();
-var rowId = $(this).closest('.row').attr('id');
+var name2021 = $('#name2021').val();
 if ($('#applyon').val() == "State" && $('#clickpopup').val() == "Create") {
 
     var namefrom = $('#row_' + rn).find('select[name^="namefrom"] option:selected').map(function () {
@@ -9925,13 +9935,13 @@ if ($('#applyon').val() == "State" && $('#clickpopup').val() == "Create") {
         }
 
     }).get();
-    if (value.length > 0 && namefrom.length >= 1 && action.length >= 1) {
+    if (value.length > 0 && name2021.length > 0 && namefrom.length >= 1 && action.length >= 1) {
         DisableRow(rn);
         if(rn < 2){
             EnableAddButton2();
         }
     }
-    else if (value.length == 0 && namefrom.length >= 1 && action.length >= 1) {
+    else if (value.length == 0 && name2021.length >= 0 && namefrom.length >= 1 && action.length >= 1) {
         
         EnableRow(rn);
         DisableAddButton2();
@@ -10013,8 +10023,7 @@ return false;
 function getdata_action(valu,i)
 {
 
-    if (valu.value != "") {
-        $('.form-select').change(function(){
+    $('.form-select').change(function(){
         var value = $(this).val();
        // This value required removed -Arun
         if(value !='')
@@ -10022,15 +10031,15 @@ function getdata_action(valu,i)
             $(this).parsley().removeError('required',{updateClass: true});
         }
     });
-    $('.actiondata').change(function(){
+
+    $('#action1').change(function(){
         var value = $(this).val();
-       // This value required removed -Arun
+       // This value required removed -Arun 
         if(value !='')
         {
             $(this).parsley().removeError('required',{updateClass: true});
         }
     });
-       }
 
 
    if(valu.value!='')
@@ -12129,7 +12138,7 @@ $(function () {
 
 $("#assigndata").submit(function (e) {
 
-     // JC_11
+     // // JC_11 Modified By Arul For Add Button
      ResetRowNumber();
      // Ends...
 
@@ -17573,7 +17582,7 @@ $(document).ready(function () {
                             $('#pdf').css("display", "block")
                             $('#viewerlast').attr('src', res[2]);
                             $('#uploadeddocument').val(res[2]);
-                            
+
                             // JC_16 Modified By Arul For Add Document
                             $('#stateid').val(res[4]);
                             $('#statename').val(res[3].split(',')[0]);
@@ -20231,7 +20240,7 @@ var tablesdist = $("#tSD-datatable").DataTable({ "order": [], "scrollX": "100%",
 
 });
 
-// JC_11 Arul
+// JC_11 Modified By Arul For Add Button
 
 function DisableRow(rn) {
     if (rn == 1) {
@@ -20281,7 +20290,7 @@ function EnableAddButton2() {
 function ResetRowNumber(){
     $('#rowno').val(1);
 }
-//JC_11
+// JC_11 Modified By Arul For Add Button
 $('.closepopup').click(function(){
     $('#rowno').val(1);
 });

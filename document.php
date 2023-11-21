@@ -106,6 +106,22 @@ $result = pg_query_params($db,$qu,$array2 );
     background-color: red;
 }
 
+/* SR No 14 By sahana */
+.btn.btn-danger.btn-rounded.waves-effect.waves-light.width-xl.disbut1 {
+      position: #FDDA0D;
+      background-color: #FDDA0D;
+      color: black;
+    }
+
+.btn.btn-danger.btn-rounded.waves-effect.waves-light.width-xl.disbut1::before {
+    content: '\26A0';
+    font-size: 20px;
+    color: black; 
+    background-color: #FDDA0D;
+    position: absolute;
+    top: 10px;
+    right: 8px;
+}
 </style>
 
 
@@ -181,6 +197,13 @@ $result = pg_query_params($db,$qu,$array2 );
                                                          $filedata =array_merge($filedata,$filedata1);
                                                        }
                                                        $flag=$flag+1;
+
+                                                        //  SR No. 14 By sahana 
+                                                        $docids = $data['docids'];
+                                                        $query = "SELECT docids, docstatus FROM documentdata2021 WHERE link_docids = $1";
+                                                        $stmt = pg_prepare($db, " ", $query);
+                                                        $hello = pg_execute($db, " ", array($docids));
+                                                        $world = pg_fetch_all($hello);
                                                     ?>
 
                                     <tr>
@@ -193,9 +216,13 @@ $result = pg_query_params($db,$qu,$array2 );
                                         <td><?php echo htmlspecialchars($data['doctitle']); ?></td>
                                         
                                         <td class="wrap"><?php echo htmlspecialchars($data['docdescription']); ?></td>
-                                        <td><?php if($data['docstatus']==0){ ?>
-                                                <span class="badge badge-purple" data-id="<?php echo $data['docids']; ?>" onclick="return getselecteddocumentredirect(<?php echo $data['docids']; ?>,'comefromdoc','');" >Pending - Only Document Uploaded</span>
-                                                <?php } else if($data['docstatus']==2){ ?>
+                                        <!-- SR No. 14 By sahana  -->
+                                        <td><?php if($data['docstatus']==0) {  
+                                                    if( $data['created_by']==$_SESSION['login_email']) { ?>
+                                                        <span class="badge badge-purple" data-id="<?php echo $data['docids']; ?>" onclick="return getselecteddocumentredirect(<?php echo $data['docids']; ?>,'comefromdoc','');" >Pending - Only Document Uploaded</span>
+                                                    <?php } else {  ?>
+                                                        <span class="badge badge-purple" data-id="<?php echo $data['docids']; ?>" style="cursor: not-allowed;">Pending - Only Document Uploaded</span>
+                                                <?php } } else if($data['docstatus']==2){ ?>
                                             <span class="badge badge-warning" style="cursor: not-allowed">Partially Incomplete</span>
                                         <?php } else { ?>
                                            <span class="badge badge-success" style="cursor: not-allowed">Completed</span>
@@ -228,10 +255,13 @@ $result = pg_query_params($db,$qu,$array2 );
 
                                             <?php  
                                             if($data['freezed']==0){
-                                            if($data['docstatus']==1){ ?>
-                                                <!-- Code changed for reuse document number by sahana -->
-                                                <button type="button" onclick="return getdoc_list(<?php echo $data['docids']; ?>,<?php echo $data['docstid']; ?>)" name="reuse" class="btn btn-danger btn-rounded waves-effect waves-light width-xl disbut" id="reuse" style="background-color: #5D6D7E">Reused (<?php echo $data['totalreuse']; ?>) & Total Document (<?php echo count($filedata); ?>)</button>
-                                            <?php } else { echo " - ";  } 
+                                            if($data['docstatus']==1){   
+                                                // SR No. 14 By sahana 
+                                                if($world[0]['docstatus']==2) { ?> 
+                                                <button type="button" onclick="return getdoc_list(<?php echo $data['docids']; ?>,<?php echo $data['docstid']; ?>)" name="reuse" class="btn btn-danger btn-rounded waves-effect waves-light width-xl disbut1" id="reuse">Reused (<?php echo $data['totalreuse']; ?>) & Total Document (<?php echo count($filedata); ?>)</button>
+                                                <?php } else { ?>
+                                                    <button type="button" onclick="return getdoc_list(<?php echo $data['docids']; ?>,<?php echo $data['docstid']; ?>)" name="reuse" class="btn btn-danger btn-rounded waves-effect waves-light width-xl disbut" id="reuse" style="background-color: #5D6D7E">Reused (<?php echo $data['totalreuse']; ?>) & Total Document (<?php echo count($filedata); ?>)</button>
+                                                <?php } } else { echo " - ";  } 
                                             }
                                             else {?>
                                                 <button type="button" onclick="return getdoc_list(<?php echo $data['docids']; ?>,<?php echo $data['docstid']; ?>)" name="reuse" class="btn btn-danger btn-rounded waves-effect waves-light width-xl disbut" id="reuse" style="background-color: #5D6D7E">Reused (<?php echo $data['totalreuse']; ?>) & Total Document (<?php echo count($filedata); ?>)</button>
@@ -249,7 +279,7 @@ $result = pg_query_params($db,$qu,$array2 );
                                                 </a>
                                                 <ul class="dropdown-menu dropdown-menu-right">
                                                 <?php   if($data['freezed']==0){  ?>
-                                                    <li><a href="javascript:void(0);" id="<?php echo $data['docids']; ?>" class="dropdown-item <?php if ($data['docstatus'] == 0) { ?>deletetablerow<?php } ?>" style="cursor: <?php echo ($data['docstatus'] == 0) ? 'pointer' : 'not-allowed'; ?>">Delete</a></li>                        
+                                                    <li><a href="javascript:void(0);" id="<?php echo $data['docids']; ?>" class="dropdown-item <?php if ($data['docstatus'] == 0) { if( $data['created_by']==$_SESSION['login_email']) { ?>deletetablerow<?php } } ?>" style="cursor: <?php echo ($data['docstatus'] == 0 && $data['created_by']==$_SESSION['login_email']) ? 'pointer' : 'not-allowed'; ?>">Delete</a></li>                        
                                                     <!-- <li><a href="javascript:void(0);" onclick="downloadTableData('<?php echo $data['docids']; ?>');" class="dropdown-item">Download</a></li> -->
                                                 <?php   }  else { ?>
                                                     <li><a href="javascript:void(0);" class="dropdown-item" style="cursor:not-allowed">Delete</a></li>                          

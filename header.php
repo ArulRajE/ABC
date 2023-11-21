@@ -42,7 +42,7 @@ else
    
       if($_SESSION['login_type']==0 && ($filename=="units.php" || $filename=="index.php" || $filename=="users.php" || $filename=="adddocument.php" || $filename=="profile.php" || $filename=="reports.php" || $filename=="districts.php" || $filename=="subdistricts.php" || $filename=="villagelist.php" || $filename=="villages.php"  || $filename=="circulars.php" || $filename=="document.php" || $filename=="map.php" || $filename=="forread.php" || $filename=="setdates.php" || $filename=="map.php"))
     {
-                if(time() - $_SESSION['login_time'] < 1800) // Modified By Arul For Defect_JC_101
+        if(time() - $_SESSION['login_time'] < 1800) // Modified By Arul For Defect_JC_101
                 {
                 $_SESSION['login_time']=time();
                 }
@@ -57,7 +57,7 @@ else
 
     else if($_SESSION['login_type']==1 && ($filename=="units.php" || $filename=="users.php" || $filename=="index.php" || $filename=="adddocument.php" || $filename=="profile.php" || $filename=="reports.php" || $filename=="districts.php" || $filename=="subdistricts.php" || $filename=="villagelist.php" || $filename=="villages.php"  || $filename=="circulars.php" || $filename=="document.php" || $filename=="map.php" || $filename=="forread.php" || $filename=="setdates.php" || $filename=="map.php"))
     {
-                if(time() - $_SESSION['login_time'] < 1800) // Modified By Arul For Defect_JC_101
+        if(time() - $_SESSION['login_time'] < 1800) // Modified By Arul For Defect_JC_101
                 {
                 $_SESSION['login_time']=time();
                 }
@@ -71,7 +71,7 @@ else
     }
      else if($_SESSION['login_type']==2 &&  ($filename=="units.php" || $filename=="users.php"|| $filename=="index.php" || $filename=="adddocument.php" || $filename=="profile.php" || $filename=="reports.php" || $filename=="districts.php" || $filename=="subdistricts.php" || $filename=="villagelist.php" || $filename=="circulars.php"  || $filename=="villages.php" || $filename=="document.php" || $filename=="map.php" || $filename=="forread.php" || $filename=="setdates.php" || $filename=="map.php"))
     {
-                if(time() - $_SESSION['login_time'] < 1800) // Modified By Arul For Defect_JC_101
+        if(time() - $_SESSION['login_time'] < 1800) // Modified By Arul For Defect_JC_101
                 {
                 $_SESSION['login_time']=time();
                 }
@@ -85,7 +85,7 @@ else
     }
     else if($_SESSION['login_type']==3 &&  ($filename=="units.php" || $filename=="index.php" || $filename=="adddocument.php" || $filename=="profile.php" || $filename=="reports.php" || $filename=="districts.php" || $filename=="subdistricts.php" || $filename=="villagelist.php" || $filename=="circulars.php"  || $filename=="villages.php" || $filename=="document.php" || $filename=="map.php" || $filename=="forread.php" || $filename=="setdates.php" || $filename=="map.php"))
     {
-                if(time() - $_SESSION['login_time'] < 1800) // Modified By Arul For Defect_JC_101
+        if(time() - $_SESSION['login_time'] < 1800) // Modified By Arul For Defect_JC_101
                 {
                 
                 $_SESSION['login_time']=time();

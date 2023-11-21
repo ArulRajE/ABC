@@ -182,6 +182,10 @@ ORDER BY partiallydata'.$_SESSION['activeyears'].'."partiallyids" ASC',$array_in
                                                 
                                                   $data = array_merge($data, $da);
 
+                                                  $yesterday = pg_query_params($db,'select * from reuse_document'.$_SESSION['activeyears'].' where "docids"=$1',$array_in_data);
+                                                  $today = pg_fetch_array($yesterday);
+
+
                                                     if($data['comefrom']=='State')
                                                     { 
                                                         $data['STID']=$data['DTSTID'];
@@ -198,7 +202,12 @@ ORDER BY partiallydata'.$_SESSION['activeyears'].'."partiallyids" ASC',$array_in
                                         <td class="class2021">-</td>
                                         <td class="class2021">-</td>
                                         <td class="class2021">
-                                                <span class="badge badge-purple" data-todo='<?php echo json_encode($data); ?>' style="background-color:#fbca35;">Incomplete</span>
+                                            <!-- SR No. 10 By sahana -->
+                                            <?php if( $da['created_by']==$_SESSION['login_email'] || $today['created_by']==$_SESSION['login_email']) {   ?>
+                                                    <span class="badge badge-purple" data-todo='<?php echo json_encode($data); ?>' style="background-color:#fbca35;">Incomplete</span>
+                                            <?php }  else {?>
+                                                    <span class="badge badge-purple" style="background-color:#fbca35; cursor:not-allowed">Incomplete</span>
+                                            <?php }?>
                                        </td>
                                         
                                   
@@ -230,7 +239,12 @@ ORDER BY partiallydata'.$_SESSION['activeyears'].'."partiallyids" ASC',$array_in
                                         <td class="class2021"><?php echo $data['SDName']; ?></td>
                                         <td class="class2021">-</td>
                                         <td class="class2021">
-                                                <span class="badge badge-purple" data-todo='<?php echo json_encode($data); ?>'style="background-color:#fbca35;">Incomplete</span>
+                                            <!--SR No. 10 By sahana -->
+                                            <?php  if( $da['created_by']==$_SESSION['login_email'] || $today['created_by']==$_SESSION['login_email']) {   ?>
+                                                    <span class="badge badge-purple" data-todo='<?php echo json_encode($data); ?>' style="background-color:#fbca35;">Incomplete</span>
+                                            <?php }  else {?>
+                                                    <span class="badge badge-purple" style="background-color:#fbca35; cursor:not-allowed">Incomplete</span>
+                                            <?php }?>
                                        </td>
                                         
                                   
@@ -267,7 +281,12 @@ ORDER BY partiallydata'.$_SESSION['activeyears'].'."partiallyids" ASC',$array_in
                                         <td class="class2021"><?php echo $data['VTSDName']; ?></td>
                                         <td class="class2021"><?php echo $data['VTName']; ?></td>
                                         <td class="class2021">
-                                                <span class="badge badge-purple" data-todo='<?php echo json_encode($data); ?>'style="background-color:#fbca35;">Incomplete</span>
+                                            <!--SR No. 10 By sahana -->
+                                            <?php  if( $da['created_by']==$_SESSION['login_email'] || $today['created_by']==$_SESSION['login_email']) {   ?>
+                                                    <span class="badge badge-purple" data-todo='<?php echo json_encode($data); ?>' style="background-color:#fbca35;">Incomplete</span>
+                                            <?php }  else {?>
+                                                    <span class="badge badge-purple" style="background-color:#fbca35; cursor:not-allowed">Incomplete</span>
+                                            <?php }?>
                                        </td>
                                         
                                   

@@ -3215,22 +3215,22 @@ else if($_POST['formname']=='getdocalreadyuploadlist_doc' ) {
 	$cond='';
 	$cond = 'where docids='.$_POST['docids'].' OR link_docids='.$_POST['docids'].'';
 
-         $table = <<<EOT
-		(
-			select *,
-				(select REPLACE(array_to_string(array_agg( '<br>' || to_char(createddatetime at time zone 'utc' at time zone 'Asia/Kolkata', 'dd-mm-yyyy HH24:MI:SS')),',') , ',', '<hr color="black">') AS reusedate
-					from "reuse_document$ye" where "reuse_document$ye"."docids"="documentdata$ye"."docids"),
+        //  $table = <<<EOT
+		// (
+		// 	select *,
+		// 		(select REPLACE(array_to_string(array_agg( '<br>' || to_char(createddatetime at time zone 'utc' at time zone 'Asia/Kolkata', 'dd-mm-yyyy HH24:MI:SS')),',') , ',', '<hr color="black">') AS reusedate
+		// 			from "reuse_document$ye" where "reuse_document$ye"."docids"="documentdata$ye"."docids"),
 
-				(select REPLACE(array_to_string(array_agg('<br><br><br>' || doc_reuse_desc),','), ',', '<hr color="black">') AS  doc_reuse_desc
-					from "reuse_document$ye" where "reuse_document$ye"."docids"="documentdata$ye"."docids"),
+		// 		(select REPLACE(array_to_string(array_agg('<br><br><br>' || doc_reuse_desc),','), ',', '<hr color="black">') AS  doc_reuse_desc
+		// 			from "reuse_document$ye" where "reuse_document$ye"."docids"="documentdata$ye"."docids"),
 			
-				(select REPLACE(array_to_string(array_agg('<br><br><br>' || admin_name),','), ',', '<hr color="black">') AS allemail   
-					from "reuse_document$ye" as "JIGS" LEFT JOIN admin_login ON "JIGS"."created_by"=admin_login."id" where "JIGS"."docids"="documentdata$ye"."docids") 
+		// 		(select REPLACE(array_to_string(array_agg('<br><br><br>' || admin_name),','), ',', '<hr color="black">') AS allemail   
+		// 			from "reuse_document$ye" as "JIGS" LEFT JOIN admin_login ON "JIGS"."created_by"=admin_login."id" where "JIGS"."docids"="documentdata$ye"."docids") 
 					
-			from documentdata$ye $cond
+		// 	from documentdata$ye $cond
 		  
-		) temp
-		EOT;
+		// ) temp
+		// EOT;
 
 		//modified by gowthami issue related to allignment in reuse table 
 		$table = <<<EOT
@@ -3309,7 +3309,13 @@ else if($_POST['formname']=='getdocalreadyuploadlist_doc' ) {
 					//modified by sahana to differentiate between document and link document and redirecting to action page 
 					if ($row['doctype'] == 'Notification' || $row['doctype'] == 'Erratum Notification' || $row['doctype'] == 'Resolution' || $row['doctype'] == 'Clarification' || $row['doctype'] == 'Collector Letter') {
 						if ($d == 0) {
-							$data = '<span class="badge badge-purple jigs" data-id="'.$row[0].'" onclick="return getselecteddocumentredirect(\''.$row['docids'].'\',\'comefromdoc\',\'pop\');">Pending - Only Document Uploaded</span>';
+							// $data = '<span class="badge badge-purple jigs" data-id="'.$row[0].'" onclick="return getselecteddocumentredirect(\''.$row['docids'].'\',\'comefromdoc\',\'pop\');">Pending - Only Document Uploaded</span>';
+							// SR No. 9 by sahana
+							if ($row['created_by']==$_SESSION['login_email']) {
+								$data = '<span class="badge badge-purple jigs" data-id="'.$row[0].'" onclick="return getselecteddocumentredirect(\''.$row['docids'].'\',\'comefromdoc\',\'pop\');">Pending - Only Document Uploaded</span>';
+							} else {
+								$data = '<span class="badge badge-purple jigs" data-id="'.$row[0].'" style="cursor:not-allowed">Pending - Only Document Uploaded</span>';
+							}
 						} else if ($d == 1) {
 							$data = '<span class="badge badge-success" style="cursor: not-allowed;">Completed</span>';
 						} else {
@@ -3318,7 +3324,14 @@ else if($_POST['formname']=='getdocalreadyuploadlist_doc' ) {
 					} else if 
 						 (strpos($row['doctype'], 'Others: ') !== false) {
 							if ($d == 0) {
-								$data = '<span class="badge badge-purple jigs" data-id="' . $row[0] . '" onclick="return getselecteddocumentredirect(\'' . $row['docids'] . '\',\'comefromdoc\',\'pop\');">Pending - Only  Document Uploaded</span>';
+								// $data = '<span class="badge badge-purple jigs" data-id="' . $row[0] . '" onclick="return getselecteddocumentredirect(\'' . $row['docids'] . '\',\'comefromdoc\',\'pop\');">Pending - Only  Document Uploaded</span>';
+								// SR No. 9 by sahana
+								if ($row['created_by']==$_SESSION['login_email']) {
+									$data = '<span class="badge badge-purple jigs" data-id="' . $row[0] . '" onclick="return getselecteddocumentredirect(\'' . $row['docids'] . '\',\'comefromdoc\',\'pop\');">Pending - Only  Document Uploaded</span>';
+								}
+								else {
+									$data = '<span class="badge badge-purple jigs" data-id="'.$row[0].'" style="cursor:not-allowed">Pending - Only Document Uploaded</span>';
+								}
 							} else if ($d == 1 ) {
 								$data = '<span class="badge badge-success" style="cursor: not-allowed;">Completed</span>';
 							} else {
@@ -3327,8 +3340,16 @@ else if($_POST['formname']=='getdocalreadyuploadlist_doc' ) {
 					}
 					else {
                         if ($d == 0) {
-                            $data = '<span class="badge badge-purple jigs" data-id="'.$row[0].'" onclick="return getselecteddocumentredirect(\''.$row['docids'].'\',\'comefromdoc\',\'pop\');">Pending - Only Link Document Uploaded</span>';
-                        } else if ($d == 1) {
+                            // $data = '<span class="badge badge-purple jigs" data-id="'.$row[0].'" onclick="return getselecteddocumentredirect(\''.$row['docids'].'\',\'comefromdoc\',\'pop\');">Pending - Only Link Document Uploaded</span>';
+							// SR No. 9 by sahana
+							if ($row['created_by']==$_SESSION['login_email']) {
+                            	$data = '<span class="badge badge-purple jigs" data-id="'.$row[0].'" onclick="return getselecteddocumentredirect(\''.$row['docids'].'\',\'comefromdoc\',\'pop\');">Pending - Only Link Document Uploaded</span>';
+							}
+							else {
+								$data = '<span class="badge badge-purple jigs" data-id="'.$row[0].'" style="cursor:not-allowed">Pending - Only Link Document Uploaded</span>';
+							}
+						
+						} else if ($d == 1) {
                             if ($row['docreferance'] == 1){ //modified by sahana to differentaite with action and without action in link document status
                                 $data = '<span class="badge badge-success" style="cursor: not-allowed;">Link Document Completed With Action</span>';
                              }
@@ -18183,4 +18204,16 @@ else if ($_POST['formname'] == 'ausdform') {
 		}
 	}
 }
-                                ?>
+//SR No. 9 by sahana
+else if ($_POST['formname'] == 'sessiondetails') {
+	$session = $_SESSION;
+
+	if (!empty($session)) {
+		$response = $session;
+		echo json_encode($response);
+	} else {
+		$response = array('error' => 'No result found for session');
+		echo json_encode($response);
+	}
+}
+								?>
