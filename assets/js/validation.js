@@ -3388,6 +3388,7 @@ else{
                                                 var jsonresult = JSON.parse(finalresult[1]);
                                                 $('#action1').val(jsonresult[0]['forreaddetails']).trigger('change');
                                             }
+                                            // Ends...
                                             // // Reset Sub district
 
                                             // if($('#flagof').val()=='true')
@@ -3567,9 +3568,8 @@ else{
                                                  // $("#villageget").children().remove();
                                         }
                                         else if((finalresult[3]=='Create' || finalresult[3]=='Merge' || finalresult[3]=='Partiallysm' || finalresult[3]=='Reshuffle') && finalresult[2]=='Village / Town')
-                                        {
+                                        {   
 
-                                                // JC_38
                                                 if(mul[1]=='undefined' || mul[1]==undefined)
                                                 {
                                                     $("#sddistrictget_1").children().remove();
@@ -3752,7 +3752,9 @@ function get_sub_district_popup_new(data,clickpopup,i) {
     // JC_11 Arul
     var rn = $('#rowno').val();
     // Ends
-
+    // JC_38
+    var partiallyids = $('#partiallyids').val();
+    // Ends...
        
         var seleted = $('#applyon').val();
 var clickpopup = $('#clickpopup').val();
@@ -3831,7 +3833,7 @@ $('.namefrom').each(function(){
         }).done(function (result) {
 
          var finalresult = result.split("|");
-       //  console.log(finalresult);
+        // console.log(finalresult);
       
 
        if(clickpopup=='Create')
@@ -4267,11 +4269,14 @@ $('.namefrom').each(function(){
                 {
                     $('#action'+i+'').val('Reshuffle').trigger('change');
                 }
-                else if(clickpopup=='Create')
+                // JC_38
+                else if(clickpopup=='Create' && seleted =='Village / Town' && partiallyids != '')
                 {
-
-                // $('#action'+i+'').val('Split').trigger('change');   
+                    var jsonresult = JSON.parse(finalresult[1]);
+                    var id = jsonresult[0]['forreaddetails'];
+                    $('#action'+i+'').val(id).trigger('change');   
                 }
+                // Ends
                 else
                 // jc_02 Partially Split & Merge autoselect
                 {
@@ -5018,6 +5023,10 @@ if(clickpopup=='Merge' || clickpopup=='Partiallysm' || clickpopup=='Rename'  ||c
 
 
     return false;
+}
+// Action 2021 trigger Arul
+else if(data.value == '' && clickpopup == 'Create' && seleted == "Village / Town"){
+    $('#name2021').val('').trigger('keyup');  
 }
 else
 // {
@@ -6200,7 +6209,7 @@ var clickpopup = $('#clickpopup').val();
         }
 
        // JC_11 Modified by Arul for M/pm Add Button
-    if (action.length > 0 && namefrom.length > 0) {
+    if (action.length > 0 && namefrom.length > 0 && clickpopup == "Merge") {
 
         EnableAddButton1();
     }
@@ -6211,6 +6220,10 @@ var clickpopup = $('#clickpopup').val();
     } else if ((clickpopup === "Merge" || clickpopup === "Reshuffle") && data.value == "" &&
         (seleted === "District" || seleted === "Village / Town" || seleted === "Sub-District") && namefrom.length > 0 && action.length > 0) {
         EnableRow(rn);
+    }
+    // Action 2021 trigger Arul
+    else if(data.value == '' && clickpopup == 'Create' && seleted == 'District'){
+        $('#name2021').val('').trigger('keyup');
     }
     // Ends...
           // JC_104 Modified by Arul for district refresh in M/PM
@@ -6677,16 +6690,23 @@ var clickpopup = $('#clickpopup').val();
 
         }
                 //sub district dropdown reset done by bheema
-                else if (data.value == '' && (clickpopup =='Rename' || clickpopup =='Merge') && seleted =='Sub-District' ) 
+    else if (data.value == '' && (clickpopup =='Rename' || clickpopup =='Merge') && seleted =='Sub-District' ) 
      {      
-         $('#named2021').val('').trigger('change');
+        $('#name2021').val('').trigger('change');
          $('#newnamecheck').val('').trigger('change');
      }    
      else if (data.value == '' && (clickpopup =='Rename' || clickpopup =='Merge') && seleted =='District' ) 
      {      
-         $('#named2021').val('').trigger('change');
+        $('#name2021').val('').trigger('keyup');
          $('#newnamecheck').val('').trigger('change');
-     }  
+     }
+     // Action 2021 trigger Arul  
+     else if (data.value == '' && clickpopup == 'Create' && seleted == "Sub-District"){
+        $('#name2021').val('').trigger('keyup');
+     }
+     else if (data.value == '' && clickpopup == 'Create' && seleted == "Village / Town"){
+        $('#sddistrictnew1').val('').trigger('change');
+     }
      //ends here
         else
         {
@@ -6698,7 +6718,9 @@ var clickpopup = $('#clickpopup').val();
                     text: 'Select Sub-District',
                     }));
 
-                    $('#sddistrictnew1').val('').trigger('change');
+                    $('#sddistrictnew1').val('').trigger('');
+        
+
 
                     // $("#selected_come").children().remove();
                     // $("#selected_come").append($('<option>', {
@@ -9510,232 +9532,7 @@ $(".newnamecheck").keyup(function(){
     });  
 
  
-
-    $("#name2021").keyup(function(){  
-        // JC_11
-    //             var value = $(this).val();
-    //             var come = $('#comefromcheck').val();
-    //            if(come=='District' || come=='Sub-District' || come=='Village / Town')
-    //            {
     
-      
-    
-    //                 // var fromaction = document.getElementsByName('namefrom[]');
-    // var fromaction = $('select[name="namefrom[]"] option:selected').map(function () {
-    //                     if(this.value!='')
-    //                     {
-    //                         return this.value;    
-    //                     }
-                        
-    //             }).get();
-    
-    // var action = $('select[name="action[]"] option:selected').map(function () {
-    //                         return this.value;    
-                       
-                        
-    //             }).get();
-    
-    
-    
-    
-    
-    
-    
-    // var fromaction1 = $('select[name="action[]"]').map(function () {
-    //                     if(this.value=='Full Merge')
-    //                     {
-    //                         return this.value;    
-    //                     }
-                        
-    //             }).get();
-                
-    //            //  alert(fromaction.length);
-    
-    
-    //                 if(value!='' && value.length>0 && fromaction.length>1 )
-    //                 {
-                    
-    
-    //                     if(fromaction1.length>=1)
-    //                     {
-    
-    //                     $('.add_button').attr('disabled', false);
-    //                     $('.add_button_name').attr('disabled', true);
-    //                     }
-    //                     else
-    //                     {
-    
-    //                         if(come=='District')
-    //                         {
-    //                              $('.add_button').attr('disabled', false);
-    //                     $('.add_button_name').attr('disabled', true);
-    //                         }
-                            
-    //                         else
-    //                         {
-    
-    //                           $('#row_1').find('input, textarea, button, select').attr('disabled','disabled');  
-    //    $("#ms-selected_come [class*=ms-elem-selectable]").addClass("disabled");
-    //                         $("#ms-selected_come [class*=ms-elem-selection]").addClass("disabled");
-    //                              $('.add_button').attr('disabled', false);
-    //                     $('.add_button_name').attr('disabled', true);
-    //                         }
-                       
-                        
-    //                     }
-    //                 }
-    
-    //                 else
-    //                 {
-                      
-    
-    //                         if(value!='' && fromaction.length==1 && fromaction1.length==0)
-    //                         {
-                            
-    //                           if(action.length==1)
-    //                           {
-    
-                                
-    //                               $('.add_button').attr('disabled', true);
-    //                             $('.add_button_name').attr('disabled', false);
-    //  $('#row_1').find('input, textarea, button, select').attr('disabled','disabled');   
-    //                              $("#ms-selected_come [class*=ms-elem-selectable]").addClass("disabled");
-    //                         $("#ms-selected_come [class*=ms-elem-selection]").addClass("disabled");
-    
-    //                           }
-    //                           else
-    //                           {
-    //                           //  $('.add_button').attr('disabled', false);
-    //                             $('.add_button_name').attr('disabled', true);
-    
-                                  
-    
-    //                           }
-                                
-    
-    
-    //                         }
-    //                         else
-    //                         {
-    
-    //                                 if(come=='Village / Town' && $('#clickpopup').val()=='Addition')
-    //                                 {
-    //                                 $('.add_button').attr('disabled', true);
-    //                                 $('.add_button_name').attr('disabled', false);
-    //                                 }
-    //                                 else
-    //                                 {
-                                    
-    //                                   $('#row_1').find('input, textarea, button, select').removeAttr('disabled','disabled'); 
-    //                                       $('.add_button').attr('disabled', false);
-    //                             $('.add_button_name').attr('disabled', true);
-    //                              $("#ms-selected_come [class*=ms-elem-selectable]").removeClass("disabled");
-    //                         $("#ms-selected_come [class*=ms-elem-selection]").removeClass("disabled");
-    //                                 }
-                              
-    
-    //                         }
-    //                 }
-    //             }
-        var rn = $('#rowno').val();
-        var value = $(this).val();
-        var come = $('#comefromcheck').val();
-        var clickpopup = $('#clickpopup').val();
-        var namefrom = $('#row_' + rn).find('select[name^="namefrom"] option:selected').map(function () {
-            if (this.value != '') {
-                return this.value;
-            }
-    
-        }).get();
-    
-        var action = $('#row_' + rn).find('select[name^="action"] option:selected').map(function () {
-            if (this.value != '') {
-                return this.value;
-            }
-    
-        }).get();
-    
-        var statenew = $('#todataaction_1').find('select[name^="statenew"] option:selected').map(function () {
-            if (this.value != '') {
-                return this.value;
-            }
-    
-        }).get();
-
-        var districtnew = $('#todataaction_1').find('select[name^="districtnew"] option:selected').map(function () {
-            if (this.value != '') {
-                return this.value;
-            }
-    
-        }).get();
-    
-        var sddistrictnew = $('#todataaction_1').find('select[name^="sddistrictnew"] option:selected').map(function () {
-            if (this.value != '') {
-                return this.value;
-            }
-    
-        }).get();
-        if ((come == 'District') ) {
-            if (value.length > 0 && namefrom.length >= 1 && statenew.length >= 1  && action.length >= 1 && clickpopup == 'Create') {
-                DisableRow(rn);
-                if(rn < 2){
-                EnableAddButton2();
-                }
-            }
-            else if (value.length == 0 && namefrom.length >= 1 && statenew.length >= 0 && action.length >= 1 && clickpopup == 'Create') {
-                EnableRow(rn);
-                DisableAddButton2();
-            }
-        }
-        if ((come == 'Sub-District') ) {
-            console.log('value.length', value.length);
-            console.log('namefrom.length', namefrom.length);
-            console.log('action.length', action.length);
-            console.log('districtnew.length', districtnew.length);
-    
-    
-            
-            if (value.length > 0 && namefrom.length >= 1 && districtnew.length >= 1 && action.length >= 1 && clickpopup == 'Create') {
-                DisableRow(rn);
-                if(rn < 2){
-                    EnableAddButton2();
-                    }
-            }
-            else if (value.length == 0 && namefrom.length >= 1 && districtnew.length >= 0 && action.length >= 1 && clickpopup == 'Create') {
-                EnableRow(rn);
-                DisableAddButton2();
-            }
-            else if(clickpopup == 'Addition' && sddistrictnew.length == 1 && value.length > 0){
-                EnableAddButton2();
-            } else if(clickpopup == 'Addition' && sddistrictnew.length == 0 && value.length == 0) {
-                
-                DisableAddButton2();
-            }
-        } 
-        if ((come == 'Village / Town') ) {
-    
-            
-            if (value.length > 0 && namefrom.length >= 1 && sddistrictnew.length >= 1 && action.length >= 1 && clickpopup == 'Create') {
-                DisableRow(rn);
-                if(rn < 2){
-                    EnableAddButton2();
-                    }
-            }
-            else if (value.length == 0 && namefrom.length >= 1 && sddistrictnew.length >= 0 && action.length >= 1 && clickpopup == 'Create') {
-                EnableRow(rn);
-                DisableAddButton2();
-            }
-            else if(clickpopup == 'Addition' && sddistrictnew.length == 1 && value.length > 0){
-                EnableAddButton2();
-            } else if(clickpopup == 'Addition' && sddistrictnew.length == 0 && value.length == 0) {
-                
-                DisableAddButton2();
-            }
-        } 
-        
-        // Ends            
-    
-        }); 
 
 
 
@@ -20302,6 +20099,227 @@ $('.closepopup').click(function(){
     $('#rowno').val(1);
 });
 
+// $(document).ready(function() {
+    $("#name2021").keyup(function(){  
+        // JC_11
+    //             var value = $(this).val();
+    //             var come = $('#comefromcheck').val();
+    //            if(come=='District' || come=='Sub-District' || come=='Village / Town')
+    //            {
+    
+      
+    
+    //                 // var fromaction = document.getElementsByName('namefrom[]');
+    // var fromaction = $('select[name="namefrom[]"] option:selected').map(function () {
+    //                     if(this.value!='')
+    //                     {
+    //                         return this.value;    
+    //                     }
+                        
+    //             }).get();
+    
+    // var action = $('select[name="action[]"] option:selected').map(function () {
+    //                         return this.value;    
+                       
+                        
+    //             }).get();
+    
+    
+    
+    
+    
+    
+    
+    // var fromaction1 = $('select[name="action[]"]').map(function () {
+    //                     if(this.value=='Full Merge')
+    //                     {
+    //                         return this.value;    
+    //                     }
+                        
+    //             }).get();
+                
+    //            //  alert(fromaction.length);
+    
+    
+    //                 if(value!='' && value.length>0 && fromaction.length>1 )
+    //                 {
+                    
+    
+    //                     if(fromaction1.length>=1)
+    //                     {
+    
+    //                     $('.add_button').attr('disabled', false);
+    //                     $('.add_button_name').attr('disabled', true);
+    //                     }
+    //                     else
+    //                     {
+    
+    //                         if(come=='District')
+    //                         {
+    //                              $('.add_button').attr('disabled', false);
+    //                     $('.add_button_name').attr('disabled', true);
+    //                         }
+                            
+    //                         else
+    //                         {
+    
+    //                           $('#row_1').find('input, textarea, button, select').attr('disabled','disabled');  
+    //    $("#ms-selected_come [class*=ms-elem-selectable]").addClass("disabled");
+    //                         $("#ms-selected_come [class*=ms-elem-selection]").addClass("disabled");
+    //                              $('.add_button').attr('disabled', false);
+    //                     $('.add_button_name').attr('disabled', true);
+    //                         }
+                       
+                        
+    //                     }
+    //                 }
+    
+    //                 else
+    //                 {
+                      
+    
+    //                         if(value!='' && fromaction.length==1 && fromaction1.length==0)
+    //                         {
+                            
+    //                           if(action.length==1)
+    //                           {
+    
+                                
+    //                               $('.add_button').attr('disabled', true);
+    //                             $('.add_button_name').attr('disabled', false);
+    //  $('#row_1').find('input, textarea, button, select').attr('disabled','disabled');   
+    //                              $("#ms-selected_come [class*=ms-elem-selectable]").addClass("disabled");
+    //                         $("#ms-selected_come [class*=ms-elem-selection]").addClass("disabled");
+    
+    //                           }
+    //                           else
+    //                           {
+    //                           //  $('.add_button').attr('disabled', false);
+    //                             $('.add_button_name').attr('disabled', true);
+    
+                                  
+    
+    //                           }
+                                
+    
+    
+    //                         }
+    //                         else
+    //                         {
+    
+    //                                 if(come=='Village / Town' && $('#clickpopup').val()=='Addition')
+    //                                 {
+    //                                 $('.add_button').attr('disabled', true);
+    //                                 $('.add_button_name').attr('disabled', false);
+    //                                 }
+    //                                 else
+    //                                 {
+                                    
+    //                                   $('#row_1').find('input, textarea, button, select').removeAttr('disabled','disabled'); 
+    //                                       $('.add_button').attr('disabled', false);
+    //                             $('.add_button_name').attr('disabled', true);
+    //                              $("#ms-selected_come [class*=ms-elem-selectable]").removeClass("disabled");
+    //                         $("#ms-selected_come [class*=ms-elem-selection]").removeClass("disabled");
+    //                                 }
+                              
+    
+    //                         }
+    //                 }
+    //             }
+        var rn = $('#rowno').val();
+        var value = $(this).val();
+        var come = $('#comefromcheck').val();
+        var clickpopup = $('#clickpopup').val();
+        var namefrom = $('#row_' + rn).find('select[name^="namefrom"] option:selected').map(function () {
+            if (this.value != '') {
+                return this.value;
+            }
+    
+        }).get();
+    
+        var action = $('#row_' + rn).find('select[name^="action"] option:selected').map(function () {
+            if (this.value != '') {
+                return this.value;
+            }
+    
+        }).get();
+    
+        var statenew = $('#todataaction_1').find('select[name^="statenew"] option:selected').map(function () {
+            if (this.value != '') {
+                return this.value;
+            }
+    
+        }).get();
+
+        var districtnew = $('#todataaction_1').find('select[name^="districtnew"] option:selected').map(function () {
+            if (this.value != '') {
+                return this.value;
+            }
+    
+        }).get();
+    
+        var sddistrictnew = $('#todataaction_1').find('select[name^="sddistrictnew"] option:selected').map(function () {
+            if (this.value != '') {
+                return this.value;
+            }
+    
+        }).get();
+        if ((come == 'District') ) {
+            if (value.length > 0 && namefrom.length >= 1 && statenew.length >= 1  && action.length >= 1 && clickpopup == 'Create') {
+                DisableRow(rn);
+                if(rn < 2 && action != 'Full Merge'){
+                EnableAddButton2();
+                }
+            }
+            else if (value.length == 0 && namefrom.length >= 1 && statenew.length >= 0 && action.length >= 1 && clickpopup == 'Create') {
+                EnableRow(rn);
+                DisableAddButton2();
+            }
+        }
+        if ((come == 'Sub-District') ) {
+            if (value.length > 0 && namefrom.length >= 1 && districtnew.length >= 1 && action.length >= 1 && clickpopup == 'Create') {
+                DisableRow(rn);
+                if(rn < 2 && action != 'Full Merge'){
+                    EnableAddButton2();
+                    }
+            }
+            else if (value.length == 0 && namefrom.length >= 1 && districtnew.length >= 0 && action.length >= 1 && clickpopup == 'Create') {
+                EnableRow(rn);
+                DisableAddButton2();
+            }
+            else if(clickpopup == 'Addition' && sddistrictnew.length == 1 && value.length > 0){
+                EnableAddButton2();
+            } else if(clickpopup == 'Addition' && sddistrictnew.length == 0 && value.length == 0) {
+                
+                DisableAddButton2();
+            }
+        } 
+        if ((come == 'Village / Town') ) {
+    
+            
+            if (value.length > 0 && namefrom.length >= 1 && sddistrictnew.length >= 1 && action.length >= 1 && clickpopup == 'Create') {
+                DisableRow(rn);
+                if(rn < 2 && action != 'Full Merge'){
+                    EnableAddButton2();
+                    }
+            }
+            else if (value.length == 0 && namefrom.length >= 1 && sddistrictnew.length >= 0 && action.length >= 1 && clickpopup == 'Create') {
+                EnableRow(rn);
+                DisableAddButton2();
+                $('#vStatus2021_1').val('').trigger('change');
+            }
+            else if(clickpopup == 'Addition' && sddistrictnew.length == 1 && value.length > 0){
+                EnableAddButton2();
+            } else if(clickpopup == 'Addition' && sddistrictnew.length == 0 && value.length == 0) {
+                
+                DisableAddButton2();
+            }
+        } 
+        
+        // Ends            
+    
+        }); 
+    // });
 // Ends
 
 
