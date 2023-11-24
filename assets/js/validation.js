@@ -6167,7 +6167,9 @@ var clickpopup = $('#clickpopup').val();
                     if(finalresult[1]== 'District' && finalresult[2] == 'Partiallysm'){
                         var jsonresult = JSON.parse(finalresult[0]);
                         var id = jsonresult[0]['id'];
-                        $("select[name*='newnamem[]']").val(id).trigger('change');
+                        if(jsonresult.length == 1){
+                            $("select[name*='newnamem[]']").val(id).trigger('change');
+                        }
                     }
                     // Ends..
                     }
@@ -6637,11 +6639,13 @@ var clickpopup = $('#clickpopup').val();
                
 
                        }
-                       // JC_38
+                    // JC_38
                     if(finalresult[2] == 'Partiallysm'){
                         var jsonresult = JSON.parse(finalresult[0]);
                         var id = jsonresult[0]['id'];
-                        $("select[name*='newnamem[]']").val(id).trigger('change');
+                        if(jsonresult.length == 1){
+                            $("select[name*='newnamem[]']").val(id).trigger('change');
+                        }
                     }
                        
                     }
@@ -9498,37 +9502,22 @@ function get_status_data_update(data) {
     return false;
 }
 $(".newnamecheck").keyup(function(){  
-  
+
             var value = $(this).val();
             var come = $('#comefromcheck').val();
             var clickpopup = $('#clickpopup').val();
            
-          if(clickpopup=='Rename')
+          if(clickpopup=='Rename' && come != 'State')
            {
-            
-            var fromaction = $('input[name="newnamecheck[]"]').map(function () {
-                    if(this.value!='')
-                    {
-                        return this.value;    
-                    }
-                    
-            }).get();
-            
-
-                if(value!='' && value.length>0 && fromaction!='')
+                if(value!='' && value.length>0)
                 {
-                    // $('.add_button').attr('disabled', true);
-                    $('.add_button_name').attr('disabled', false);
+                    EnableAddButton2();
                 }
                 else
                 {
-                   // $('.add_button').attr('disabled', false);
-                    $('.add_button_name').attr('disabled', true);
+                   DisableAddButton2();
                 }
             }
-            
-            
-
     });  
 
  
@@ -20264,6 +20253,9 @@ $('.closepopup').click(function(){
             }
     
         }).get();
+        if(come == 'State' && clickpopup == 'Rename'){
+            DisableAddButton1();
+        }
         if ((come == 'District') ) {
             if (value.length > 0 && namefrom.length >= 1 && statenew.length >= 1  && action.length >= 1 && clickpopup == 'Create') {
                 DisableRow(rn);

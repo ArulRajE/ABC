@@ -2086,7 +2086,7 @@ if(clickpopup=='Reshuffle')
                                 });
                               
                                 // JC_16 Modified By Arul For Add Document
-                                if(stateid != '' && statename !='' && clickpopup == 'Addition')
+                                if(stateid != '' && statename !='' && (clickpopup == 'Rename' || clickpopup == 'Addition'))
                                 {
                                     $("#statenew"+x1+"").append($('<option>', {
                                 value: stateid,
@@ -2120,7 +2120,7 @@ if(clickpopup=='Reshuffle')
                                          $("#statenew"+x1+"").val(finalresult[9]).trigger('change');
                                 }
                                 // JC_16 Modified By Arul For Add Document
-                                else if(stateid !='' && clickpopup == 'Addition'){
+                                else if(stateid !='' && (clickpopup == 'Rename' || clickpopup == 'Addition')){
                                     $("#statenew"+x1+"").val(stateid).trigger('change');
 
                                 }
