@@ -163,6 +163,10 @@ if(isset($_GET['idsdoc'])){
                 novalidate data-parsley-trigger="keyup" id="adddocument">
                 <input type="hidden" name="formname" id="formname" value="adddocumentdata">
                 <input type="hidden" name="adddocnew" id="adddocnew" value="">
+                <!-- JC_16 Modified By Arul For Add Document -->
+                <input type="hidden" name="stateid" id="stateid" value="<?= $selectedstate['STID'] ?>">
+                <input type="hidden" name="statename" id="statename" value="<?= $selectedstate['STName'] ?>">
+                <!-- Ends... -->
                 <input type="hidden" name="doctype" id="doctype" value="<?php if(isset($_GET['doctype'])) { echo $_GET['doctype']; }  ?>">
                                                                <fieldset class="let">
                                 <legend class="chha">Select Pending Document</legend> 
@@ -530,6 +534,7 @@ if(isset($_GET['idsdoc'])){
   <input type="hidden" name="dtselected" id="dtselected" value="">
     <input type="hidden" name="sdidsselected" id="sdidsselected" value=""> -->
      
+  
   <input type="hidden" name="fstids" id="fstids" value="">
   <input type="hidden" name="fdtids" id="fdtids" value="">
   <input type="hidden" name="fsdids" id="fsdids" value="">
@@ -916,6 +921,7 @@ $('select').select2();
 
 </script>
 
+<!-- SR No 30 By sahana -->
 <!-- //modified by sahana to set document date between previous census and current census dates -->
 <script>
 $(function() {
@@ -928,15 +934,29 @@ $(function() {
     $sql_qu_data = pg_fetch_array($sql_qu);
     $importantdate = $sql_qu_data['importantdatenew'];
     $previousdate = $sql_qu_data['previousimportantdate'];
+    if (isset($_GET['come']) && $_GET['come'] == 'comefromdocadd') {
+        $idsdoc = isset($_GET['idsdoc']) ? $_GET['idsdoc'] : null;
+
+        if ($idsdoc) {
+            $sql = "SELECT to_char(docdate, 'DD-MM-YYYY') AS formatted_docdate FROM documentdata2021 WHERE docids = $1";
+            $stmt = pg_prepare($db, "", $sql); 
+            $result = pg_execute($db, "", array($idsdoc));
+            $row = pg_fetch_assoc($result);
+
+            if ($row) {
+                $dateFromDatabase = $row['formatted_docdate'];
+                $previousdate = $dateFromDatabase;
+            }
+        }
+    }
     ?>
     var previousdate = "<?php echo $previousdate; ?>";
     var importantdate = "<?php echo $importantdate; ?>";
     var startDate;
     var endDate;
-    // Check if it's comefromdocadd to have linkdocument and original document dates seperate
+    // Check if it's comefromdocadd to have linkdocument and original document dates seperate    // var startDate = moment().format('DD-MM-YYYY');
     <?php if ($_GET['come'] == 'comefromdocadd') { ?>
-        // var startDate = moment().format('DD-MM-YYYY');
-        startDate = moment(previousdate, 'DD-MM-YYYY').add(1, 'days').format('DD-MM-YYYY');
+        startDate = moment(previousdate, 'DD-MM-YYYY').format('DD-MM-YYYY');
         endDate = moment(importantdate, 'DD-MM-YYYY').add(1, 'month').format('DD-MM-YYYY');
     <?php } else { ?>
         startDate = moment(previousdate, 'DD-MM-YYYY').add(1, 'days').format('DD-MM-YYYY');
@@ -1036,11 +1056,13 @@ $(function() {
             x++;
             // JC_11 Modified By Arul For Add Button 
             $('#rowno').val(x);
-             // Ends..
+            // Ends..
             // JC_16 Modified By Arul For Add Document
             var stateid = $('#stateid').val();
             var statename = $('#statename').val();
             // Ends..
+
+
  var seleted = $('#applyon').val();
 var clickpopup = $('#clickpopup').val();
 
@@ -1262,7 +1284,7 @@ var clickpopup = $('#clickpopup').val();
                                                 return el != null && el != "";
                                                 });
 
-                                               // JC_16 Modified By Arul For Add Document
+                                                // JC_16 Modified By Arul For Add Document
                                                if(stateid != '' && statename != ''){
                                                     $("#fromstate"+x+"").append($('<option>', {
                                                     value: stateid,
@@ -1470,7 +1492,7 @@ var seleted = $('#applyon').val();
 var stateid = $('#stateid').val();
 var statename = $('#statename').val();
 // Ends...
-
+        
         var lasttital
         if(seleted=='Village / Town' && clickpopup=='Addition')
         {
@@ -2233,40 +2255,41 @@ if(clickpopup=='Reshuffle')
     var idindex = this.id;
     var i = idindex.split('_');
 
-// JC_11
-//  var fromaction = document.getElementsByName('namefrom[]');
 
-// if(value!='' && fromaction.length==1)
-//     {
-        
-//         $('.add_button').attr('disabled', true);
+        //  var fromaction = document.getElementsByName('namefrom[]');
 
-        
-//          $('.add_button_name').attr('disabled', false);
-//     }
-//     else
-//     {
-//          //$('#oremove1').attr('disabled', true);
-//      //    $('.field_wrapper').empty();
-//         $('.add_button').attr('disabled', false);
-//         $('.add_button_name').attr('disabled', true);
-//     }
+        // if(value!='' && fromaction.length==1)
+        //     {
+                
+        //         $('.add_button').attr('disabled', true);
 
-   // var fromaction = $('select[name="namefrom[]"] option:selected').map(function () {
-   //                  if(this.value!='')
-   //                  {
-   //                      return this.value;    
-   //                  }
-                    
-   //          }).get();
-    // alert($('#toStatus_'+i[1]+'').val());
-    // alert(value);
-    
-    if(value != ''){
+                
+        //          $('.add_button_name').attr('disabled', false);
+        //     }
+        //     else
+        //     {
+        //          //$('#oremove1').attr('disabled', true);
+        //      //    $('.field_wrapper').empty();
+        //         $('.add_button').attr('disabled', false);
+        //         $('.add_button_name').attr('disabled', true);
+        //     }
+
+        //    // var fromaction = $('select[name="namefrom[]"] option:selected').map(function () {
+        //    //                  if(this.value!='')
+        //    //                  {
+        //    //                      return this.value;    
+        //    //                  }
+                            
+        //    //          }).get();
+        //     // alert($('#toStatus_'+i[1]+'').val());
+        //     // alert(value);
+        // JC_11 Arul 
+if(value != ''){
             EnableAddButton2();
         } else {
             DisableAddButton2();
         }
+
   if($('#clickpopup').val()=='Rename')
   {
     if($('#toStatus_'+i[1]+'').val() !='' && $('#toStatus_'+i[1]+'').val()!=value)
@@ -2305,6 +2328,10 @@ var status = $('#oremovenew'+i[1]+'').is(":checked");
 
     }); 
 
+
+
 });
+
+
 
 </script>

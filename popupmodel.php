@@ -1026,7 +1026,7 @@
                             </div>
                             <input type="password" autocomplete="new-password" class="form-control"
                                 name="addpassword" 
-                                data-parsley-length="[8, 16]"  
+                                data-parsley-length="[13, 16]"  
                                 data-parsley-uppercase="1"
                                 data-parsley-lowercase="1"
                                 data-parsley-number="1"
@@ -1043,7 +1043,7 @@
                                                     <div class="col-md-9" style="position:relative;">
                                                         <input class="form-control" autocomplete="off" type="password"
                                                             data-parsley-equalto="#addpassword" data-parsley-required="true" id="ncpassword"
-                                                            name="ncpassword" value="" data-parsley-length="[8, 16]"  
+                                                            name="ncpassword" value="" data-parsley-length="[13, 16]"  
                                                                                                 
                                                             placeholder="Enter Confirm password" required>
                                                         <div style="z-index: 9999;
@@ -1111,7 +1111,7 @@
                                                     <div class="col-md-9" style="position:relative;">
                                                         <input class="form-control" type="password"  data-parsley-required="true"
                                                             id="npassword" autocomplete="off" name="npassword" value=""
-                                                            data-parsley-length="[8, 16]"  
+                                                            data-parsley-length="[13, 16]"  
                                                                                                     data-parsley-uppercase="1"
                                                                                                     data-parsley-lowercase="1"
                                                                                                     data-parsley-number="1"
@@ -1138,7 +1138,7 @@
                                                     <div class="col-md-9" style="position:relative;">
                                                         <input class="form-control" autocomplete="off" type="password"
                                                             data-parsley-equalto="#npassword" data-parsley-required="true" id="cpassword"
-                                                            name="cncpassword" value="" data-parsley-length="[8, 16]"  
+                                                            name="cncpassword" value="" data-parsley-length="[13, 16]"  
                                                                                                 
                                                             placeholder="Enter Confirm password" required>
                                                         <div style="z-index: 9999;

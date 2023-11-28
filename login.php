@@ -96,7 +96,7 @@
                                     <input class="form-control" type="password" data-parsley-required="true"
                                         id="password" name="password"
                                         value="<?php if(isset($_COOKIE["member_login_pass"])) { echo $_COOKIE["member_login_pass"]; } ?>"
-                                        data-parsley-minlength="6" placeholder="Enter your password" required>
+                                        data-parsley-minlength="13" data-parsley-maxlength="16" placeholder="Enter your password" required>
 
                                 </div>
 

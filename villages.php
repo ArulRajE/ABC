@@ -980,6 +980,10 @@ function s2ab(s) {
                                                     
                                             //     echo $data['VTName']; 
                                             // }
+                                            else if ($STIDDATA[4]==$data['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[1]==$data['SDID']){ //0311
+                                                    
+                                                echo $data['VTName']; 
+                                            }
                                             else {
                                                 echo ''; 
                                             }
@@ -1067,6 +1071,10 @@ function s2ab(s) {
                                                     
                                             //     echo $data['Level']; 
                                             // }
+                                            else if ($STIDDATA[4]==$data['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[1]==$data['SDID']){ //0311
+                                                    
+                                                echo $data['Level']; 
+                                            }
                                             else {
                                                 echo ''; 
                                             }
@@ -1154,6 +1162,10 @@ function s2ab(s) {
                                                     
                                             //     echo $sta; 
                                             // }
+                                            else if ($STIDDATA[4]==$data['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[1]==$data['SDID']){ //0311
+                                                    
+                                                echo $sta; 
+                                            }
                                             else {
                                                 echo ''; 
                                             }
@@ -1246,6 +1258,10 @@ function s2ab(s) {
                                                     
                                             //     echo $data['Pop']; 
                                             // }
+                                            else if ($STIDDATA[4]==$data['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[1]==$data['SDID']){ //0311
+                                                    
+                                                echo $data['Pop']; 
+                                            }
                                             else {
                                                 echo ''; 
                                             }
@@ -1857,11 +1873,11 @@ checkboxes.forEach(function(checkbox) {
 
         Swal.fire({
             type: checkbox.checked ? "success" : "error",
-            title: "Verification",
+            title: checkbox.checked ? "Verification" : "Pending",
             text: checkbox.checked
                 ? "I have verified that as per the uploaded document (notification), " + stName + " administrative units have been updated in the map"
-                : "I have verified that as per the uploaded document (notification), " + stName + " administrative units have NOT been updated in the map",
-            confirmButtonText: "Agree",
+                : "As per the uploaded document (notification), " + stName + " administrative units is pending to be uploaded in the map",
+                confirmButtonText: checkbox.checked ? "Agree" : "Ok",
         });
         event.stopPropagation();
     });
