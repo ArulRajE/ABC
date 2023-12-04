@@ -412,6 +412,16 @@ function s2ab(s) {
                                             echo ''; 
                                         }
                                     }
+                                    else if($data2['auaction']== 'Partially Split & Merge')
+                                    {
+                                        if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                        { 
+                                            echo $data['MDDS_VT'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        }  
+                                        else {
+                                            echo ''; 
+                                        }
+                                    }
                                     else 
                                     {
                                         echo $data['MDDS_VT'.$_SESSION['logindetails']['baseyear'].''];
@@ -498,6 +508,16 @@ function s2ab(s) {
                                         {
                                             echo $data['VTName'.$_SESSION['logindetails']['baseyear'].'']; 
                                         }
+                                        else {
+                                            echo ''; 
+                                        }
+                                    }
+                                    else if($data2['auaction']== 'Partially Split & Merge')
+                                    {
+                                        if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                        { 
+                                            echo $data['VTName'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        }  
                                         else {
                                             echo ''; 
                                         }
@@ -592,6 +612,16 @@ function s2ab(s) {
                                             echo ''; 
                                         }
                                     }
+                                    else if($data2['auaction']== 'Partially Split & Merge')
+                                    {
+                                        if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                        { 
+                                            echo $data['Level'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        }  
+                                        else {
+                                            echo ''; 
+                                        }
+                                    }
                                     else 
                                     {
                                         echo $data['Level'.$_SESSION['logindetails']['baseyear'].'']; 
@@ -682,6 +712,16 @@ function s2ab(s) {
                                             echo ''; 
                                         }
                                     }
+                                    else if($data2['auaction']== 'Partially Split & Merge')
+                                    {
+                                        if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                        { 
+                                            echo $sta_baseyear; 
+                                        }  
+                                        else {
+                                            echo ''; 
+                                        }
+                                    }
                                     else 
                                     {
                                         echo $sta_baseyear; 
@@ -768,6 +808,16 @@ function s2ab(s) {
                                         {
                                             echo $data['Pop'.$_SESSION['logindetails']['baseyear'].'']; 
                                         }
+                                        else {
+                                            echo ''; 
+                                        }
+                                    }
+                                    else if($data2['auaction']== 'Partially Split & Merge')
+                                    {
+                                        if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                        { 
+                                            echo $data['Pop'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        }  
                                         else {
                                             echo ''; 
                                         }
@@ -893,6 +943,20 @@ function s2ab(s) {
                                                 echo ''; 
                                             }
                                         }
+                                        else if($data2['auaction']== 'Partially Split & Merge')
+                                        {
+                                            if($data['STID2011']=$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                            { 
+                                                echo $data['MDDS_VT'];
+                                            } 
+                                            else if($data['STID']=$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID']==$STIDDATA[1])
+                                            {
+                                                echo $data['MDDS_VT'];
+                                            }  
+                                            else {
+                                                echo ''; 
+                                            }
+                                        }
                                         else 
                                         {
                                             echo $data['MDDS_VT'];
@@ -988,6 +1052,20 @@ function s2ab(s) {
                                                 echo ''; 
                                             }
                                         }
+                                        else if($data2['auaction']== 'Partially Split & Merge')
+                                        {
+                                            if($data['STID2011']=$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                            { 
+                                                echo $data['VTName']; 
+                                            } 
+                                            else if($data['STID']=$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID']==$STIDDATA[1])
+                                            {
+                                                echo $data['VTName']; 
+                                            }  
+                                            else {
+                                                echo ''; 
+                                            }
+                                        }
                                         else 
                                         {
                                             echo $data['VTName']; 
@@ -1079,6 +1157,20 @@ function s2ab(s) {
                                                 echo ''; 
                                             }
                                         }
+                                        else if($data2['auaction']== 'Partially Split & Merge')
+                                        {
+                                            if($data['STID2011']=$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                            { 
+                                                echo $data['Level']; 
+                                            } 
+                                            else if($data['STID']=$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID']==$STIDDATA[1])
+                                            {
+                                                echo $data['Level']; 
+                                            }  
+                                            else {
+                                                echo ''; 
+                                            }
+                                        }
                                         else 
                                         {
                                             echo $data['Level']; 
@@ -1166,6 +1258,20 @@ function s2ab(s) {
                                                     
                                                 echo $sta; 
                                             }
+                                            else {
+                                                echo ''; 
+                                            }
+                                        }
+                                        else if($data2['auaction']== 'Partially Split & Merge')
+                                        {
+                                            if($data['STID2011']=$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                            { 
+                                                echo $sta; 
+                                            } 
+                                            else if($data['STID']=$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID']==$STIDDATA[1])
+                                            {
+                                                echo $sta; 
+                                            }  
                                             else {
                                                 echo ''; 
                                             }
@@ -1262,6 +1368,20 @@ function s2ab(s) {
                                                     
                                                 echo $data['Pop']; 
                                             }
+                                            else {
+                                                echo ''; 
+                                            }
+                                        }
+                                        else if($data2['auaction']== 'Partially Split & Merge')
+                                        {
+                                            if($data['STID2011']=$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                            { 
+                                                echo $data['Pop']; 
+                                            } 
+                                            else if($data['STID']=$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID']==$STIDDATA[1])
+                                            {
+                                                echo $data['Pop']; 
+                                            }  
                                             else {
                                                 echo ''; 
                                             }

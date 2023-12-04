@@ -279,9 +279,14 @@ function s2ab(s) {
                                     <?php while ($data = pg_fetch_array($result)) { 
                                         $fla=false;                                                 
                                         if (in_array($data['DTID'], $arraydata))
+                                        //modified by gowthami isuue related to wineline in AU
+                                        // {
+                                        //     $fla=true;  
+                                        // }
                                         {
+                                            if($data['STID2011']!=$data2['STID'] || $data['STID2011']==$data2['STID'] && $STIDDATA[1]==$data['STID']){
                                             $fla=true;  
-                                        }
+                                        }}
 
                                         //By sahana 0111
                                         $stid = $data['STID2011']; 

@@ -327,7 +327,7 @@ if($_POST['flag']=='ST')
 			INNER JOIN (select "DTID" AS "DTID$acyearshort","DTName" AS "DTName$acyearshort","MDDS_DT" AS "MDDS_DT$acyearshort" from dt$acyear) as dt$acyearshort ON dt$acyearshort."DTID$acyearshort"=vt$acyear."DTID"
 			INNER JOIN (select "SDID" AS "SDID$acyearshort","SDName" AS "SDName$acyearshort","MDDS_SD" AS "MDDS_SD$acyearshort" from sd$acyear) as sd$acyearshort ON sd$acyearshort."SDID$acyearshort"=vt$acyear."SDID"
 			   $cond1) as vt$acyear ON fr$acyearshort."VTIDACTIVE" = vt$acyear."VTID$acyearshort"
-			   WHERE fr$acyearshort."VTIDACTIVE"!=0   $cond AND fr$acyearshort."VTIDACTIVE"!=fr$acyearshort."VTIDR"  ORDER BY "VTIDACTIVE", "frids" DESC) AS TAB2
+			   WHERE fr$acyearshort."VTIDACTIVE"!=0   $cond AND fr$acyearshort."VTIDACTIVE"!=fr$acyearshort."VTID"  ORDER BY "VTIDACTIVE", "frids" DESC) AS TAB2
 
 			    
 			 ) temp
@@ -792,7 +792,7 @@ else if($_POST['flag']=='DT')
 			INNER JOIN (select "DTID" AS "DTID$acyearshort","DTName" AS "DTName$acyearshort","MDDS_DT" AS "MDDS_DT$acyearshort" from dt$acyear) as dt$acyearshort ON dt$acyearshort."DTID$acyearshort"=vt$acyear."DTID"
 			INNER JOIN (select "SDID" AS "SDID$acyearshort","SDName" AS "SDName$acyearshort","MDDS_SD" AS "MDDS_SD$acyearshort" from sd$acyear) as sd$acyearshort ON sd$acyearshort."SDID$acyearshort"=vt$acyear."SDID"
 			   $cond1) as vt$acyear ON fr$acyearshort."VTIDACTIVE" = vt$acyear."VTID$acyearshort"
-			   WHERE fr$acyearshort."VTIDACTIVE"!=0   $cond AND fr$acyearshort."VTIDACTIVE"!=fr$acyearshort."VTIDR"  ORDER BY "VTIDACTIVE", "frids" DESC) AS TAB2
+			   WHERE fr$acyearshort."VTIDACTIVE"!=0   $cond AND fr$acyearshort."VTIDACTIVE"!=fr$acyearshort."VTID"  ORDER BY "VTIDACTIVE", "frids" DESC) AS TAB2
 
 			    
 			 ) temp
@@ -1239,7 +1239,7 @@ else if($_POST['flag']=='SD')
 			INNER JOIN (select "DTID" AS "DTID$acyearshort","DTName" AS "DTName$acyearshort","MDDS_DT" AS "MDDS_DT$acyearshort" from dt$acyear) as dt$acyearshort ON dt$acyearshort."DTID$acyearshort"=vt$acyear."DTID"
 			INNER JOIN (select "SDID" AS "SDID$acyearshort","SDName" AS "SDName$acyearshort","MDDS_SD" AS "MDDS_SD$acyearshort" from sd$acyear) as sd$acyearshort ON sd$acyearshort."SDID$acyearshort"=vt$acyear."SDID"
 			   $cond1) as vt$acyear ON fr$acyearshort."VTIDACTIVE" = vt$acyear."VTID$acyearshort"
-			   WHERE fr$acyearshort."VTIDACTIVE"!=0   $cond AND fr$acyearshort."VTIDACTIVE"!=fr$acyearshort."VTIDR"  ORDER BY "VTIDACTIVE", "frids" DESC) AS TAB2
+			   WHERE fr$acyearshort."VTIDACTIVE"!=0   $cond AND fr$acyearshort."VTIDACTIVE"!=fr$acyearshort."VTID"  ORDER BY "VTIDACTIVE", "frids" DESC) AS TAB2
 
 			    
 			 ) temp
@@ -5701,7 +5701,36 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 			if(isset($finaldata['returndata']) && $finaldata['returndata']!='')
 			{
 				$retdata =  (array) json_decode($finaldata['returndata']);
-							
+
+
+				//By sahana partially merge state level many to one 0111 3011	
+				$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+				$actions = $retdata['action'];
+				$namefrom_values = $retdata['namefrom'];
+				$newnamem_values = $retdata['newnamem'];
+
+				foreach ($actions as $key => $action) {
+					$namefrom = $namefrom_values[$key];
+					$au = pg_query_params($db, $auflag_query, array($action, $retdata['comefromcheck']));
+
+					if ($au) {
+						$row = pg_fetch_assoc($au);
+						$auflag_value = $row['auflag'];
+
+						
+						$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3 OR "STID" = $4', array($auflag_value, $action, $namefrom, $newnamem)); 
+						$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3 OR "STID" = $4', array($auflag_value, $action, $namefrom, $newnamem)); 
+						$update_dt = pg_query_params($db, 'UPDATE dt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3 OR "STID" = $4', array($auflag_value, $action, $namefrom, $newnamem)); 
+						$update_st = pg_query_params($db, 'UPDATE st'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3 OR "STID" = $4', array($auflag_value, $action, $namefrom, $newnamem)); 
+
+						if (!$update_st || !$update_dt || !$update_sd || !$update_vt) {
+							echo "UPDATE query failed: " . pg_last_error($db);
+						}
+					} else {
+						echo "SELECT query failed: " . pg_last_error($db);
+					}
+				}
+				//
 
 				$comestr='';
 				if($retdata['clickpopup']=='Partiallysm')
@@ -5866,36 +5895,14 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 
 					// pg_query_params('update wd'.$_SESSION['activeyears'].' set "STID"=$1 where wd'.$_SESSION['activeyears'].'."DTID" IN ($2)');
 
-					//By sahana partially merge state level 0111
-					$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
-					$au = pg_query_params($db, $auflag_query, array($retdata['action'][0], $retdata['comefromcheck']));
-
-					if ($au) {
-						$row = pg_fetch_assoc($au);
-						$auflag_value = $row['auflag'];
-						$namefrom = $retdata['namefrom'][0];
-						$newnamem = $retdata['newnamem'][0];
-
-						$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3 OR "STID" = $4', array($auflag_value, $retdata['action'][0], $namefrom, $newnamem)); 
-						$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3 OR "STID" = $4', array($auflag_value, $retdata['action'][0], $namefrom, $newnamem)); 
-						$update_dt = pg_query_params($db, 'UPDATE dt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3 OR "STID" = $4', array($auflag_value, $retdata['action'][0], $namefrom, $newnamem)); 
-						$update_st = pg_query_params($db, 'UPDATE st'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "STID" = $3 OR "STID" = $4', array($auflag_value, $retdata['action'][0], $namefrom, $newnamem)); 
-						
-						if (!$update_st || !$update_dt || !$update_sd || !$update_vt) {
-							echo "UPDATE queries failed: " . pg_last_error($db);
-						}
-					} else {
-						echo "SELECT query failed: " . pg_last_error($db);
-					}
-
-
 					if($partiallylevel!='')
 					{
 
 					$partiallylevelquery = rtrim($partiallylevel, ',');
 
-
-					pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids) VALUES ".$partiallylevelquery." ");
+                        //modified by Gowthami to solve the issue related to wine line in Au
+						//pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids) VALUES ".$partiallylevelquery." ");
+						pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids,stid) VALUES ".$partiallylevelquery." ");
 					}
 
 					if($finaldata['partiallyids']!='')
@@ -9112,7 +9119,7 @@ else if($_POST['clickbutton']=='Rename')
 		 			{
 		 				
                          //Defect ID JC_8  solved by shashi
-		 				if($finaldata['vlevel'][$i]=='VILLAGE')
+		 				if($finaldata['vStateStatus'][$i]=='VILLAGE')
 		 				{
 								if($finaldata['newnamecheck'][$i]!='' && $finaldata['vstatus'][$i]!='' )
 								{
@@ -9152,7 +9159,7 @@ else if($_POST['clickbutton']=='Rename')
 		 			{
 		 				if($finaldata['ovstatus'][$i]!=$finaldata['vstatus'][$i])
 		 				{
-		 						if($finaldata['vlevel'][$i]=='VILLAGE')
+		 						if($finaldata['vStateStatus'][$i]=='VILLAGE')
 		 						{
                                    //Defect ID JC_8  solved by shashi
 									if($finaldata['newnamecheck'][$i]!='' && $finaldata['vstatus'][$i]!='')
@@ -9192,7 +9199,7 @@ else if($_POST['clickbutton']=='Rename')
 		 				}
 		 				else
 		 				{
-		 					if($finaldata['vlevel'][$i]=='VILLAGE')
+		 					if($finaldata['vStateStatus'][$i]=='VILLAGE')
 		 						{
 		 							// $frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> No Change;';
 									$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$nameor[$i].' Renamed as '.$finaldata['newnamecheck'][$i].'';
@@ -9201,7 +9208,7 @@ else if($_POST['clickbutton']=='Rename')
 		 						else
 		 						{
 		 							// $frcomment .=' <strong style="color:#45b0e2;"><u>Town:</u></strong> No Change;';
-		 							$frcomment .=' <strong style="color:#15bed2;"><u>Village:</u></strong> '.$nameor[$i].' Renamed as '.$finaldata['newnamecheck'][$i].'';
+		 							$frcomment .=' <strong style="color:#15bed2;"><u>Town:</u></strong> '.$nameor[$i].' Renamed as '.$finaldata['newnamecheck'][$i].'';
 		 						}
 		 					
 		 				}
@@ -9613,28 +9620,28 @@ else if($_POST['clickbutton']=='Reshuffle')
 
 
 
-					//By sahana reshuffle subdistrict one to one, many to one 0111
-					// $auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
-					// $actions = $finaldata['action'];
-					// $namefrom_values = $finaldata['namefrom'];
-					// foreach ($actions as $key => $action) {
-					// 	$namefrom = $namefrom_values[$key];
-					// 	$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
+					//By sahana reshuffle subdistrict one to one, many to one 0111 2811
+					$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+					$actions = $finaldata['action'];
+					$namefrom_values = $finaldata['namefrom'];
+					foreach ($actions as $key => $action) {
+						$namefrom = $namefrom_values[$key];
+						$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
 
-					// 	if ($au) {
-					// 		$row = pg_fetch_assoc($au);
-					// 		$auflag_value = $row['auflag'];
+						if ($au) {
+							$row = pg_fetch_assoc($au);
+							$auflag_value = $row['auflag'];
 
-					// 		$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $action, $namefrom));
-					// 		$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $action, $namefrom));
+							$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $action, $namefrom));
+							$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $action, $namefrom));
 
-					// 		if (!$update_sd || !$update_vt) {
-					// 			echo "UPDATE query failed: " . pg_last_error($db);
-					// 		}
-					// 	} else {
-					// 		echo "SELECT query failed: " . pg_last_error($db);
-					// 	}
-					// }
+							if (!$update_sd || !$update_vt) {
+								echo "UPDATE query failed: " . pg_last_error($db);
+							}
+						} else {
+							echo "SELECT query failed: " . pg_last_error($db);
+						}
+					}
 
 
 					for($hj=0;$hj<count($str);$hj++)
@@ -10424,9 +10431,11 @@ else
 														{
 														$havep = true;
 																for($a=0;$a<count($finaldata['partiallylevel'.$l.'']);$a++)
-																	{
-																		$partiallylevel .="('".$retdata['comefromcheck']."',".$retdata['namefrom'][0].",'".$retdata['action'][0]."',".$ids[$l].",".$retdata['docids'].",".$finaldata['partiallylevel'.$l.''][$a].")," ;
-																	}
+																{
+																	//modified by gowthami to solve the issue related to wineline in AU dtid
+																	//$partiallylevel .="('".$retdata['comefromcheck']."',".$retdata['namefrom'][0].",'".$retdata['action'][0]."',".$ids[$l].",".$retdata['docids'].",".$finaldata['partiallylevel'.$l.''][$a].")," ;
+																	$partiallylevel .="('".$retdata['comefromcheck']."',".$retdata['namefrom'][0].",'".$retdata['action'][0]."',".$ids[$l].",".$retdata['docids'].",".$finaldata['partiallylevel'.$l.''][$a].",".$retdata['fromstate'][0].",".$retdata['namefrom'][0].")," ;
+																}
 
 															$finaldata['addlinksDTID'.$l.''] = array_diff($finaldata['addlinksDTID'.$l.''],$finaldata['partiallylevel'.$l.'']);
 														}
@@ -10486,7 +10495,10 @@ else
 													$partiallylevelquery = rtrim($partiallylevel, ',');
 													
 
-															pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids) VALUES ".$partiallylevelquery." ");
+												
+														//modified by Gowthami to solve the issue related to wine line in AUdtid
+													//pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids) VALUES ".$partiallylevelquery." ");
+													pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids,stid,dtid) VALUES ".$partiallylevelquery." ");
 												}
 
 												// if($finaldata['partiallyids']!='')
@@ -11001,6 +11013,30 @@ else
 		else
 		{
 
+				//By sahana split subdistrict, many to one 0111 2811
+				$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+				$actions = $retdata['action'];
+				$namefrom_values = $retdata['namefrom'];
+
+				foreach ($actions as $key => $action) {
+					$namefrom = $namefrom_values[$key];
+
+					$au = pg_query_params($db, $auflag_query, array($action, $retdata['comefromcheck']));
+
+					if ($au) {
+						$row = pg_fetch_assoc($au);
+						$auflag_value = $row['auflag'];
+
+						$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $action, $namefrom));
+						$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $action, $namefrom));
+						
+						if (!$update_sd || !$update_vt) {
+							echo "UPDATE query failed: " . pg_last_error($db);
+						}
+					} else {
+						echo "SELECT query failed: " . pg_last_error($db);
+					}
+				}
 
 				$dataofremove = explode(',',$retdata['origremove']);
 				$removearraysd = array();
@@ -11192,31 +11228,7 @@ else
 						pg_query_params($db,'update vt'.$_SESSION['activeyears'].' set "STID"=$1,"DTID"=$2,"SDID"=$3 where vt'.$_SESSION['activeyears'].'."VTID" = Any(string_to_array($4::text, \',\'::text)::NUMERIC[])',array($retdata['statenew'][0],$retdata['districtnew'][0],$idsof,implode(',',$linkDTarray)));
 
 						pg_query_params($db,'update vt'.$_SESSION['activeyears'].' set "STID"=$1,"DTID"=$2,"SDID"=$3 where vt'.$_SESSION['activeyears'].'."SDID" = Any(string_to_array($4::text, \',\'::text)::bigint[])',array($retdata['statenew'][0],$retdata['districtnew'][0],$idsof,implode(',',$removearraysd)));
-						
-						//By sahana split subdistrict, many to one 0111
-						$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
-							$actions = $retdata['action'];
-							$namefrom_values = $retdata['namefrom'];
-
-							foreach ($actions as $key => $action) {
-								$namefrom = $namefrom_values[$key];
-
-								$au = pg_query_params($db, $auflag_query, array($action, $retdata['comefromcheck']));
-
-								if ($au) {
-									$row = pg_fetch_assoc($au);
-									$auflag_value = $row['auflag'];
-
-									$update_sd = pg_query_params($db, 'UPDATE sd'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "SDID" = $3', array($auflag_value, $action, $namefrom));
-									
-									if (!$update_sd) {
-										echo "UPDATE query failed: " . pg_last_error($db);
-									}
-								} else {
-									echo "SELECT query failed: " . pg_last_error($db);
-								}
-						}
-						
+												
 						if($partiallylevel!='')
 						{
 
@@ -11529,9 +11541,10 @@ else
 						$havep = true;
 						for($a=0;$a<count($finaldata['partiallylevel'.$l.'']);$a++)
 						{
-						$partiallylevel .="('".$retdata['comefromcheck']."',".$retdata['namefrom'][0].",'".$retdata['action'][0]."',".$ids[$l].",".$retdata['docids'].",".$finaldata['partiallylevel'.$l.''][$a].")," ;
-						}
-
+							//modified by Gowthami to solve the issue related to wine line in AUdtid
+							//$partiallylevel .="('".$retdata['comefromcheck']."',".$retdata['namefrom'][0].",'".$retdata['action'][0]."',".$ids[$l].",".$retdata['docids'].",".$finaldata['partiallylevel'.$l.''][$a].")," ;
+							$partiallylevel .="('".$retdata['comefromcheck']."',".$retdata['namefrom'][0].",'".$retdata['action'][0]."',".$ids[$l].",".$retdata['docids'].",".$finaldata['partiallylevel'.$l.''][$a].",".$retdata['fromstate'][0].",".$retdata['districtget'][0].")," ;
+							}
 						$finaldata['addlinksDTID'.$l.''] = array_diff($finaldata['addlinksDTID'.$l.''],$finaldata['partiallylevel'.$l.'']);
 						}
 
@@ -11606,9 +11619,11 @@ else
 
 						$partiallylevelquery = rtrim($partiallylevel, ',');
 
+                        //modified by Gowthami to solve the issue related to wine line in AUdtid
+						//pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids) VALUES ".$partiallylevelquery." ");
+						pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids,stid,dtid) VALUES ".$partiallylevelquery." ");
+					}
 
-						pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids) VALUES ".$partiallylevelquery." ");
-						}
 
 
 						if($finaldata['partiallyids']!='')
@@ -11696,6 +11711,40 @@ else
 		
 		if($finaldata['flag']=='namefrom')
 		{
+
+				//By sahana village split many to one, full merge many to one, and split and full merge many to one 0111 2811
+				$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+				$actions = $finaldata['action'];
+				$namefrom_values = [];
+				
+				foreach ($finaldata as $key => $value) {
+					if (preg_match('/^namefrom\d*$/', $key)) {
+					$namefrom_values[] = $value;
+					}
+				}
+
+				foreach ($actions as $action) {
+					if (empty($namefrom_values)) {
+						break; 
+					}
+				
+					$namefrom = array_shift($namefrom_values);
+				
+					foreach ($namefrom as $item) {
+						$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
+				
+						if ($au) {
+							$row = pg_fetch_assoc($au);
+							$auflag_value = $row['auflag'];
+							$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "VTID" = $3', array($auflag_value, $action, $item));
+							if (!$update_vt) {
+								echo "UPDATE query failed: " . pg_last_error($db);
+						}
+						} else {
+							echo "SELECT query failed: " . pg_last_error($db);
+					}
+					}
+				}
 
 				if(isset($finaldata['statenewarray']))
 				{
@@ -12143,39 +12192,39 @@ else
 				// pg_query($db,$insertforread1);
 				// }
 				
-				// By sahana village split many to one, full merge many to one, and split and full merge many to one 0111
+				// //By sahana village split many to one, full merge many to one, and split and full merge many to one 0111
 				// $auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
 				// $actions = $finaldata['action'];
-				 // $namefrom_values = [];
+				//  $namefrom_values = [];
 				
 				// foreach ($finaldata as $key => $value) {
-				 //	if (preg_match('/^namefrom\d*$/', $key)) {
-				//	$namefrom_values[] = $value;
-				 //	}
-				 // }
+				//  	if (preg_match('/^namefrom\d*$/', $key)) {
+				// 	$namefrom_values[] = $value;
+				//  	}
+				//  }
 
-				 // foreach ($actions as $action) {
-				 //	if (empty($namefrom_values)) {
-				 //		break; 
-				 //	}
+				//  foreach ($actions as $action) {
+				//  	if (empty($namefrom_values)) {
+				//  		break; 
+				//  	}
 				
-				 //	$namefrom = array_shift($namefrom_values);
+				//  	$namefrom = array_shift($namefrom_values);
 				
-				 //	foreach ($namefrom as $item) {
-				 //		$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
+				//  	foreach ($namefrom as $item) {
+				//  		$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
 				
 				// 		if ($au) {
-				//			$row = pg_fetch_assoc($au);
-				 //			$auflag_value = $row['auflag'];
-				//			$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "VTID" = $3', array($auflag_value, $action, $item));
-				//			if (!$update_vt) {
-				 //				echo "UPDATE query failed: " . pg_last_error($db);
-				//		}
-				 //		} else {
-				//			echo "SELECT query failed: " . pg_last_error($db);
-			 	//	}
-				//	}
-				 // }
+				// 			$row = pg_fetch_assoc($au);
+				//  			$auflag_value = $row['auflag'];
+				// 			$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "VTID" = $3', array($auflag_value, $action, $item));
+				// 			if (!$update_vt) {
+				//  				echo "UPDATE query failed: " . pg_last_error($db);
+				// 		}
+				//  		} else {
+				// 			echo "SELECT query failed: " . pg_last_error($db);
+			 	// 	}
+				// 	}
+				//  }
 
 				if($finaldata['partiallyids1']!='')
 				{
@@ -12476,7 +12525,7 @@ else
 									{
 									
                                    //JC_shashi (one to many) village
-									$frcomment1 .='<strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][0].' &  Created '.ucwords(strtolower($finaldata['newname'][$j])).' ('.$finaldata['vstatus'][$j].');';
+									$frcomment1 .='<strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['namefromtext'].' ('.$finaldata['action'][0].') &  Created '.ucwords(strtolower($finaldata['newname'][$j])).' ('.$finaldata['vstatus'][$j].');';
 
 										// $frcomment .=''.$finaldata['vStateStatus'][0].': New '.$finaldata['applyon'].'(s) '.$finaldata['newname'][$j].' Created from '.$finaldata['namefromtext'].' '.$finaldata['applyon'].'(s);';
 
@@ -12487,7 +12536,7 @@ else
 										//JC_shashi (one to many) village
 												//$frcomment1 .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][0].' &  Created '.ucwords(strtolower($finaldata['newname'][$j])).' ('.$finaldata['vstatus'][$j].');';
 								//Titlecase issue resolved by gowthami
-								$frcomment1 .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' '.$finaldata['action'][0].' &  Created '.$finaldata['newname'][$j].' ('.$finaldata['vstatus'][$j].');';
+								$frcomment1 .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['namefromtext'].' ('.$finaldata['action'][0].') &  Created '.$finaldata['newname'][$j].' ('.$finaldata['vstatus'][$j].');';
 
 
 									}
@@ -12496,31 +12545,19 @@ else
 									$dtd=explode(',',$sqlda[$g]['DTIDR']);
 									$sdd=explode(',',$sqlda[$g]['SDIDR']);
 									$vtd=explode(',',$sqlda[$g]['VTIDR']);
+									// Shashi foread v/t extra row
 									for($ji=0;$ji<count($std);$ji++)
-									{
-// 24_11  village create level full merge extra row removed by shashi (sl. NO 21)
-											// $forread1 = array($finaldata['namefrom'][$g],$finaldata['action'][0],$finaldata['namefrom'][0],$finaldata['docids'],$finaldata['comefromcheck'],$frcomment1,'MAIN',$finaldata['fromstate'][0],$finaldata['districtget'][0],$finaldata['sddistrictget'][0],$finaldata['namefrom'][$g],$finaldata['fromstate'][0],$finaldata['districtget'][0],$finaldata['sddistrictget'][0],$finaldata['namefrom'][$g],$std[$ji],$dtd[$ji],$sdd[$ji],$vtd[$ji],$_SESSION['login_id']);
-
-									// if(count($forread1)>0)
-									// 	{
-									// 		$insertforread1 = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)';
-									// 		pg_query_params($db,$insertforread1,$forread1);
-									// 	}
-
-
-										$forread = array($finaldata['namefrom'][$g],$finaldata['action'][0],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][0],$finaldata['districtget'][0],$finaldata['sddistrictget'][0],$finaldata['namefrom'][$g],$finaldata['statenew'][$j],$finaldata['districtnew'][$j],$finaldata['sddistrictnew'][$j],$idsof,$std[$ji],$dtd[$ji],$sdd[$ji],$vtd[$ji],$_SESSION['login_id']);
-
-
-
-								 $insertforread = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)';
-								$result = pg_query_params($db,$insertforread,$forread);
-
-
-								
-
-
-	
-									}
+                                    {
+                                            $forread1 = array($finaldata['namefrom'][$g],$finaldata['action'][0],$finaldata['namefrom'][0],$finaldata['docids'],$finaldata['comefromcheck'],$frcomment1,'MAIN',$finaldata['fromstate'][0],$finaldata['districtget'][0],$finaldata['sddistrictget'][0],$finaldata['namefrom'][$g],$finaldata['fromstate'][0],$finaldata['districtget'][0],$finaldata['sddistrictget'][0],$finaldata['namefrom'][$g],$std[$ji],$dtd[$ji],$sdd[$ji],$vtd[$ji],$_SESSION['login_id']);
+                                    if(count($forread1)>0 )
+                                        {
+                                            $insertforread1 = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)';
+                                            pg_query_params($db,$insertforread1,$forread1);
+                                        }
+                                        $forread = array($finaldata['namefrom'][$g],$finaldata['action'][0],$idsof,$finaldata['docids'],$finaldata['comefromcheck'],$frcomment,'Create',$finaldata['fromstate'][0],$finaldata['districtget'][0],$finaldata['sddistrictget'][0],$finaldata['namefrom'][$g],$finaldata['statenew'][$j],$finaldata['districtnew'][$j],$finaldata['sddistrictnew'][$j],$idsof,$std[$ji],$dtd[$ji],$sdd[$ji],$vtd[$ji],$_SESSION['login_id']);
+                                 $insertforread = 'insert into forreaddata'.$_SESSION['activeyears'].' ("frfromids","frfromaction","frtoids","frdocids","frcomefrom","frcomment","comeaction","STID","DTID","SDID","VTID","STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE","STIDR","DTIDR","SDIDR","VTIDR","created_by") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)';
+                                $result = pg_query_params($db,$insertforread,$forread);
+                                    }
 									
 									$st=array_merge($st,$finaldata['fromstate']);
 									$dt=array_merge($dt,$finaldata['districtget']);
@@ -12573,42 +12610,40 @@ else
 										// print_r($removearraysd);
 										// exit;
 										
-										// if(count($removearraysd)>0)
-										// {
-										// pg_query_params($db,'update vt'.$_SESSION['activeyears'].' set "is_deleted"=$1 where "STID"=$2 and "DTID"=$3 AND "SDID"=$4 and "VTID" = Any(string_to_array($5::text, \',\'::text)::NUMERIC[])',array(0,$finaldata['fromstate'][0],$finaldata['districtget'][0],$finaldata['sddistrictget'][0],implode(',',$removearraysd[0])));	
+										if(count($removearraysd)>0)
+										{
+										pg_query_params($db,'update vt'.$_SESSION['activeyears'].' set "is_deleted"=$1 where "STID"=$2 and "DTID"=$3 AND "SDID"=$4 and "VTID" = Any(string_to_array($5::text, \',\'::text)::NUMERIC[])',array(0,$finaldata['fromstate'][0],$finaldata['districtget'][0],$finaldata['sddistrictget'][0],implode(',',$removearraysd[0])));	
 									
+										}
 										
+										//By sahana village split one to one, full merge one to one 0111 //2811
+										$auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
+										$actions = $finaldata['action'];
+										$namefrom_values = $finaldata['namefrom'];
+										foreach ($namefrom_values as $key => $namefrom_value) {
+											$action = $actions[0];
+											$namefrom = $namefrom_values[$key];
+											$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
 
-										// }
-										
-										// //By sahana village split one to one, full merge one to one 0111
-										// $auflag_query = 'SELECT auflag FROM unit WHERE auaction = $1 AND aulevel = $2';
-										// $actions = $finaldata['action'];
-										// $namefrom_values = $finaldata['namefrom'];
-										// foreach ($namefrom_values as $key => $namefrom_value) {
-										// 	$action = $actions[0];
-										// 	$namefrom = $namefrom_values[$key];
-										// 	$au = pg_query_params($db, $auflag_query, array($action, $finaldata['comefromcheck']));
+											if ($au) {
+												$row = pg_fetch_assoc($au);
+												$auflag_value = $row['auflag'];
 
-										// 	if ($au) {
-										// 		$row = pg_fetch_assoc($au);
-										// 		$auflag_value = $row['auflag'];
+												$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "VTID" = $3', array($auflag_value, $action, $namefrom));
 
-										// 		$update_vt = pg_query_params($db, 'UPDATE vt'.$_SESSION['activeyears'].' SET "auflag" = $1, "auaction" = $2 WHERE "VTID" = $3', array($auflag_value, $action, $namefrom));
+												if (!$update_vt) {
+													echo "UPDATE query failed: " . pg_last_error($db);
+												}
+											} else {
+												echo "SELECT query failed: " . pg_last_error($db);
+											}
+										}
 
-										// 		if (!$update_vt) {
-										// 			echo "UPDATE query failed: " . pg_last_error($db);
-										// 		}
-										// 	} else {
-										// 		echo "SELECT query failed: " . pg_last_error($db);
-										// 	}
-										// }
+										if($finaldata['partiallyids1']!='')
+										{
 
-										// if($finaldata['partiallyids1']!='')
-										// {
-
-										// pg_query_params($db,'update partiallydata'.$_SESSION['activeyears'].' set "pstatus"=$1 where partiallyids=$2',array(1,$finaldata['partiallyids1']));	
-										// }
+										pg_query_params($db,'update partiallydata'.$_SESSION['activeyears'].' set "pstatus"=$1 where partiallyids=$2',array(1,$finaldata['partiallyids1']));	
+										}
 
 
 										// for($kl=0;$kl<count($ids);$kl++)
@@ -13110,9 +13145,10 @@ else
 														$havep = true;
 															for($a=0;$a<count($finaldata['partiallylevel'.$l.'']);$a++)
 																{
-																	$partiallylevel .="('".$retdata['comefromcheck']."',".$retdata['namefrom'][0].",'".$retdata['action'][0]."',".$idsarray[$l].",".$retdata['docids'].",".$finaldata['partiallylevel'.$l.''][$a].")," ;
+																	//modified by gowthami to solve the issue related to wine line in AU
+																	//$partiallylevel .="('".$retdata['comefromcheck']."',".$retdata['namefrom'][0].",'".$retdata['action'][0]."',".$idsarray[$l].",".$retdata['docids'].",".$finaldata['partiallylevel'.$l.''][$a].")," ;
+																    $partiallylevel .="('".$retdata['comefromcheck']."',".$retdata['namefrom'][0].",'".$retdata['action'][0]."',".$idsarray[$l].",".$retdata['docids'].",".$finaldata['partiallylevel'.$l.''][$a].",".$retdata['namefrom'][0].")," ;
 																}
-
 														$finaldata['addlinksDTID'.$l.''] = array_diff($finaldata['addlinksDTID'.$l.''],$finaldata['partiallylevel'.$l.'']);
 													}
 
@@ -13194,10 +13230,10 @@ else
 												if($partiallylevel!='')
 												{
 													$partiallylevelquery = rtrim($partiallylevel, ',');
-
-															pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids) VALUES ".$partiallylevelquery." ");
-												}
-
+ 															//modified by gowthami due to wineline issue
+													       // pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids,) VALUES ".$partiallylevelquery." ");
+														   pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids,stid) VALUES ".$partiallylevelquery." ");
+														}
 												if(count($removearrayst)>0)
 												{
 															pg_query_params($db,'update st'.$_SESSION['activeyears'].' set "is_deleted"=$1 where "DTID" = Any(string_to_array($2::text, \',\'::text)::integer[])',array(0,implode(',',$removearrayst)));	
@@ -13413,7 +13449,7 @@ INNER JOIN (select forreaddata$acyear."STIDACTIVE",forreaddata$acyear."frfromact
 from forreaddata$acyear LEFT JOIN (SELECT * FROM vt$olyear 
 INNER JOIN (select "STID" AS "STID$olyear","STName" AS "STName$olyear","MDDS_ST" AS "MDDS_ST$olyear" from st$olyear) as st11 ON st11."STID$olyear"=vt$olyear."STID"
 INNER JOIN (select "DTID" AS "DTID$olyear","DTName" AS "DTName$olyear","MDDS_DT" AS "MDDS_DT$olyear" from dt$olyear) as dt11 ON dt11."DTID$olyear"=vt$olyear."DTID"
-INNER JOIN (select "SDID" AS "SDID$olyear","SDName" AS "SDName$olyear","MDDS_SD" AS "MDDS_SD$olyear" from sd$olyear) as sd11 ON sd11."SDID$olyear"=vt$olyear."SDID" ) AS vt$olyear ON vt$olyear."VTID"=forreaddata$acyear."VTIDR" $condo AND forreaddata$acyear."VTIDACTIVE"!=0 
+INNER JOIN (select "SDID" AS "SDID$olyear","SDName" AS "SDName$olyear","MDDS_SD" AS "MDDS_SD$olyear" from sd$olyear) as sd11 ON sd11."SDID$olyear"=vt$olyear."SDID" ) AS vt$olyear ON vt$olyear."VTID"=forreaddata$acyear."VTID" $condo AND forreaddata$acyear."VTIDACTIVE"!=0 
 AND forreaddata$acyear."frcomefrom"='Village / Town' AND forreaddata$acyear."comeaction"!='MAIN') AS fr21 ON fr21."VTIDACTIVE"=vt$acyear."VTID" 
  $condost AND (fr21."VTIDACTIVE"!=fr21."VTIDR"  OR fr21."frfromaction"='Sub-Merge' OR "frfromaction"='Deletion')
 

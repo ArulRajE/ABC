@@ -290,9 +290,14 @@ function s2ab(s) {
                                         // print_r($data);
                                          $fla=false;                                                 
                                         if (in_array($data['SDID'], $arraydata))
+                                        //modified by gowthami isuue related to wine line
+                                        // {
+                                        //     $fla=true;  
+                                        // }
                                         {
+                                            if($data['STID2011']!=$data2['STID'] || $data['STID2011']==$data2['STID'] && $STIDDATA[1]==$data['STID']){
                                             $fla=true;  
-                                        }
+                                        }}
 
                                         //By sahana 0111
                                         $dtid = $data['SDID'];
@@ -317,9 +322,15 @@ function s2ab(s) {
                                                         { 
                                                             echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
                                                         } 
-                                                        else if ((($data['STID2011']==$data['STID']) && ($STIDDATA[1]==$data['DTID2011'])) || ($STIDDATA[1]!=$data['DTID']))
+                                                        else if ($data['STID2011']==$data['STID']) //3011
                                                         {
+                                                            if((($data['STID2011']==$data['STID']) && ($STIDDATA[1]==$data['DTID2011'])) || ($STIDDATA[1]!=$data['DTID']))
+                                                            {
                                                             echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
+                                                            }
+                                                            else{
+                                                                echo '';  
+                                                            }
                                                         } 
                                                         else 
                                                         { 
@@ -419,10 +430,20 @@ function s2ab(s) {
                                                     { 
                                                         echo $data['SDName'.$_SESSION['logindetails']['baseyear'].''];
                                                     } 
-                                                    else if ((($data['STID2011']==$data['STID']) && ($STIDDATA[1]==$data['DTID2011'])) || ($STIDDATA[1]!=$data['DTID']))
-                                                    {
-                                                        echo $data['SDName'.$_SESSION['logindetails']['baseyear'].''];
-                                                    } 
+                                                    // else if ((($data['STID2011']==$data['STID']) && ($STIDDATA[1]==$data['DTID2011'])) || ($STIDDATA[1]!=$data['DTID']))
+                                                    // {
+                                                    //     echo $data['SDName'.$_SESSION['logindetails']['baseyear'].''];
+                                                    // } 
+                                                    else if ($data['STID2011']==$data['STID']) //3011
+                                                        {
+                                                            if((($data['STID2011']==$data['STID']) && ($STIDDATA[1]==$data['DTID2011'])) || ($STIDDATA[1]!=$data['DTID']))
+                                                            {
+                                                                echo $data['SDName'.$_SESSION['logindetails']['baseyear'].''];
+                                                            }
+                                                            else{
+                                                                echo '';  
+                                                            }
+                                                        } 
                                                     else 
                                                     { 
                                                         echo '';  
@@ -513,9 +534,19 @@ function s2ab(s) {
                                                         { 
                                                             echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
                                                         } 
-                                                        else if ((($data['STID2011']==$data['STID']) && ($STIDDATA[1]==$data['DTID2011'])) || ($STIDDATA[1]!=$data['DTID']))
+                                                        // else if ((($data['STID2011']==$data['STID']) && ($STIDDATA[1]==$data['DTID2011'])) || ($STIDDATA[1]!=$data['DTID']))
+                                                        // {
+                                                        //     echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
+                                                        // } 
+                                                        else if ($data['STID2011']==$data['STID']) //3011
                                                         {
-                                                            echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
+                                                            if((($data['STID2011']==$data['STID']) && ($STIDDATA[1]==$data['DTID2011'])) || ($STIDDATA[1]!=$data['DTID']))
+                                                            {
+                                                                echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
+                                                            }
+                                                            else{
+                                                                echo '';  
+                                                            }
                                                         } 
                                                         else 
                                                         { 
@@ -607,10 +638,20 @@ function s2ab(s) {
                                                         { 
                                                             echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
                                                         } 
-                                                        else if ((($data['STID2011']==$data['STID']) && ($STIDDATA[1]==$data['DTID2011'])) || ($STIDDATA[1]!=$data['DTID']))
+                                                        // else if ((($data['STID2011']==$data['STID']) && ($STIDDATA[1]==$data['DTID2011'])) || ($STIDDATA[1]!=$data['DTID']))
+                                                        // {
+                                                        //     echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
+                                                        // }
+                                                        else if ($data['STID2011']==$data['STID']) //3011
                                                         {
-                                                            echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
-                                                        } 
+                                                            if((($data['STID2011']==$data['STID']) && ($STIDDATA[1]==$data['DTID2011'])) || ($STIDDATA[1]!=$data['DTID']))
+                                                            {
+                                                                echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
+                                                            }
+                                                            else{
+                                                                echo '';  
+                                                            }
+                                                        }  
                                                         else 
                                                         { 
                                                             echo '';  
