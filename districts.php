@@ -277,6 +277,17 @@ function s2ab(s) {
                                 </thead>
                                 <tbody>
                                     <?php while ($data = pg_fetch_array($result)) { 
+                                        $fla=false;                                                 
+                                        if (in_array($data['DTID'], $arraydata))
+                                        //modified by gowthami isuue related to wineline in AU
+                                        // {
+                                        //     $fla=true;  
+                                        // }
+                                        {
+                                            if($data['STID2011']!=$data2['STID'] || $data['STID2011']==$data2['STID'] && $STIDDATA[1]==$data['STID']){
+                                            $fla=true;  
+                                        }}
+
                                         //By sahana 0111
                                         $stid = $data['STID2011']; 
                                         $query2 = 'SELECT * FROM st' . $_SESSION['activeyears'] . ' WHERE "STID" = $1';
@@ -286,15 +297,7 @@ function s2ab(s) {
                                             echo 'Query failed: ' . pg_last_error($db);
                                         }
                                 
-                                        $data2 = pg_fetch_array($result2);
-
-                                        $fla=false;                                                 
-                                        if (in_array($data['DTID'], $arraydata))
-                                        //modified by gowthami isuue related to wineline in AU
-                                        {
-                                            if($data['STID2011']!=$data2['STID'] || $data['STID2011']==$data2['STID'] && $STIDDATA[1]==$data['STID']){
-                                            $fla=true;  
-                                        }}
+                                        $data2 = pg_fetch_array($result2)
                                         ?>
 
                                          <!-- Modified by sahana Split_Action_Administrative_Units 0310 Defect_JC_38-->
