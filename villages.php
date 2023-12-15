@@ -90,10 +90,7 @@ $row = pg_fetch_all($resultstate);
                             <input type="hidden" name="ids" id="ids" value="<?php echo $_GET['ids']; ?>">
 
 <!-- modified by sahana to download Administrative Units data  -->
-<!-- Include the xlsx library -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 <script src="assets/js/xlsx.full.min.js"></script>
-<!-- HTML code with the dropdown -->
 <div class="dropdown">
   <button class="btn btn-primary dropdown-toggle" type="button" id="yearDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left: 90%; margin-bottom: 10px;">
   <i class="fa fa-download"></i>  Download
@@ -107,122 +104,178 @@ $row = pg_fetch_all($resultstate);
 
 <!-- JavaScript code to handle the dropdown selection and to download the data-->
 <script>
+// $(document).ready(function() {
+//   $(document).on('click', '.dropdown-item', function() {
+//     var selectedYear = $(this).data('year');
+//     console.log('Selected year:', selectedYear);
+    
+//     if (selectedYear == '2011' || selectedYear == '2021' || selectedYear == '2011-2021') {
+//       var wb = XLSX.utils.book_new();
+//       var table = document.getElementById('villages-units-datatable');
+//       if (selectedYear == '2011') {
+//         var newTable = document.createElement('table');
+//         var thead = document.createElement('thead');
+//         var headerRow = document.createElement('tr');
+//         var columns = ["Village/Town MDDS Code", "Village/Town Name", "Level", "Civic Status", "Population"];
+//         for (var i = 0; i < columns.length; i++) {
+//           var th = document.createElement('th');
+//           th.textContent = columns[i];
+//           headerRow.appendChild(th);
+//         }
+        
+//         thead.appendChild(headerRow);
+//         newTable.appendChild(thead);
+//         var tbody = document.createElement('tbody');
+//         var dataRows = table.tBodies[0].rows;
+//         for (var j = 0; j < dataRows.length; j++) {
+//           var rowData = dataRows[j].cells;
+//           var newRow = document.createElement('tr');
+//           for (var k = 0; k < columns.length; k++) {
+//             var td = document.createElement('td');
+//             td.textContent = rowData[k].textContent;
+//             newRow.appendChild(td);
+//           }
+          
+//           tbody.appendChild(newRow);
+//         }
+        
+//         newTable.appendChild(tbody);
+//         table = newTable;
+//       }
+//       if (selectedYear == '2021') {
+//         var newTable = document.createElement('table');
+//         var thead = document.createElement('thead');
+//         var headerRow = document.createElement('tr');
+//         var columns = ["Village/Town MDDS Code", "Village/Town Name", "Level", "Civic Status","Population","Status"];
+        
+//         // Create header cells for 2021
+//         for (var i = 0; i < columns.length; i++) {
+//           var th = document.createElement('th');
+//           th.textContent = columns[i];
+//           headerRow.appendChild(th);
+//         }
+        
+//         thead.appendChild(headerRow);
+//         newTable.appendChild(thead);
+//         var tbody = document.createElement('tbody');
+//         var dataRows = table.tBodies[0].rows;
+//         for (var j = 0; j < dataRows.length; j++) {
+//           var rowData = dataRows[j].cells;
+//           var newRow = document.createElement('tr');
+//           for (var k = rowData.length - 6; k < rowData.length; k++) {
+//             var td = document.createElement('td');
+//             td.textContent = rowData[k].textContent;
+//             newRow.appendChild(td);
+//           }
+          
+//           tbody.appendChild(newRow);
+//         }
+        
+//         newTable.appendChild(tbody);
+//         table = newTable;
+//       }
+      
+//       var ws = XLSX.utils.table_to_sheet(table);
+//       XLSX.utils.book_append_sheet(wb, ws, 'Administrative Units');
+//       var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+//       var blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
+//       var link = document.createElement('a');
+//       link.href = window.URL.createObjectURL(blob);
+//       link.download = 'Village_Town-level_Administrative_Units_' + selectedYear + '.xlsx';
+//       link.style.display = 'none';
+//       document.body.appendChild(link);
+//       link.click();
+//       document.body.removeChild(link);
+      
+//       toastr['success']('Administrative Units ' + selectedYear + ' Downloaded Successfully For Village_Town Level.');
+//     }
+//   });
+// });
+// function s2ab(s) {
+//   var buf = new ArrayBuffer(s.length);
+//   var view = new Uint8Array(buf);
+//   for (var i = 0; i < s.length; i++) {
+//     view[i] = s.charCodeAt(i) & 0xff;
+//   }
+//   return buf;
+// }
+// old
+
+//new
+
 $(document).ready(function() {
   $(document).on('click', '.dropdown-item', function() {
     var selectedYear = $(this).data('year');
     console.log('Selected year:', selectedYear);
-    
+
     if (selectedYear == '2011' || selectedYear == '2021' || selectedYear == '2011-2021') {
-      // Create a workbook and add a worksheet
       var wb = XLSX.utils.book_new();
       var table = document.getElementById('villages-units-datatable');
-      
-      // Create a new table with only the desired columns for 2011
-      if (selectedYear == '2011') {
-        var newTable = document.createElement('table');
-        var thead = document.createElement('thead');
-        var headerRow = document.createElement('tr');
-        var columns = ["Village/Town MDDS Code", "Village/Town Name", "Level", "Civic Status", "Population"];
-        
-        // Create header cells for 2011
-        for (var i = 0; i < columns.length; i++) {
-          var th = document.createElement('th');
-          th.textContent = columns[i];
-          headerRow.appendChild(th);
-        }
-        
-        thead.appendChild(headerRow);
-        newTable.appendChild(thead);
-        
-        // Copy data rows for 2011
-        var tbody = document.createElement('tbody');
-        var dataRows = table.tBodies[0].rows;
-        for (var j = 0; j < dataRows.length; j++) {
-          var rowData = dataRows[j].cells;
-          var newRow = document.createElement('tr');
-          
-          // Copy cells for 2011
-          for (var k = 0; k < columns.length; k++) {
-            var td = document.createElement('td');
-            td.textContent = rowData[k].textContent;
-            newRow.appendChild(td);
-          }
-          
-          tbody.appendChild(newRow);
-        }
-        
-        newTable.appendChild(tbody);
-        table = newTable;
+      var jsonData = [];
+      var columns = [];
+
+
+      if (selectedYear == '2011') 
+      {
+        columns = ["Village/Town MDDS Code", "Village/Town Name", "Level", "Civic Status", "Population"];
+      } 
+      else if (selectedYear == '2021') 
+      {
+        columns = ["Village/Town MDDS Code", "Village/Town Name", "Level", "Civic Status", "Population", "Status"];
+      } 
+      else if (selectedYear == '2011-2021') 
+      {
+        columns = [
+            "Village/Town MDDS Code 2011", "Village/Town Name 2011", "Level 2011", "Civic Status 2011", "Population 2011",
+            "Village/Town MDDS Code 2021", "Village/Town Name 2021", "Level 2021", "Civic Status 2021", "Population 2021", "Status 2021"
+        ];  
       }
-      
-      // Create a new table with only the last 10 columns for 2021
-      if (selectedYear == '2021') {
-        var newTable = document.createElement('table');
-        var thead = document.createElement('thead');
-        var headerRow = document.createElement('tr');
-        var columns = ["Village/Town MDDS Code", "Village/Town Name", "Level", "Civic Status","Population","Status"];
-        
-        // Create header cells for 2021
-        for (var i = 0; i < columns.length; i++) {
-          var th = document.createElement('th');
-          th.textContent = columns[i];
-          headerRow.appendChild(th);
-        }
-        
-        thead.appendChild(headerRow);
-        newTable.appendChild(thead);
-        
-        // Copy data rows for 2021
-        var tbody = document.createElement('tbody');
-        var dataRows = table.tBodies[0].rows;
-        for (var j = 0; j < dataRows.length; j++) {
-          var rowData = dataRows[j].cells;
-          var newRow = document.createElement('tr');
-          
-          // Copy last 6 cells for 2021
-          for (var k = rowData.length - 6; k < rowData.length; k++) {
-            var td = document.createElement('td');
-            td.textContent = rowData[k].textContent;
-            newRow.appendChild(td);
+
+
+      var dataRows = table.tBodies[0].rows;
+      for (var j = 0; j < dataRows.length; j++) {
+        var rowData = dataRows[j].cells;
+        var rowDataObj = {};
+
+        for (var k = 0; k < columns.length; k++) {
+          if (selectedYear == '2021') 
+          {
+            var originalIndex = k + 5; 
+            rowDataObj[columns[k]] = rowData[originalIndex].textContent.trim();
+          } else if (selectedYear == '2011')
+          {
+            rowDataObj[columns[k]] = rowData[k].textContent.trim();
           }
-          
-          tbody.appendChild(newRow);
+          else if (selectedYear == '2011-2021') 
+          {
+            if (k > 5 && rowData[k].classList.contains('class2021')) {
+                rowDataObj[columns[k]] = rowData[k].textContent.trim();
+            } else {
+                rowDataObj[columns[k]] = rowData[k].textContent.trim();
+            }
+          }
         }
-        
-        newTable.appendChild(tbody);
-        table = newTable;
+
+        jsonData.push(rowDataObj);
       }
-      
-      var ws = XLSX.utils.table_to_sheet(table);
-      
-      // Add the worksheet to the workbook
+      var ws = XLSX.utils.json_to_sheet(jsonData);
       XLSX.utils.book_append_sheet(wb, ws, 'Administrative Units');
-      
-      // Generate the Excel file in binary form
       var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-      
-      // Convert the binary data to a Blob object
       var blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
-      
-      // Create a temporary link element to trigger the download
       var link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
       link.download = 'Village_Town-level_Administrative_Units_' + selectedYear + '.xlsx';
       link.style.display = 'none';
       document.body.appendChild(link);
-      
-      // Trigger the download
       link.click();
-      
-      // Clean up the temporary link element
       document.body.removeChild(link);
-      
+
       toastr['success']('Administrative Units ' + selectedYear + ' Downloaded Successfully For Village_Town Level.');
     }
   });
 });
 
-// Convert data to array buffer
+
 function s2ab(s) {
   var buf = new ArrayBuffer(s.length);
   var view = new Uint8Array(buf);
@@ -231,6 +284,9 @@ function s2ab(s) {
   }
   return buf;
 }
+
+//next
+
 </script>                             
 
                             <table id="villages-units-datatable" class="table  table-striped table-bordered"
@@ -344,15 +400,15 @@ function s2ab(s) {
                                         {
                                             echo ""; 
                                         }
-                                        else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID'] && $STIDDATA[1]!=$data['SDID']) //0211  0611 && $STIDDATA[1]==$data['SDID']
+                                        else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']==$data['SDID']) //0211  0611 && $STIDDATA[1]==$data['SDID'] //0412 && $data['SDID2011']==$data['SDID']
                                         {
                                             echo $data['MDDS_VT'.$_SESSION['logindetails']['baseyear'].'']; 
                                         }
-                                        else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID']) //0211  0611 && $STIDDATA[1]==$data['SDID']
+                                        else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID'] && $data['DTID']!=$data2['DTID']) //0211  0611 && $STIDDATA[1]==$data['SDID'] //0412 && $data['DTID']!=$data2['DTID']
                                         {
                                             echo ""; 
                                         }
-                                        else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'])
+                                        else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && ($data['DTID']!=$data2['DTID'])) //0412 && ($data['DTID']!=$data2['DTID'])
                                         {
                                             echo $data['MDDS_VT'.$_SESSION['logindetails']['baseyear'].'']; 
                                         }
@@ -414,10 +470,14 @@ function s2ab(s) {
                                     }
                                     else if($data2['auaction']== 'Partially Split & Merge')
                                     {
-                                        if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                        if($data['STID2011']!=$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                        { 
+                                            echo ''; 
+                                        }  
+                                        else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
                                         { 
                                             echo $data['MDDS_VT'.$_SESSION['logindetails']['baseyear'].'']; 
-                                        }  
+                                        } 
                                         else {
                                             echo ''; 
                                         }
@@ -444,15 +504,15 @@ function s2ab(s) {
                                         {
                                             echo ""; 
                                         }
-                                        else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID'] && $STIDDATA[1]!=$data['SDID']) //0211  0611 && $STIDDATA[1]==$data['SDID']
+                                        else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']==$data['SDID']) //0211  0611 && $STIDDATA[1]==$data['SDID'] //0412 && $data['SDID2011']==$data['SDID']
                                         {
                                             echo $data['VTName'.$_SESSION['logindetails']['baseyear'].''];  
                                         }
-                                        else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID']) //0211  0611 && $STIDDATA[1]==$data['SDID']
+                                        else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID'] && $data['DTID']!=$data2['DTID']) //0211  0611 && $STIDDATA[1]==$data['SDID'] //0412 && $data['DTID']!=$data2['DTID']
                                         {
                                             echo ""; 
                                         }
-                                        else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'])
+                                        else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && ($data['DTID']!=$data2['DTID'])) //0412 && ($data['DTID']!=$data2['DTID'])
                                         {
                                             echo $data['VTName'.$_SESSION['logindetails']['baseyear'].''];
                                         }
@@ -514,10 +574,14 @@ function s2ab(s) {
                                     }
                                     else if($data2['auaction']== 'Partially Split & Merge')
                                     {
-                                        if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                        if($data['STID2011']!=$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                        { 
+                                            echo ''; 
+                                        }  
+                                        else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
                                         { 
                                             echo $data['VTName'.$_SESSION['logindetails']['baseyear'].'']; 
-                                        }  
+                                        } 
                                         else {
                                             echo ''; 
                                         }
@@ -544,15 +608,15 @@ function s2ab(s) {
                                             {
                                                 echo ""; 
                                             }
-                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID'] && $STIDDATA[1]!=$data['SDID']) //0211  0611 && $STIDDATA[1]==$data['SDID']
+                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']==$data['SDID']) //0211  0611 && $STIDDATA[1]==$data['SDID'] //0412 && $data['SDID2011']==$data['SDID']
                                             {
                                                 echo $data['Level'.$_SESSION['logindetails']['baseyear'].''];  
                                             }
-                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID']) //0211  0611 && $STIDDATA[1]==$data['SDID']
+                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID'] && $data['DTID']!=$data2['DTID']) //0211  0611 && $STIDDATA[1]==$data['SDID'] //0412 && $data['DTID']!=$data2['DTID']
                                             {
                                                 echo ""; 
                                             }
-                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'])
+                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && ($data['DTID']!=$data2['DTID'])) //0412 && ($data['DTID']!=$data2['DTID'])
                                             {
                                                 echo $data['Level'.$_SESSION['logindetails']['baseyear'].'']; 
                                             }
@@ -614,10 +678,14 @@ function s2ab(s) {
                                     }
                                     else if($data2['auaction']== 'Partially Split & Merge')
                                     {
-                                        if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                        if($data['STID2011']!=$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                        { 
+                                            echo ''; 
+                                        }  
+                                        else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
                                         { 
                                             echo $data['Level'.$_SESSION['logindetails']['baseyear'].'']; 
-                                        }  
+                                        } 
                                         else {
                                             echo ''; 
                                         }
@@ -644,15 +712,15 @@ function s2ab(s) {
                                             {
                                                 echo ""; 
                                             }
-                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID'] && $STIDDATA[1]!=$data['SDID']) //0211  0611 && $STIDDATA[1]==$data['SDID']
+                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']==$data['SDID']) //0211  0611 && $STIDDATA[1]==$data['SDID'] //0412 && $data['SDID2011']==$data['SDID']
                                             {
                                                 echo $sta_baseyear; 
                                             }
-                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID']) //0211  0611 && $STIDDATA[1]==$data['SDID']
+                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID'] && $data['DTID']!=$data2['DTID']) //0211  0611 && $STIDDATA[1]==$data['SDID'] //0412 && $data['DTID']!=$data2['DTID']
                                             {
                                                 echo ""; 
                                             }
-                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'])
+                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && ($data['DTID']!=$data2['DTID'])) //0412 && ($data['DTID']!=$data2['DTID'])
                                             {
                                                 echo $sta_baseyear; 
                                             }
@@ -714,10 +782,14 @@ function s2ab(s) {
                                     }
                                     else if($data2['auaction']== 'Partially Split & Merge')
                                     {
-                                        if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                        if($data['STID2011']!=$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                        { 
+                                            echo ''; 
+                                        }  
+                                        else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
                                         { 
                                             echo $sta_baseyear; 
-                                        }  
+                                        } 
                                         else {
                                             echo ''; 
                                         }
@@ -744,15 +816,15 @@ function s2ab(s) {
                                             {
                                                 echo ""; 
                                             }
-                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID'] && $STIDDATA[1]!=$data['SDID']) //0211  0611 && $STIDDATA[1]==$data['SDID']
+                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']==$data['SDID']) //0211  0611 && $STIDDATA[1]==$data['SDID'] //0412 && $data['SDID2011']==$data['SDID']
                                             {
                                                 echo $data['Pop'.$_SESSION['logindetails']['baseyear'].'']; 
                                             }
-                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID']) //0211  0611 && $STIDDATA[1]==$data['SDID']
+                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && $data['SDID2011']!=$data['SDID'] && $data['DTID']!=$data2['DTID']) //0211  0611 && $STIDDATA[1]==$data['SDID'] //0412 && $data['DTID']!=$data2['DTID']
                                             {
                                                 echo ""; 
                                             }
-                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'])
+                                            else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && ($data['DTID']!=$data2['DTID'])) //0412 && ($data['DTID']!=$data2['DTID'])
                                             {
                                                 echo $data['Pop'.$_SESSION['logindetails']['baseyear'].'']; 
                                             }
@@ -814,10 +886,14 @@ function s2ab(s) {
                                     }
                                     else if($data2['auaction']== 'Partially Split & Merge')
                                     {
-                                        if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                        if($data['STID2011']!=$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                        { 
+                                            echo ''; 
+                                        }  
+                                        else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
                                         { 
                                             echo $data['Pop'.$_SESSION['logindetails']['baseyear'].'']; 
-                                        }  
+                                        } 
                                         else {
                                             echo ''; 
                                         }
@@ -945,14 +1021,15 @@ function s2ab(s) {
                                         }
                                         else if($data2['auaction']== 'Partially Split & Merge')
                                         {
-                                            if($data['STID2011']=$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                            if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
                                             { 
                                                 echo $data['MDDS_VT'];
                                             } 
-                                            else if($data['STID']=$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID']==$STIDDATA[1])
+                                            else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID']==$STIDDATA[1])
                                             {
                                                 echo $data['MDDS_VT'];
                                             }  
+                                          
                                             else {
                                                 echo ''; 
                                             }
@@ -1054,11 +1131,11 @@ function s2ab(s) {
                                         }
                                         else if($data2['auaction']== 'Partially Split & Merge')
                                         {
-                                            if($data['STID2011']=$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                            if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
                                             { 
                                                 echo $data['VTName']; 
                                             } 
-                                            else if($data['STID']=$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID']==$STIDDATA[1])
+                                            else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID']==$STIDDATA[1])
                                             {
                                                 echo $data['VTName']; 
                                             }  
@@ -1159,14 +1236,15 @@ function s2ab(s) {
                                         }
                                         else if($data2['auaction']== 'Partially Split & Merge')
                                         {
-                                            if($data['STID2011']=$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                            if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
                                             { 
                                                 echo $data['Level']; 
                                             } 
-                                            else if($data['STID']=$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID']==$STIDDATA[1])
+                                            else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID']==$STIDDATA[1])
                                             {
                                                 echo $data['Level']; 
-                                            }  
+                                            } 
+                                            
                                             else {
                                                 echo ''; 
                                             }
@@ -1264,14 +1342,15 @@ function s2ab(s) {
                                         }
                                         else if($data2['auaction']== 'Partially Split & Merge')
                                         {
-                                            if($data['STID2011']=$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                            if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
                                             { 
                                                 echo $sta; 
                                             } 
-                                            else if($data['STID']=$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID']==$STIDDATA[1])
+                                            else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID']==$STIDDATA[1])
                                             {
                                                 echo $sta; 
                                             }  
+            
                                             else {
                                                 echo ''; 
                                             }
@@ -1374,14 +1453,15 @@ function s2ab(s) {
                                         }
                                         else if($data2['auaction']== 'Partially Split & Merge')
                                         {
-                                            if($data['STID2011']=$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
+                                            if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['SDID2011']==$STIDDATA[1]) 
                                             { 
                                                 echo $data['Pop']; 
                                             } 
-                                            else if($data['STID']=$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID']==$STIDDATA[1])
+                                            else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['SDID']==$STIDDATA[1])
                                             {
                                                 echo $data['Pop']; 
                                             }  
+                                            
                                             else {
                                                 echo ''; 
                                             }

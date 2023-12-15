@@ -105,8 +105,6 @@ $arraydata = explode(',',$pg_query_data[0]);
                             <input type="hidden" name="ids" id="ids" value="<?php echo $_GET['ids']; ?>">
 
 <!-- modified by sahana to download Administrative Units data  -->
-<!-- Include the xlsx library -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 <script src="assets/js/xlsx.full.min.js"></script>
 <!-- HTML code with the dropdown -->
 <div class="dropdown">
@@ -285,20 +283,6 @@ function s2ab(s) {
                                 </thead>
                                 <tbody>
                                     <?php while ($data = pg_fetch_assoc($result)) { 
-                                        // echo "<pre>";
-                                        // print_r($STIDDATA);
-                                        // print_r($data);
-                                         $fla=false;                                                 
-                                        if (in_array($data['SDID'], $arraydata))
-                                        //modified by gowthami isuue related to wine line
-                                        // {
-                                        //     $fla=true;  
-                                        // }
-                                        {
-                                            if($data['STID2011']!=$data2['STID'] || $data['STID2011']==$data2['STID'] && $STIDDATA[1]==$data['STID']){
-                                            $fla=true;  
-                                        }}
-
                                         //By sahana 0111
                                         $dtid = $data['SDID'];
                                         $query2 = 'SELECT * FROM sd' . $_SESSION['activeyears'] . ' WHERE "SDID" = $1';
@@ -308,7 +292,16 @@ function s2ab(s) {
                                             echo 'Query failed: ' . pg_last_error($db);
                                         }
                                 
-                                        $data2 = pg_fetch_array($result2)
+                                        $data2 = pg_fetch_array($result2);
+
+                                         $fla=false;                                                 
+                                        if (in_array($data['SDID'], $arraydata))
+                                        { //modified by gowthami isuue related to wineline in AU
+                                            if($data['STID2011']!=$data2['STID'] || $data['STID2011']==$data2['STID'] && $STIDDATA[1]==$data['STID'])
+                                            {
+                                            $fla=true;
+                                        }
+                                    }
                                     ?>
                                         <tr id="<?php echo $data['SDID']."*****".$data['SDID'.$_SESSION['logindetails']['baseyear'].'']; ?>" <?php if($fla){ ?>class="incompleted"<?php  } ?>>
                                         
@@ -326,12 +319,24 @@ function s2ab(s) {
                                                         {
                                                             if((($data['STID2011']==$data['STID']) && ($STIDDATA[1]==$data['DTID2011'])) || ($STIDDATA[1]!=$data['DTID']))
                                                             {
-                                                            echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
+                                                                echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
                                                             }
                                                             else{
                                                                 echo '';  
                                                             }
-                                                        } 
+                                                        }
+                                                        else if($STIDDATA[4]==$data2['STID'] && $STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID']) //0512
+                                                        {
+                                                           echo '';    
+                                                        }
+                                                        else if($STIDDATA[4]!=$data2['STID'] && $STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID']) //0612
+                                                        {
+                                                           echo '';    
+                                                        }
+                                                        else if($data['STID2011']!=$data['STID'] && $STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID']) //0412
+                                                        {
+                                                            echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
+                                                        }
                                                         else 
                                                         { 
                                                             echo '';  
@@ -339,7 +344,7 @@ function s2ab(s) {
                                                 }
                                                 else if ($data['STID2011']==$data['STID'])
                                                 {
-                                                        if ((($data['STID2011']==$data['STID']) && ($STIDDATA[1]==$data['DTID2011'])) || ($STIDDATA[1]!=$data['DTID']))
+                                                        if ((($data['STID2011']==$data['STID']) && ($STIDDATA[1]==$data['DTID2011'])))
                                                         {
                                                             echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
                                                         } 
@@ -415,6 +420,19 @@ function s2ab(s) {
                                                     echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
                                                 }
                                             }
+                                            else if ($data2['auaction']== 'Partially Split & Merge'){
+                                                if (($data['STID']==$data2['STID']) && ($STIDDATA[1]==$data2['DTID'])){
+                                                    
+                                                    echo ''; 
+                                                }
+                                                else if ($data['STID']==$data2['STID'] && $STIDDATA[1]!=$data2['DTID']){
+                                                    
+                                                    echo ''; 
+                                                }
+                                                else {
+                                                    echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
+                                                }
+                                            }
                                             else {
                                                 echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
                                             }
@@ -444,6 +462,18 @@ function s2ab(s) {
                                                                 echo '';  
                                                             }
                                                         } 
+                                                        else if($STIDDATA[4]==$data2['STID'] && $STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID']) //0512
+                                                        {
+                                                           echo '';    
+                                                        }
+                                                        else if($STIDDATA[4]!=$data2['STID'] && $STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID']) //0612
+                                                        {
+                                                           echo '';    
+                                                        }
+                                                    else if($data['STID2011']!=$data['STID'] && $STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID']) //0412
+                                                    {
+                                                        echo $data['SDName'.$_SESSION['logindetails']['baseyear'].''];  
+                                                    }    
                                                     else 
                                                     { 
                                                         echo '';  
@@ -519,6 +549,19 @@ function s2ab(s) {
                                                 echo $data['SDName'.$_SESSION['logindetails']['baseyear'].'']; 
                                             }
                                         }
+                                        else if ($data2['auaction']== 'Partially Split & Merge'){
+                                            if (($data['STID']==$data2['STID']) && ($STIDDATA[1]==$data2['DTID'])){
+                                                
+                                                echo ''; 
+                                            }
+                                            else if ($data['STID']==$data2['STID'] && $STIDDATA[1]!=$data2['DTID']){
+                                                    
+                                                echo ''; 
+                                            }
+                                            else {
+                                                echo $data['SDName'.$_SESSION['logindetails']['baseyear'].''];  
+                                            }
+                                        }
                                         else {
                                             echo $data['SDName'.$_SESSION['logindetails']['baseyear'].''];  
                                         }
@@ -548,6 +591,18 @@ function s2ab(s) {
                                                                 echo '';  
                                                             }
                                                         } 
+                                                        else if($STIDDATA[4]==$data2['STID'] && $STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID']) //0512
+                                                        {
+                                                           echo '';    
+                                                        }
+                                                        else if($STIDDATA[4]!=$data2['STID'] && $STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID']) //0612
+                                                        {
+                                                           echo '';    
+                                                        }
+                                                        else if($data['STID2011']!=$data['STID'] && $STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID']) //0412
+                                                        {
+                                                            echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
+                                                        }
                                                         else 
                                                         { 
                                                             echo '';  
@@ -623,6 +678,19 @@ function s2ab(s) {
                                                     echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
                                                 }
                                             }
+                                            else if ($data2['auaction']== 'Partially Split & Merge'){
+                                                if (($data['STID']==$data2['STID']) && ($STIDDATA[1]==$data2['DTID'])){
+                                                    
+                                                    echo ''; 
+                                                }
+                                                else if ($data['STID']==$data2['STID'] && $STIDDATA[1]!=$data2['DTID']){
+                                                    
+                                                    echo ''; 
+                                                }
+                                                else {
+                                                    echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
+                                                }
+                                            }
                                             else {
                                                 echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
                                             }
@@ -651,7 +719,19 @@ function s2ab(s) {
                                                             else{
                                                                 echo '';  
                                                             }
-                                                        }  
+                                                        } 
+                                                        else if($STIDDATA[4]==$data2['STID'] && $STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID']) //0512
+                                                        {
+                                                           echo '';    
+                                                        }
+                                                        else if($STIDDATA[4]!=$data2['STID'] && $STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID']) //0612
+                                                        {
+                                                           echo '';    
+                                                        }
+                                                        else if($data['STID2011']!=$data['STID'] && $STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID']) //0412
+                                                        {
+                                                            echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
+                                                        } 
                                                         else 
                                                         { 
                                                             echo '';  
@@ -721,6 +801,19 @@ function s2ab(s) {
                                         else if ($data2['auaction']== 'Reshuffle'){
                                             if ((($data['STID']==$data2['STID']) && ($STIDDATA[1]==$data2['DTID']))){
                                                 
+                                                echo ''; 
+                                            }
+                                            else {
+                                                echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
+                                            }
+                                        }
+                                        else if ($data2['auaction']== 'Partially Split & Merge'){
+                                            if (($data['STID']==$data2['STID']) && ($STIDDATA[1]==$data2['DTID'])){
+                                                
+                                                echo ''; 
+                                            }
+                                            else if ($data['STID']==$data2['STID'] && $STIDDATA[1]!=$data2['DTID']){
+                                                    
                                                 echo ''; 
                                             }
                                             else {

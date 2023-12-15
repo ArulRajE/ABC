@@ -203,19 +203,67 @@ $rowDT = pg_fetch_all($resultDT);
             </div>
 <!-- modified by sahana to export table data in excel for forread -->
 <script src="assets/js/xlsx.full.min.js"></script>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 
 <script>
 
+// function export_data() {
+//     var export_table = document.getElementById('ttable-datatable');
+//     var lastThElement = export_table.querySelector('thead tr:last-child th:last-child');
+//     lastThElement.parentNode.removeChild(lastThElement);
+//     var wb = XLSX.utils.table_to_book(export_table, {sheet:'For Read'});
+//     var wbout = XLSX.write(wb, {bookType:'xlsx', type: 'base64'});
+//     var today = new Date();
+//     var day = String(today.getDate()).padStart(2, '0');
+//     var month = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+//     var year = today.getFullYear();
+//     var stateSelect = document.getElementById('STID');
+//     var stateName = stateSelect.options[stateSelect.selectedIndex].text;
+//     var stateId = stateSelect.value;
+//     var fname = 'forread_' + stateName + '_' + day + '-' + month + '-' + year + '.xlsx';
+//     var file = base64toBlob(wbout);
+//     saveAs(file, fname);
+// }
+
+
+// function base64toBlob(s) {
+//     var b64 = atob(s), len = b64.length, u8arr = new Uint8Array(len);
+//     while (len--) {
+//         u8arr[len] = b64.charCodeAt(len);
+//     }
+//     return new Blob([u8arr], { type: 'application/octet-stream' });
+// }
+
 function export_data() {
     var export_table = document.getElementById('ttable-datatable');
-    var lastThElement = export_table.querySelector('thead tr:last-child th:last-child');
-    lastThElement.parentNode.removeChild(lastThElement);
-    var wb = XLSX.utils.table_to_book(export_table, {sheet:'For Read'});
-    var wbout = XLSX.write(wb, {bookType:'xlsx', type: 'base64'});
+    var columnNames = [
+        'State / UT MDDS Code 2011',
+        'State / UT Name 2011',
+        'District MDDS Code 2011',
+        'District Name 2011',
+        'Sub-District MDDS Code 2011',
+        'Sub-District Name 2011',
+        'Village / Town MDDS Code 2011',
+        'Village / Town Name 2011',
+        'Village / Town Level 2011',
+        'Village / Town Status 2011',
+        'State / UT MDDS Code 2021',
+        'State / UT Name 2021',
+        'District MDDS Code 2021',
+        'District Name 2021',
+        'Sub-District MDDS Code 2021',
+        'Sub-District Name 2021',
+        'Village / Town MDDS Code 2021',
+        'Village / Town Name 2021',
+        'Village / Town Level 2021',
+        'Village / Town Status 2021'
+    ];
+    var jsonData = tableToJson(export_table, columnNames);
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(jsonData), 'For Read');
+    var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
     var today = new Date();
     var day = String(today.getDate()).padStart(2, '0');
-    var month = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var month = String(today.getMonth() + 1).padStart(2, '0'); 
     var year = today.getFullYear();
     var stateSelect = document.getElementById('STID');
     var stateName = stateSelect.options[stateSelect.selectedIndex].text;
@@ -225,6 +273,24 @@ function export_data() {
     saveAs(file, fname);
 }
 
+function tableToJson(table, columnNames) {
+    var data = [];
+    if (table && table.rows && table.rows.length > 0) {
+        for (var i = 2; i < table.rows.length; i++) {
+            var rowData = {};
+            for (var j = 0; j < table.rows[i].cells.length && j < columnNames.length; j++) {
+                var cell = table.rows[i].cells[j];
+                var columnName = columnNames[j];
+                if (cell) {
+                    rowData[columnName] = cell.textContent.trim();
+                }
+            }
+            data.push(rowData);
+        }
+    }
+
+    return data;
+}
 
 function base64toBlob(s) {
     var b64 = atob(s), len = b64.length, u8arr = new Uint8Array(len);

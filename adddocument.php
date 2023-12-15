@@ -1,6 +1,5 @@
 <?php include ("header.php"); include ("topbar.php"); include ("menu.php"); 
   
-             
 // $where = ''; 
 // $action = ""; 
 // if($header!=0 && $rows['assignlist']!=null)   
@@ -83,7 +82,6 @@ if(isset($_GET['idsdoc'])){
     $selectedstate = pg_fetch_all($qryres)[0];
 }
 // Ends...
-
 }
 
 
@@ -1000,7 +998,10 @@ $(function() {
 
     var wrapper = $('.field_wrapper');
     var wrapper_name = $('.field_wrapper_name');
-   
+    // jc_b
+    var wrapper_sub = $('.field_wrapper_sub');
+    //
+    
     // var optionstate = '';
     //  optionstate +=
     //     '<option value = "">Select State</option>';
@@ -1467,7 +1468,6 @@ var clickpopup = $('#clickpopup').val();
 
  $(addButton1).click(function() {
 
-
         if (x1 < maxField1) {
 
              if(x1==1)
@@ -1703,6 +1703,10 @@ var statename = $('#statename').val();
 
                 $('.sdnew').css("display", "block");
                 $(".sdnew").prop('required',true);
+                // JC_07
+                $('.statestatus1').css("display", "none");
+                $(".Statusyear").prop('required',false);
+                    //
 if(clickpopup=='Reshuffle')
     {
         $('.vstatestatus1').css("display", "none");
@@ -1717,6 +1721,15 @@ if(clickpopup=='Reshuffle')
          $('.VAC').css("display", "block");
          $(".VAC1").prop('required',true); 
     }
+    //JC_07
+    else if (clickpopup == 'Deletion') {
+                        $('.vstatestatus1').css("display", "none");
+                        $(".vstatestatus1").prop('required', false);
+                        $('.VAC').css("display", "none");
+                        $(".VAC1").prop('required', false);
+                        $('.ORR').css("display", "none");
+                    }
+                    //
     else
     {
          $('.vstatestatus1').css("display", "block");
@@ -2086,7 +2099,7 @@ if(clickpopup=='Reshuffle')
                                 });
                               
                                 // JC_16 Modified By Arul For Add Document
-                                if(stateid != '' && statename !='' && (clickpopup == 'Rename' || clickpopup == 'Addition'))
+                                if(stateid != '' && statename !='' && (clickpopup == 'Rename' || clickpopup == 'Addition' || clickpopup == 'Deletion'))
                                 {
                                     $("#statenew"+x1+"").append($('<option>', {
                                 value: stateid,
@@ -2120,7 +2133,7 @@ if(clickpopup=='Reshuffle')
                                          $("#statenew"+x1+"").val(finalresult[9]).trigger('change');
                                 }
                                 // JC_16 Modified By Arul For Add Document
-                                else if(stateid !='' && (clickpopup == 'Rename' || clickpopup == 'Addition')){
+                                else if(stateid !='' && (clickpopup == 'Rename' || clickpopup == 'Addition' || clickpopup == 'Deletion')){
                                     $("#statenew"+x1+"").val(stateid).trigger('change');
 
                                 }
