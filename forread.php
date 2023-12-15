@@ -161,6 +161,7 @@ $rowDT = pg_fetch_all($resultDT);
                                         <th style="display: none;">STID</th>
                                         <th>State / UT MDDS Code</th>
                                         <th>State / UT Name</th>
+                                        <th>State / UT  Status </th>
                                         <th style="display: none;">DTID</th>
                                         <th>District MDDS Code</th>
                                         <th>District Name</th>
@@ -176,6 +177,7 @@ $rowDT = pg_fetch_all($resultDT);
                                         <th class="class2021" style="display: none;">STID</th>
                                         <th class="class2021">State / UT MDDS Code</th>
                                         <th class="class2021">State / UT Name</th>
+                                        <th class="class2021">State / UT Status</th>
                                         <th class="class2021" style="display: none;">DTID</th>
                                         <th class="class2021">District MDDS Code</th>
                                         <th class="class2021">District Name</th>

@@ -411,6 +411,7 @@
                                     <input type="hidden" name="formname" id="formname" value="submergeform">
                                     <input type="hidden" name="comefromchecksub" id="comefromchecksub" value="">
                                     <input type="hidden" name="docidssub" id="docidssub" value="">
+                                    <input type="hidden" name="clickpopup" id="clickpopup" value="">
 
                     
                                         
@@ -486,7 +487,7 @@
 
                                                         
                                                             <div class = "col-md-8 offset-md-2 pt-2">
-                                                            <textarea class="form-control sub-remark" required placeholder="Remark" rows="4" name = "remarksubmerge[]" id="remarksubmerge"></textarea>
+                                                            <textarea class="form-control" required placeholder="Remark" rows="4" name = "remarksubmerge[]" id="remarksubmerge"></textarea>
                                                             </div>
                                                         
                                                         
@@ -498,15 +499,8 @@
 
                                                 
                                                     </fieldset>
-                                                    <div class="field_wrapper_sub"></div>
-                                                    <!-- jc_b -->
-                                                    <div class="col-md-2 mt-1" id="addbtut">
-                                                        <button type="button" class="btn btn-primary btn-rounded waves-effect waves-light add_button_name">
-                                                            <i class="fas fa-plus-circle mr-1"></i>
-                                                            <span>ADD </span>
-                                                        </button>
-                                                    </div>
-                                                <!-- ends -->
+
+                                                
 
 
 

@@ -184,6 +184,21 @@ if($_POST['flag']=='ST')
 				$cond = ' AND ( "fr21"."STID"='.$_SESSION['logindetails']['assignlist'].' OR "fr21"."STIDACTIVE"='.$_SESSION['logindetails']['assignlist'].' )';
 				$cond1 = ' WHERE "STID"='.$_SESSION['logindetails']['assignlist'].'';
 
+				//by sahana forread state issue
+				$stidActive = $_POST['stids'];
+				$querystate = pg_prepare($db, "my_query", 'SELECT "frfromaction","frcomefrom","STID" FROM forreaddata2021 WHERE "STIDACTIVE" = $1');
+				$resultstate = pg_execute($db, "my_query", array($stidActive));
+				$rowstate = pg_fetch_assoc($resultstate);
+				if ($rowstate) 
+				{
+					$cond2 = ' WHERE "STID"=' . $rowstate['STID'];
+					$cond3=$cond2;
+				}
+				else {
+					$cond1 = ' WHERE "STID"='.$_POST['stids'].'';
+					$cond3=$cond1;
+				}
+
 		}
 		// else if($_POST['stids']!='' &&  $_POST['dtids']!='' &&  $_POST['sdids']=='' )
 		// {
@@ -241,114 +256,409 @@ if($_POST['flag']=='ST')
 		}
 
 	}
-	
-// forread related table for all level
+//modified by sahana given if and else condition for forread state split issue 
+	if(($rowstate['frcomefrom']=='State' || $rowstate['frcomefrom']=='District' || $rowstate['frcomefrom']=='Sub District' || $rowstate['frcomefrom']=='Village / Town') && $rowstate['frfromaction']=='Split'){
+		if($_POST['stids']==$rowstate['STID'])
+		{
 			$table = <<<EOT
-			 (
-
-			SELECT * FROM (select "VTIDACTIVE","frids","STID$olyear","STName$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear",
-			"VTID$olyear","VTName$olyear","MDDS_VT$olyear","Level$olyear","Status$olyear","frcomment","comeaction","STID$acyearshort"
+			(
+				SELECT * FROM (
+					SELECT "VTIDACTIVE","frids","STID$olyear","STName$olyear","STStatus$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear",
+					"VTID$olyear","VTName$olyear","MDDS_VT$olyear","Level$olyear","Status$olyear","frcomment","comeaction","STID$acyearshort"
 						
+					,CASE
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "STName$acyearshort"
+						END AS "STName$acyearshort"
+	
+					,CASE WHEN "frfromaction"='Sub-Merge' THEN ''
+					ELSE "STStatus$acyearshort"  
+					END AS  "STStatus$acyearshort"
+			
 						,CASE
-			            WHEN "frfromaction"='Sub-Merge'  THEN ''
-			            ELSE "STName$acyearshort"
-			       		END AS "STName$acyearshort"
-
-			       		,CASE
-			            WHEN "frfromaction"='Sub-Merge'  THEN ''
-			            ELSE "MDDS_ST$acyearshort"
-			       		END AS "MDDS_ST$acyearshort"
-
-
-						,"DTID$acyearshort"
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "MDDS_ST$acyearshort"
+						END AS "MDDS_ST$acyearshort"
+			
+					,"DTID$acyearshort"
+					
+					,CASE
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "DTName$acyearshort"
+						END AS "DTName$acyearshort"
+			
+						,CASE
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "MDDS_DT$acyearshort"
+						END AS "MDDS_DT$acyearshort"
 						
+					,"SDID$acyearshort"
+					
+					,CASE
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "SDName$acyearshort"
+						END AS "SDName$acyearshort"
+			
 						,CASE
-			            WHEN "frfromaction"='Sub-Merge'  THEN ''
-			            ELSE "DTName$acyearshort"
-			       		END AS "DTName$acyearshort"
-
-			       		,CASE
-			            WHEN "frfromaction"='Sub-Merge'  THEN ''
-			            ELSE "MDDS_DT$acyearshort"
-			       		END AS "MDDS_DT$acyearshort"
-			  			
-						,"SDID$acyearshort"
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "MDDS_SD$acyearshort"
+						END AS "MDDS_SD$acyearshort"
 						
+						,"VTID$acyearshort"
+			
 						,CASE
-			            WHEN "frfromaction"='Sub-Merge'  THEN ''
-			            ELSE "SDName$acyearshort"
-			       		END AS "SDName$acyearshort"
-
-			       		,CASE
-			            WHEN "frfromaction"='Sub-Merge'  THEN ''
-			            ELSE "MDDS_SD$acyearshort"
-			       		END AS "MDDS_SD$acyearshort"
-			  			
-			  			,"VTID$acyearshort"
-
-			  			,CASE
-			            WHEN "frfromaction"='Sub-Merge'  THEN ''
-			            ELSE "VTName$acyearshort"
-			       		END AS "VTName$acyearshort"
-
-			       		,CASE
-						   WHEN vt$acyear."is_deleted"=0  THEN ''
-			            ELSE "MDDS_VT$acyearshort"
-			        	END AS "MDDS_VT$acyearshort"
-			        	,CASE
-			            WHEN "frfromaction"='Sub-Merge'  THEN ''
-			            ELSE "Level$acyearshort"
-			        	END AS "Level$acyearshort"
-			        	,CASE
-			            WHEN "frfromaction"='Sub-Merge'  THEN ''
-			            ELSE "Status$acyearshort"
-			        	END AS "Status$acyearshort","is_deleted"
-
-			from (select DISTINCT ON( fr$acyearshort."VTIDACTIVE") fr$acyearshort."VTIDACTIVE",fr$acyearshort."VTIDR",fr$acyearshort.frids,
-						   fr$acyearshort.frcomment,fr$acyearshort.comeaction,fr$acyearshort.frfromaction
-						   
-						   from forreaddata20$acyearshort as fr$acyearshort
-						   
-						    WHERE fr$acyearshort."VTIDACTIVE"!=0 AND fr$acyearshort."VTIDACTIVE"=fr$acyearshort."VTIDR"  $cond AND fr$acyearshort."VTIDACTIVE"=fr$acyearshort."VTID"   ORDER BY "VTIDACTIVE", "frids" DESC) as frtab
-						 INNER JOIN
-			 (select "STID$acyearshort","STName$acyearshort","MDDS_ST$acyearshort","DTID$acyearshort","DTName$acyearshort","MDDS_DT$acyearshort","SDID$acyearshort","SDName$acyearshort","MDDS_SD$acyearshort"
-			  ,"VTID" as "VTID$acyearshort","VTName" as "VTName$acyearshort","MDDS_VT" as "MDDS_VT$acyearshort","Level" as "Level$acyearshort","Status" as "Status$acyearshort","is_deleted" from vt$acyear 
-			  INNER JOIN (select "STID" AS "STID$acyearshort","STName" AS "STName$acyearshort","MDDS_ST" AS "MDDS_ST$acyearshort" from st$acyear where is_deleted=1) as st$acyearshort ON st$acyearshort."STID$acyearshort"=vt$acyear."STID"
-			INNER JOIN (select "DTID" AS "DTID$acyearshort","DTName" AS "DTName$acyearshort","MDDS_DT" AS "MDDS_DT$acyearshort" from dt$acyear where is_deleted=1) as dt$acyearshort ON dt$acyearshort."DTID$acyearshort"=vt$acyear."DTID"
-			INNER JOIN (select "SDID" AS "SDID$acyearshort","SDName" AS "SDName$acyearshort","MDDS_SD" AS "MDDS_SD$acyearshort" from sd$acyear where is_deleted=1) as sd$acyearshort ON sd$acyearshort."SDID$acyearshort"=vt$acyear."SDID"
-			    $cond1) as vt$acyear ON frtab."VTIDACTIVE" = vt$acyear."VTID$acyearshort" 
-				
-			LEFT JOIN
-			 (select "STID$olyear","STName$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear"
-			  ,"VTID" as "VTID$olyear","VTName" as "VTName$olyear","MDDS_VT" as "MDDS_VT$olyear","Level" as "Level$olyear","Status" as "Status$olyear" from vt$olyear 
-			  INNER JOIN (select "STID" AS "STID$olyear","STName" AS "STName$olyear","MDDS_ST" AS "MDDS_ST$olyear" from st$olyear) as st11 ON st11."STID$olyear"=vt$olyear."STID"
-			INNER JOIN (select "DTID" AS "DTID$olyear","DTName" AS "DTName$olyear","MDDS_DT" AS "MDDS_DT$olyear" from dt$olyear) as dt11 ON dt11."DTID$olyear"=vt$olyear."DTID"
-			INNER JOIN (select "SDID" AS "SDID$olyear","SDName" AS "SDName$olyear","MDDS_SD" AS "MDDS_SD$olyear" from sd$olyear) as sd11 ON sd11."SDID$olyear"=vt$olyear."SDID"
-			    $cond3) as vt$olyear ON frtab."VTIDR" = vt$olyear."VTID$olyear") AS TAB1
-
-			UNION ALL
-
-			SELECT * FROM (select DISTINCT ( fr$acyearshort."VTIDACTIVE"),fr$acyearshort."frids",vt$olyear.*,fr$acyearshort.frcomment,fr$acyearshort.comeaction,vt$acyear.* from forreaddata$acyear as fr$acyearshort
-			LEFT JOIN
-			 (select "STID$olyear","STName$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear"
-			  ,"VTID" as "VTID$olyear","VTName" as "VTName$olyear","MDDS_VT" as "MDDS_VT$olyear","Level" as "Level$olyear","Status" as "Status$olyear" from vt$olyear 
-			  INNER JOIN (select "STID" AS "STID$olyear","STName" AS "STName$olyear","MDDS_ST" AS "MDDS_ST$olyear" from st$olyear) as st11 ON st11."STID$olyear"=vt$olyear."STID"
-			INNER JOIN (select "DTID" AS "DTID$olyear","DTName" AS "DTName$olyear","MDDS_DT" AS "MDDS_DT$olyear" from dt$olyear) as dt11 ON dt11."DTID$olyear"=vt$olyear."DTID"
-			INNER JOIN (select "SDID" AS "SDID$olyear","SDName" AS "SDName$olyear","MDDS_SD" AS "MDDS_SD$olyear" from sd$olyear) as sd11 ON sd11."SDID$olyear"=vt$olyear."SDID"
-			   $cond1) as vt$olyear ON fr$acyearshort."VTIDR" = vt$olyear."VTID$olyear"
-			  
-			  LEFT JOIN
-			 (select "STID$acyearshort","STName$acyearshort","MDDS_ST$acyearshort","DTID$acyearshort","DTName$acyearshort","MDDS_DT$acyearshort","SDID$acyearshort","SDName$acyearshort","MDDS_SD$acyearshort"
-			  ,"VTID" as "VTID$acyearshort","VTName" as "VTName$acyearshort","MDDS_VT" as "MDDS_VT$acyearshort","Level" as "Level$acyearshort","Status" as "Status$acyearshort","is_deleted" from vt$acyear 
-			  INNER JOIN (select "STID" AS "STID$acyearshort","STName" AS "STName$acyearshort","MDDS_ST" AS "MDDS_ST$acyearshort" from st$acyear) as st$acyearshort ON st$acyearshort."STID$acyearshort"=vt$acyear."STID"
-			INNER JOIN (select "DTID" AS "DTID$acyearshort","DTName" AS "DTName$acyearshort","MDDS_DT" AS "MDDS_DT$acyearshort" from dt$acyear) as dt$acyearshort ON dt$acyearshort."DTID$acyearshort"=vt$acyear."DTID"
-			INNER JOIN (select "SDID" AS "SDID$acyearshort","SDName" AS "SDName$acyearshort","MDDS_SD" AS "MDDS_SD$acyearshort" from sd$acyear) as sd$acyearshort ON sd$acyearshort."SDID$acyearshort"=vt$acyear."SDID"
-			   $cond1) as vt$acyear ON fr$acyearshort."VTIDACTIVE" = vt$acyear."VTID$acyearshort"
-			   WHERE fr$acyearshort."VTIDACTIVE"!=0   $cond AND fr$acyearshort."VTIDACTIVE"!=fr$acyearshort."VTID"  ORDER BY "VTIDACTIVE", "frids" DESC) AS TAB2
-
-			    
-			 ) temp
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "VTName$acyearshort"
+						END AS "VTName$acyearshort"
+			
+						,CASE
+						WHEN vt$acyear."is_deleted"=0  THEN ''
+					ELSE "MDDS_VT$acyearshort"
+					END AS "MDDS_VT$acyearshort"
+					,CASE
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "Level$acyearshort"
+					END AS "Level$acyearshort"
+					,CASE
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "Status$acyearshort"
+					END AS "Status$acyearshort","is_deleted"
+			
+					FROM (
+						SELECT DISTINCT ON( fr$acyearshort."VTIDACTIVE") fr$acyearshort."VTIDACTIVE",fr$acyearshort."VTIDR",fr$acyearshort.frids,
+						fr$acyearshort.frcomment,fr$acyearshort.comeaction,fr$acyearshort.frfromaction
+			
+						FROM forreaddata20$acyearshort AS fr$acyearshort
+			
+						WHERE fr$acyearshort."VTIDACTIVE"=0 AND fr$acyearshort."VTIDACTIVE"=fr$acyearshort."VTIDR"  $cond AND fr$acyearshort."VTIDACTIVE"=fr$acyearshort."VTID"   ORDER BY "VTIDACTIVE", "frids" DESC
+					) AS frtab
+					INNER JOIN (
+						SELECT "STID$acyearshort","STName$acyearshort","STStatus$acyearshort","MDDS_ST$acyearshort","DTID$acyearshort","DTName$acyearshort","MDDS_DT$acyearshort","SDID$acyearshort","SDName$acyearshort","MDDS_SD$acyearshort"
+							,"VTID" AS "VTID$acyearshort","VTName" AS "VTName$acyearshort","MDDS_VT" AS "MDDS_VT$acyearshort","Level" AS "Level$acyearshort","Status" AS "Status$acyearshort","is_deleted" FROM vt$acyear 
+							INNER JOIN (
+								SELECT "STID" AS "STID$acyearshort","STName" AS "STName$acyearshort","Status" AS "STStatus$acyearshort","MDDS_ST" AS "MDDS_ST$acyearshort" FROM st$acyear WHERE is_deleted=1
+							) AS st$acyearshort ON st$acyearshort."STID$acyearshort"=vt$acyear."STID"
+							INNER JOIN (
+								SELECT "DTID" AS "DTID$acyearshort","DTName" AS "DTName$acyearshort","MDDS_DT" AS "MDDS_DT$acyearshort" FROM dt$acyear WHERE is_deleted=1
+							) AS dt$acyearshort ON dt$acyearshort."DTID$acyearshort"=vt$acyear."DTID"
+							INNER JOIN (
+								SELECT "SDID" AS "SDID$acyearshort","SDName" AS "SDName$acyearshort","MDDS_SD" AS "MDDS_SD$acyearshort" FROM sd$acyear WHERE is_deleted=1
+							) AS sd$acyearshort ON sd$acyearshort."SDID$acyearshort"=vt$acyear."SDID"
+							$cond1
+					) AS vt$acyear ON frtab."VTIDACTIVE" = vt$acyear."VTID$acyearshort" 
+			
+					LEFT JOIN (
+						SELECT "STID$olyear","STName$olyear","STStatus$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear"
+							,"VTID" AS "VTID$olyear","VTName" AS "VTName$olyear","MDDS_VT" AS "MDDS_VT$olyear","Level" AS "Level$olyear","Status" AS "Status$olyear" FROM vt$olyear 
+							INNER JOIN (
+								SELECT "STID" AS "STID$olyear","STName" AS "STName$olyear","Status" AS "STStatus$olyear","MDDS_ST" AS "MDDS_ST$olyear" FROM st$olyear
+							) AS st11 ON st11."STID$olyear"=vt$olyear."STID"
+							INNER JOIN (
+								SELECT "DTID" AS "DTID$olyear","DTName" AS "DTName$olyear","MDDS_DT" AS "MDDS_DT$olyear" FROM dt$olyear
+							) AS dt11 ON dt11."DTID$olyear"=vt$olyear."DTID"
+							INNER JOIN (
+								SELECT "SDID" AS "SDID$olyear","SDName" AS "SDName$olyear","MDDS_SD" AS "MDDS_SD$olyear" FROM sd$olyear
+							) AS sd11 ON sd11."SDID$olyear"=vt$olyear."SDID"
+							$cond3
+					) AS vt$olyear ON frtab."VTIDR" = vt$olyear."VTID$olyear"
+				) AS TAB1
+			
+				UNION ALL
+			
+				SELECT * FROM (
+					SELECT DISTINCT ( fr$acyearshort."VTIDACTIVE"),fr$acyearshort."frids",vt$olyear.*,fr$acyearshort.frcomment,fr$acyearshort.comeaction,vt$acyear.* FROM forreaddata$acyear AS fr$acyearshort
+					LEFT JOIN (
+						SELECT "STID$olyear","STName$olyear","STStatus$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear"
+							,"VTID" AS "VTID$olyear","VTName" AS "VTName$olyear","MDDS_VT" AS "MDDS_VT$olyear","Level" AS "Level$olyear","Status" AS "Status$olyear" FROM vt$olyear 
+							INNER JOIN (
+								SELECT "STID" AS "STID$olyear","STName" AS "STName$olyear","Status" AS "STStatus$olyear","MDDS_ST" AS "MDDS_ST$olyear" FROM st$olyear
+							) AS st11 ON st11."STID$olyear"=vt$olyear."STID"
+							INNER JOIN (
+								SELECT "DTID" AS "DTID$olyear","DTName" AS "DTName$olyear","MDDS_DT" AS "MDDS_DT$olyear" FROM dt$olyear
+							) AS dt11 ON dt11."DTID$olyear"=vt$olyear."DTID"
+							INNER JOIN (
+								SELECT "SDID" AS "SDID$olyear","SDName" AS "SDName$olyear","MDDS_SD" AS "MDDS_SD$olyear" FROM sd$olyear
+							) AS sd11 ON sd11."SDID$olyear"=vt$olyear."SDID"
+							$cond1
+					) AS vt$olyear ON fr$acyearshort."VTIDR" = vt$olyear."VTID$olyear"
+			
+					LEFT JOIN (
+						SELECT "STID$acyearshort","STName$acyearshort","STStatus$acyearshort","MDDS_ST$acyearshort","DTID$acyearshort","DTName$acyearshort","MDDS_DT$acyearshort","SDID$acyearshort","SDName$acyearshort","MDDS_SD$acyearshort"
+							,"VTID" AS "VTID$acyearshort","VTName" AS "VTName$acyearshort","MDDS_VT" AS "MDDS_VT$acyearshort","Level" AS "Level$acyearshort","Status" AS "Status$acyearshort","is_deleted" FROM vt$acyear 
+							INNER JOIN (
+								SELECT "STID" AS "STID$acyearshort","STName" AS "STName$acyearshort","Status" AS "STStatus$acyearshort","MDDS_ST" AS "MDDS_ST$acyearshort" FROM st$acyear
+							) AS st$acyearshort ON st$acyearshort."STID$acyearshort"=vt$acyear."STID"
+							INNER JOIN (
+								SELECT "DTID" AS "DTID$acyearshort","DTName" AS "DTName$acyearshort","MDDS_DT" AS "MDDS_DT$acyearshort" FROM dt$acyear
+							) AS dt$acyearshort ON dt$acyearshort."DTID$acyearshort"=vt$acyear."DTID"
+							INNER JOIN (
+								SELECT "SDID" AS "SDID$acyearshort","SDName" AS "SDName$acyearshort","MDDS_SD" AS "MDDS_SD$acyearshort" FROM sd$acyear
+							) AS sd$acyearshort ON sd$acyearshort."SDID$acyearshort"=vt$acyear."SDID"
+					) AS vt$acyear ON fr$acyearshort."VTIDACTIVE" = vt$acyear."VTID$acyearshort"
+					WHERE fr$acyearshort."VTIDACTIVE"!=0   $cond AND fr$acyearshort."VTIDACTIVE"=fr$acyearshort."VTID"  ORDER BY "VTIDACTIVE", "frids" DESC
+				) AS TAB2
+			) temp
 			EOT;
+		}
+		else if($_POST['stids']!=$rowstate['STID']) {
+			$table = <<<EOT
+			(
+				SELECT * FROM (
+					SELECT "VTIDACTIVE","frids","STID$olyear","STName$olyear","STStatus$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear",
+					"VTID$olyear","VTName$olyear","MDDS_VT$olyear","Level$olyear","Status$olyear","frcomment","comeaction","STID$acyearshort"
+						
+					,CASE
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "STName$acyearshort"
+						END AS "STName$acyearshort"
+			
+					,CASE WHEN "frfromaction"='Sub-Merge' THEN ''
+					ELSE "STStatus$acyearshort"  
+					END AS  "STStatus$acyearshort"
+	
+						,CASE
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "MDDS_ST$acyearshort"
+						END AS "MDDS_ST$acyearshort"
+			
+					,"DTID$acyearshort"
+					
+					,CASE
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "DTName$acyearshort"
+						END AS "DTName$acyearshort"
+			
+						,CASE
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "MDDS_DT$acyearshort"
+						END AS "MDDS_DT$acyearshort"
+						
+					,"SDID$acyearshort"
+					
+					,CASE
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "SDName$acyearshort"
+						END AS "SDName$acyearshort"
+			
+						,CASE
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "MDDS_SD$acyearshort"
+						END AS "MDDS_SD$acyearshort"
+						
+						,"VTID$acyearshort"
+			
+						,CASE
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "VTName$acyearshort"
+						END AS "VTName$acyearshort"
+			
+						,CASE
+						WHEN vt$acyear."is_deleted"=0  THEN ''
+					ELSE "MDDS_VT$acyearshort"
+					END AS "MDDS_VT$acyearshort"
+					,CASE
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "Level$acyearshort"
+					END AS "Level$acyearshort"
+					,CASE
+					WHEN "frfromaction"='Sub-Merge'  THEN ''
+					ELSE "Status$acyearshort"
+					END AS "Status$acyearshort","is_deleted"
+			
+					FROM (
+						SELECT DISTINCT ON( fr$acyearshort."VTIDACTIVE") fr$acyearshort."VTIDACTIVE",fr$acyearshort."VTIDR",fr$acyearshort.frids,
+						fr$acyearshort.frcomment,fr$acyearshort.comeaction,fr$acyearshort.frfromaction
+			
+						FROM forreaddata20$acyearshort AS fr$acyearshort
+			
+						WHERE fr$acyearshort."VTIDACTIVE"!=0 AND fr$acyearshort."VTIDACTIVE"=fr$acyearshort."VTIDR"  $cond AND fr$acyearshort."VTIDACTIVE"=fr$acyearshort."VTID"   ORDER BY "VTIDACTIVE", "frids" DESC
+					) AS frtab
+					INNER JOIN (
+						SELECT "STID$acyearshort","STName$acyearshort","STStatus$acyearshort","MDDS_ST$acyearshort","DTID$acyearshort","DTName$acyearshort","MDDS_DT$acyearshort","SDID$acyearshort","SDName$acyearshort","MDDS_SD$acyearshort"
+							,"VTID" AS "VTID$acyearshort","VTName" AS "VTName$acyearshort","MDDS_VT" AS "MDDS_VT$acyearshort","Level" AS "Level$acyearshort","Status" AS "Status$acyearshort","is_deleted" FROM vt$acyear 
+							INNER JOIN (
+								SELECT "STID" AS "STID$acyearshort","STName" AS "STName$acyearshort","Status" AS "STStatus$acyearshort","MDDS_ST" AS "MDDS_ST$acyearshort" FROM st$acyear WHERE is_deleted=1
+							) AS st$acyearshort ON st$acyearshort."STID$acyearshort"=vt$acyear."STID"
+							INNER JOIN (
+								SELECT "DTID" AS "DTID$acyearshort","DTName" AS "DTName$acyearshort","MDDS_DT" AS "MDDS_DT$acyearshort" FROM dt$acyear WHERE is_deleted=1
+							) AS dt$acyearshort ON dt$acyearshort."DTID$acyearshort"=vt$acyear."DTID"
+							INNER JOIN (
+								SELECT "SDID" AS "SDID$acyearshort","SDName" AS "SDName$acyearshort","MDDS_SD" AS "MDDS_SD$acyearshort" FROM sd$acyear WHERE is_deleted=1
+							) AS sd$acyearshort ON sd$acyearshort."SDID$acyearshort"=vt$acyear."SDID"
+							$cond1
+					) AS vt$acyear ON frtab."VTIDACTIVE" = vt$acyear."VTID$acyearshort" 
+			
+					LEFT JOIN (
+						SELECT "STID$olyear","STName$olyear","STStatus$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear"
+							,"VTID" AS "VTID$olyear","VTName" AS "VTName$olyear","MDDS_VT" AS "MDDS_VT$olyear","Level" AS "Level$olyear","Status" AS "Status$olyear" FROM vt$olyear 
+							INNER JOIN (
+								SELECT "STID" AS "STID$olyear","STName" AS "STName$olyear","Status" AS "STStatus$olyear","MDDS_ST" AS "MDDS_ST$olyear" FROM st$olyear
+							) AS st11 ON st11."STID$olyear"=vt$olyear."STID"
+							INNER JOIN (
+								SELECT "DTID" AS "DTID$olyear","DTName" AS "DTName$olyear","MDDS_DT" AS "MDDS_DT$olyear" FROM dt$olyear
+							) AS dt11 ON dt11."DTID$olyear"=vt$olyear."DTID"
+							INNER JOIN (
+								SELECT "SDID" AS "SDID$olyear","SDName" AS "SDName$olyear","MDDS_SD" AS "MDDS_SD$olyear" FROM sd$olyear
+							) AS sd11 ON sd11."SDID$olyear"=vt$olyear."SDID"
+							$cond3
+					) AS vt$olyear ON frtab."VTIDR" = vt$olyear."VTID$olyear"
+				) AS TAB1
+			
+				UNION ALL
+			
+				SELECT * FROM (
+					SELECT DISTINCT ( fr$acyearshort."VTIDACTIVE"),fr$acyearshort."frids",vt$olyear.*,fr$acyearshort.frcomment,fr$acyearshort.comeaction,vt$acyear.* FROM forreaddata$acyear AS fr$acyearshort
+					LEFT JOIN (
+						SELECT "STID$olyear","STName$olyear","STStatus$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear"
+							,"VTID" AS "VTID$olyear","VTName" AS "VTName$olyear","MDDS_VT" AS "MDDS_VT$olyear","Level" AS "Level$olyear","Status" AS "Status$olyear" FROM vt$olyear 
+							INNER JOIN (
+								SELECT "STID" AS "STID$olyear","STName" AS "STName$olyear","Status" AS "STStatus$olyear","MDDS_ST" AS "MDDS_ST$olyear" FROM st$olyear
+							) AS st11 ON st11."STID$olyear"=vt$olyear."STID"
+							INNER JOIN (
+								SELECT "DTID" AS "DTID$olyear","DTName" AS "DTName$olyear","MDDS_DT" AS "MDDS_DT$olyear" FROM dt$olyear
+							) AS dt11 ON dt11."DTID$olyear"=vt$olyear."DTID"
+							INNER JOIN (
+								SELECT "SDID" AS "SDID$olyear","SDName" AS "SDName$olyear","MDDS_SD" AS "MDDS_SD$olyear" FROM sd$olyear
+							) AS sd11 ON sd11."SDID$olyear"=vt$olyear."SDID"
+							$cond1
+					) AS vt$olyear ON fr$acyearshort."VTIDR" = vt$olyear."VTID$olyear"
+			
+					LEFT JOIN (
+						SELECT "STID$acyearshort","STName$acyearshort","STStatus$acyearshort","MDDS_ST$acyearshort","DTID$acyearshort","DTName$acyearshort","MDDS_DT$acyearshort","SDID$acyearshort","SDName$acyearshort","MDDS_SD$acyearshort"
+							,"VTID" AS "VTID$acyearshort","VTName" AS "VTName$acyearshort","MDDS_VT" AS "MDDS_VT$acyearshort","Level" AS "Level$acyearshort","Status" AS "Status$acyearshort","is_deleted" FROM vt$acyear 
+							INNER JOIN (
+								SELECT "STID" AS "STID$acyearshort","STName" AS "STName$acyearshort","Status" AS "STStatus$acyearshort","MDDS_ST" AS "MDDS_ST$acyearshort" FROM st$acyear
+							) AS st$acyearshort ON st$acyearshort."STID$acyearshort"=vt$acyear."STID"
+							INNER JOIN (
+								SELECT "DTID" AS "DTID$acyearshort","DTName" AS "DTName$acyearshort","MDDS_DT" AS "MDDS_DT$acyearshort" FROM dt$acyear
+							) AS dt$acyearshort ON dt$acyearshort."DTID$acyearshort"=vt$acyear."DTID"
+							INNER JOIN (
+								SELECT "SDID" AS "SDID$acyearshort","SDName" AS "SDName$acyearshort","MDDS_SD" AS "MDDS_SD$acyearshort" FROM sd$acyear
+							) AS sd$acyearshort ON sd$acyearshort."SDID$acyearshort"=vt$acyear."SDID"
+							$cond1
+					) AS vt$acyear ON fr$acyearshort."VTIDACTIVE" = vt$acyear."VTID$acyearshort"
+					WHERE fr$acyearshort."VTIDACTIVE"!=0   $cond AND fr$acyearshort."VTIDACTIVE"!=fr$acyearshort."VTID"  ORDER BY "VTIDACTIVE", "frids" DESC
+				) AS TAB2
+			) temp
+			EOT;
+		}
+		
+	}
+	// forread related table for all level
+	else {
+// forread related table for all level
+$table = <<<EOT
+(
+
+SELECT * FROM (select "VTIDACTIVE","frids","STID$olyear","STName$olyear","STStatus$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear",
+"VTID$olyear","VTName$olyear","MDDS_VT$olyear","Level$olyear","Status$olyear","frcomment","comeaction","STID$acyearshort"
+		   
+		   ,CASE
+		   WHEN "frfromaction"='Sub-Merge'  THEN ''
+		   ELSE "STName$acyearshort"
+			  END AS "STName$acyearshort"
+
+		   ,CASE WHEN "frfromaction"='Sub-Merge' THEN ''
+		   ELSE "STStatus$acyearshort"  
+		   END AS  "STStatus$acyearshort"
+
+
+			  ,CASE
+		   WHEN "frfromaction"='Sub-Merge'  THEN ''
+		   ELSE "MDDS_ST$acyearshort"
+			  END AS "MDDS_ST$acyearshort"
+
+
+		   ,"DTID$acyearshort"
+		   
+		   ,CASE
+		   WHEN "frfromaction"='Sub-Merge'  THEN ''
+		   ELSE "DTName$acyearshort"
+			  END AS "DTName$acyearshort"
+
+			  ,CASE
+		   WHEN "frfromaction"='Sub-Merge'  THEN ''
+		   ELSE "MDDS_DT$acyearshort"
+			  END AS "MDDS_DT$acyearshort"
+			 
+		   ,"SDID$acyearshort"
+		   
+		   ,CASE
+		   WHEN "frfromaction"='Sub-Merge'  THEN ''
+		   ELSE "SDName$acyearshort"
+			  END AS "SDName$acyearshort"
+
+			  ,CASE
+		   WHEN "frfromaction"='Sub-Merge'  THEN ''
+		   ELSE "MDDS_SD$acyearshort"
+			  END AS "MDDS_SD$acyearshort"
+			 
+			 ,"VTID$acyearshort"
+
+			 ,CASE
+		   WHEN "frfromaction"='Sub-Merge'  THEN ''
+		   ELSE "VTName$acyearshort"
+			  END AS "VTName$acyearshort"
+
+			  ,CASE
+			  WHEN vt$acyear."is_deleted"=0  THEN ''
+		   ELSE "MDDS_VT$acyearshort"
+		   END AS "MDDS_VT$acyearshort"
+		   ,CASE
+		   WHEN "frfromaction"='Sub-Merge'  THEN ''
+		   ELSE "Level$acyearshort"
+		   END AS "Level$acyearshort"
+		   ,CASE
+		   WHEN "frfromaction"='Sub-Merge'  THEN ''
+		   ELSE "Status$acyearshort"
+		   END AS "Status$acyearshort","is_deleted"
+
+from (select DISTINCT ON( fr$acyearshort."VTIDACTIVE") fr$acyearshort."VTIDACTIVE",fr$acyearshort."VTIDR",fr$acyearshort.frids,
+			  fr$acyearshort.frcomment,fr$acyearshort.comeaction,fr$acyearshort.frfromaction
+			  
+			  from forreaddata20$acyearshort as fr$acyearshort
+			  
+			   WHERE fr$acyearshort."VTIDACTIVE"!=0 AND fr$acyearshort."VTIDACTIVE"=fr$acyearshort."VTIDR"  $cond AND fr$acyearshort."VTIDACTIVE"=fr$acyearshort."VTID"   ORDER BY "VTIDACTIVE", "frids" DESC) as frtab
+			INNER JOIN
+(select "STID$acyearshort","STName$acyearshort","STStatus$acyearshort","MDDS_ST$acyearshort","DTID$acyearshort","DTName$acyearshort","MDDS_DT$acyearshort","SDID$acyearshort","SDName$acyearshort","MDDS_SD$acyearshort"
+ ,"VTID" as "VTID$acyearshort","VTName" as "VTName$acyearshort","MDDS_VT" as "MDDS_VT$acyearshort","Level" as "Level$acyearshort","Status" as "Status$acyearshort","is_deleted" from vt$acyear 
+ INNER JOIN (select "STID" AS "STID$acyearshort","STName" AS "STName$acyearshort","Status" AS "STStatus$acyearshort","MDDS_ST" AS "MDDS_ST$acyearshort" from st$acyear where is_deleted=1) as st$acyearshort ON st$acyearshort."STID$acyearshort"=vt$acyear."STID"
+INNER JOIN (select "DTID" AS "DTID$acyearshort","DTName" AS "DTName$acyearshort","MDDS_DT" AS "MDDS_DT$acyearshort" from dt$acyear where is_deleted=1) as dt$acyearshort ON dt$acyearshort."DTID$acyearshort"=vt$acyear."DTID"
+INNER JOIN (select "SDID" AS "SDID$acyearshort","SDName" AS "SDName$acyearshort","MDDS_SD" AS "MDDS_SD$acyearshort" from sd$acyear where is_deleted=1) as sd$acyearshort ON sd$acyearshort."SDID$acyearshort"=vt$acyear."SDID"
+   $cond1) as vt$acyear ON frtab."VTIDACTIVE" = vt$acyear."VTID$acyearshort" 
+   
+LEFT JOIN
+(select "STID$olyear","STName$olyear","STStatus$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear"
+ ,"VTID" as "VTID$olyear","VTName" as "VTName$olyear","MDDS_VT" as "MDDS_VT$olyear","Level" as "Level$olyear","Status" as "Status$olyear" from vt$olyear 
+ INNER JOIN (select "STID" AS "STID$olyear","STName" AS "STName$olyear","Status" AS "STStatus$olyear","MDDS_ST" AS "MDDS_ST$olyear" from st$olyear) as st11 ON st11."STID$olyear"=vt$olyear."STID"
+INNER JOIN (select "DTID" AS "DTID$olyear","DTName" AS "DTName$olyear","MDDS_DT" AS "MDDS_DT$olyear" from dt$olyear) as dt11 ON dt11."DTID$olyear"=vt$olyear."DTID"
+INNER JOIN (select "SDID" AS "SDID$olyear","SDName" AS "SDName$olyear","MDDS_SD" AS "MDDS_SD$olyear" from sd$olyear) as sd11 ON sd11."SDID$olyear"=vt$olyear."SDID"
+   $cond3) as vt$olyear ON frtab."VTIDR" = vt$olyear."VTID$olyear") AS TAB1
+
+UNION ALL
+
+SELECT * FROM (select DISTINCT ( fr$acyearshort."VTIDACTIVE"),fr$acyearshort."frids",vt$olyear.*,fr$acyearshort.frcomment,fr$acyearshort.comeaction,vt$acyear.* from forreaddata$acyear as fr$acyearshort
+LEFT JOIN
+(select "STID$olyear","STName$olyear","STStatus$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear"
+ ,"VTID" as "VTID$olyear","VTName" as "VTName$olyear","MDDS_VT" as "MDDS_VT$olyear","Level" as "Level$olyear","Status" as "Status$olyear" from vt$olyear 
+ INNER JOIN (select "STID" AS "STID$olyear","STName" AS "STName$olyear","Status" AS "STStatus$olyear","MDDS_ST" AS "MDDS_ST$olyear" from st$olyear) as st11 ON st11."STID$olyear"=vt$olyear."STID"
+INNER JOIN (select "DTID" AS "DTID$olyear","DTName" AS "DTName$olyear","MDDS_DT" AS "MDDS_DT$olyear" from dt$olyear) as dt11 ON dt11."DTID$olyear"=vt$olyear."DTID"
+INNER JOIN (select "SDID" AS "SDID$olyear","SDName" AS "SDName$olyear","MDDS_SD" AS "MDDS_SD$olyear" from sd$olyear) as sd11 ON sd11."SDID$olyear"=vt$olyear."SDID"
+  $cond1) as vt$olyear ON fr$acyearshort."VTIDR" = vt$olyear."VTID$olyear"
+ 
+ LEFT JOIN
+(select "STID$acyearshort","STName$acyearshort","STStatus$acyearshort","MDDS_ST$acyearshort","DTID$acyearshort","DTName$acyearshort","MDDS_DT$acyearshort","SDID$acyearshort","SDName$acyearshort","MDDS_SD$acyearshort"
+ ,"VTID" as "VTID$acyearshort","VTName" as "VTName$acyearshort","MDDS_VT" as "MDDS_VT$acyearshort","Level" as "Level$acyearshort","Status" as "Status$acyearshort","is_deleted" from vt$acyear 
+ INNER JOIN (select "STID" AS "STID$acyearshort","STName" AS "STName$acyearshort","Status" AS "STStatus$acyearshort","MDDS_ST" AS "MDDS_ST$acyearshort" from st$acyear) as st$acyearshort ON st$acyearshort."STID$acyearshort"=vt$acyear."STID"
+INNER JOIN (select "DTID" AS "DTID$acyearshort","DTName" AS "DTName$acyearshort","MDDS_DT" AS "MDDS_DT$acyearshort" from dt$acyear) as dt$acyearshort ON dt$acyearshort."DTID$acyearshort"=vt$acyear."DTID"
+INNER JOIN (select "SDID" AS "SDID$acyearshort","SDName" AS "SDName$acyearshort","MDDS_SD" AS "MDDS_SD$acyearshort" from sd$acyear) as sd$acyearshort ON sd$acyearshort."SDID$acyearshort"=vt$acyear."SDID"
+  $cond1) as vt$acyear ON fr$acyearshort."VTIDACTIVE" = vt$acyear."VTID$acyearshort"
+  WHERE fr$acyearshort."VTIDACTIVE"!=0   $cond AND fr$acyearshort."VTIDACTIVE"!=fr$acyearshort."VTIDR"  ORDER BY "VTIDACTIVE", "frids" DESC) AS TAB2
+
+   
+) temp
+EOT;
+	}
 
 
 	// $table = <<<EOT
@@ -455,17 +765,18 @@ if($_POST['flag']=='ST')
 			array( 'db' => '"STID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 0,'db1' => 'STID'.$_SESSION['logindetails']['baseyear'].''),
 			array( 'db' => '"MDDS_ST'.$_SESSION['logindetails']['baseyear'].'"','dt' => 1,'db1' => 'MDDS_ST'.$_SESSION['logindetails']['baseyear'].''),
 			array( 'db' => '"STName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 2,'db1' => 'STName'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"DTID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 3,'db1' => 'DTID'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"MDDS_DT'.$_SESSION['logindetails']['baseyear'].'"','dt' => 4,'db1' => 'MDDS_DT'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"DTName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 5,'db1' => 'DTName'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"SDID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 6,'db1' => 'SDID'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"MDDS_SD'.$_SESSION['logindetails']['baseyear'].'"','dt' => 7,'db1' => 'MDDS_SD'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"SDName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 8,'db1' => 'SDName'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"MDDS_VT'.$_SESSION['logindetails']['baseyear'].'"','dt' => 9,'db1' => 'MDDS_VT'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"VTName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 10,'db1' => 'VTName'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"Level'.$_SESSION['logindetails']['baseyear'].'"','dt' => 11,'db1' => 'Level'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"STStatus'.$_SESSION['logindetails']['baseyear'].'"','dt' => 3,'db1' => 'STStatus'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"DTID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 4,'db1' => 'DTID'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"MDDS_DT'.$_SESSION['logindetails']['baseyear'].'"','dt' => 5,'db1' => 'MDDS_DT'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"DTName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 6,'db1' => 'DTName'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"SDID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 7,'db1' => 'SDID'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"MDDS_SD'.$_SESSION['logindetails']['baseyear'].'"','dt' => 8,'db1' => 'MDDS_SD'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"SDName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 9,'db1' => 'SDName'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"MDDS_VT'.$_SESSION['logindetails']['baseyear'].'"','dt' => 10,'db1' => 'MDDS_VT'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"VTName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 11,'db1' => 'VTName'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"Level'.$_SESSION['logindetails']['baseyear'].'"','dt' => 12,'db1' => 'Level'.$_SESSION['logindetails']['baseyear'].''),
 			// array( 'db' => '"Status'.$_SESSION['logindetails']['baseyear'].'"','dt' => 12,'db1' => 'Status'.$_SESSION['logindetails']['baseyear'].''),
-			 array( 'db' => '"Status'.$_SESSION['logindetails']['baseyear'].'"', 'dt' => 12,'db1' => 'Status'.$_SESSION['logindetails']['baseyear'].'',
+			 array( 'db' => '"Status'.$_SESSION['logindetails']['baseyear'].'"', 'dt' => 13,'db1' => 'Status'.$_SESSION['logindetails']['baseyear'].'',
                 'formatter' => function( $d, $row ) {
                 if (!is_null($d) && $d=='Village')
              	{
@@ -491,12 +802,12 @@ if($_POST['flag']=='ST')
 				// array( 'db' => '"Level'.$acyearshort.'"','dt' => 11,'db1' => 'Level'.$acyearshort.''),
 				// array( 'db' => '"Status'.$acyearshort.'"','dt' => 12,'db1' => 'Status'.$acyearshort.''),
 
-			array( 'db' => '"VTID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 13,'db1' => 'VTID'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"VTID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 14,'db1' => 'VTID'.$_SESSION['logindetails']['baseyear'].''),
 			
-			array( 'db' => '"STID'.$acyearshort.'"','dt' => 14,'db1' => 'STID'.$acyearshort.''),
+			array( 'db' => '"STID'.$acyearshort.'"','dt' => 15,'db1' => 'STID'.$acyearshort.''),
 
 
-			 array( 'db' => '"MDDS_ST'.$acyearshort.'"', 'dt' => 15,'db1' => 'MDDS_ST'.$acyearshort.'',
+			 array( 'db' => '"MDDS_ST'.$acyearshort.'"', 'dt' => 16,'db1' => 'MDDS_ST'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -510,7 +821,7 @@ if($_POST['flag']=='ST')
              	}
                 
                 } ),
-			 array( 'db' => '"STName'.$acyearshort.'"', 'dt' => 16,'db1' => 'STName'.$acyearshort.'',
+			 array( 'db' => '"STName'.$acyearshort.'"', 'dt' => 17,'db1' => 'STName'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -524,11 +835,26 @@ if($_POST['flag']=='ST')
              	}
                 
                 } ),
+
+				array( 'db' => '"STStatus'.$acyearshort.'"', 'dt' => 18,'db1' => 'STStatus'.$acyearshort.'',
+				'formatter' => function( $d, $row ) {
+					
+					//  print_r($row['is_deleted']);
+				if ($row['is_deleted']==0)
+				{
+					return '';
+				}
+				else
+				{
+				return $d;	
+				}
+				
+				} ),
 
 			// array( 'db' => '"MDDS_ST'.$acyearshort.'"','dt' => 15,'db1' => 'MDDS_ST'.$acyearshort.''),
 			// array( 'db' => '"STName'.$acyearshort.'"','dt' => 16,'db1' => 'STName'.$acyearshort.''),
-			array( 'db' => '"DTID'.$acyearshort.'"','dt' => 17,'db1' => 'DTID'.$acyearshort.''),
-			array( 'db' => '"MDDS_DT'.$acyearshort.'"', 'dt' => 18,'db1' => 'MDDS_DT'.$acyearshort.'',
+			array( 'db' => '"DTID'.$acyearshort.'"','dt' => 19,'db1' => 'DTID'.$acyearshort.''),
+			array( 'db' => '"MDDS_DT'.$acyearshort.'"', 'dt' => 20,'db1' => 'MDDS_DT'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -542,7 +868,7 @@ if($_POST['flag']=='ST')
              	}
                 
                 } ),
-			array( 'db' => '"DTName'.$acyearshort.'"', 'dt' => 19,'db1' => 'DTName'.$acyearshort.'',
+			array( 'db' => '"DTName'.$acyearshort.'"', 'dt' => 21,'db1' => 'DTName'.$acyearshort.'',
 			
                 'formatter' => function( $d, $row ) {
                 	
@@ -559,8 +885,8 @@ if($_POST['flag']=='ST')
                 } ),
 			// array( 'db' => '"MDDS_DT'.$acyearshort.'"','dt' => 18,'db1' => 'MDDS_DT'.$acyearshort.''),
 			// array( 'db' => '"DTName'.$acyearshort.'"','dt' => 19,'db1' => 'DTName'.$acyearshort.''),
-			array( 'db' => '"SDID'.$acyearshort.'"','dt' => 20,'db1' => 'SDID'.$acyearshort.''),
-			array( 'db' => '"MDDS_SD'.$acyearshort.'"', 'dt' => 21,'db1' => 'MDDS_SD'.$acyearshort.'',
+			array( 'db' => '"SDID'.$acyearshort.'"','dt' => 22,'db1' => 'SDID'.$acyearshort.''),
+			array( 'db' => '"MDDS_SD'.$acyearshort.'"', 'dt' => 23,'db1' => 'MDDS_SD'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -574,7 +900,7 @@ if($_POST['flag']=='ST')
              	}
                 
                 } ),
-			array( 'db' => '"SDName'.$acyearshort.'"', 'dt' => 22,'db1' => 'SDName'.$acyearshort.'',
+			array( 'db' => '"SDName'.$acyearshort.'"', 'dt' => 24,'db1' => 'SDName'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -590,8 +916,8 @@ if($_POST['flag']=='ST')
                 } ),
 			// array( 'db' => '"MDDS_SD'.$acyearshort.'"','dt' => 21,'db1' => 'MDDS_SD'.$acyearshort.''),
 			// array( 'db' => '"SDName'.$acyearshort.'"','dt' => 22,'db1' => 'SDName'.$acyearshort.''),
-			array( 'db' => '"MDDS_VT'.$acyearshort.'"','dt' => 23,'db1' => 'MDDS_VT'.$acyearshort.''),
-			array( 'db' => '"VTName'.$acyearshort.'"', 'dt' => 24,'db1' => 'VTName'.$acyearshort.'',
+			array( 'db' => '"MDDS_VT'.$acyearshort.'"','dt' => 25,'db1' => 'MDDS_VT'.$acyearshort.''),
+			array( 'db' => '"VTName'.$acyearshort.'"', 'dt' => 26,'db1' => 'VTName'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -605,7 +931,7 @@ if($_POST['flag']=='ST')
              	}
                 
                 } ),
-			array( 'db' => '"Level'.$acyearshort.'"', 'dt' => 25,'db1' => 'Level'.$acyearshort.'',
+			array( 'db' => '"Level'.$acyearshort.'"', 'dt' => 27,'db1' => 'Level'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -619,7 +945,7 @@ if($_POST['flag']=='ST')
              	}
                 
                 } ),
-			array( 'db' => '"Status'.$acyearshort.'"', 'dt' => 26,'db1' => 'Status'.$acyearshort.'',
+			array( 'db' => '"Status'.$acyearshort.'"', 'dt' => 28,'db1' => 'Status'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -637,9 +963,9 @@ if($_POST['flag']=='ST')
 			// array( 'db' => '"VTName'.$acyearshort.'"','dt' => 24,'db1' => 'VTName'.$acyearshort.''),
 			//array( 'db' => '"Level'.$acyearshort.'"','dt' => 25,'db1' => 'Level'.$acyearshort.''),
 			// array( 'db' => '"Status'.$acyearshort.'"','dt' => 26,'db1' => 'Status'.$acyearshort.''),
-			array( 'db' => '"VTID'.$acyearshort.'"','dt' => 27,'db1' => 'VTID'.$acyearshort.''),
-			array( 'db' => '"VTID'.$acyearshort.'"','dt' => 28,'db1' => 'VTID'.$acyearshort.''),
-			array( 'db' => '"is_deleted"','dt' => 29,'db1' => 'is_deleted'),
+			array( 'db' => '"VTID'.$acyearshort.'"','dt' => 29,'db1' => 'VTID'.$acyearshort.''),
+			array( 'db' => '"VTID'.$acyearshort.'"','dt' => 30,'db1' => 'VTID'.$acyearshort.''),
+			array( 'db' => '"is_deleted"','dt' => 31,'db1' => 'is_deleted'),
 		
 
 			);
@@ -728,13 +1054,18 @@ else if($_POST['flag']=='DT')
 			$table = <<<EOT
 			 (
 
-			SELECT * FROM (select "VTIDACTIVE","frids","STID$olyear","STName$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear",
+			SELECT * FROM (select "VTIDACTIVE","frids","STID$olyear","STName$olyear","STStatus$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear",
 			"VTID$olyear","VTName$olyear","MDDS_VT$olyear","Level$olyear","Status$olyear","frcomment","comeaction","STID$acyearshort"
 						
 						,CASE
 			            WHEN "frfromaction"='Sub-Merge'  THEN ''
 			            ELSE "STName$acyearshort"
 			       		END AS "STName$acyearshort"
+
+						,CASE
+						WHEN "frfromaction"='Sub-Merge'  THEN ''
+						ELSE "STStatus$acyearshort"
+						END AS "STStatus$acyearshort"
 
 			       		,CASE
 			            WHEN "frfromaction"='Sub-Merge'  THEN ''
@@ -793,17 +1124,17 @@ else if($_POST['flag']=='DT')
 						   
 						    WHERE fr$acyearshort."VTIDACTIVE"!=0 AND fr$acyearshort."VTIDACTIVE"=fr$acyearshort."VTIDR"  $cond AND fr$acyearshort."VTIDACTIVE"=fr$acyearshort."VTID"   ORDER BY "VTIDACTIVE", "frids" DESC) as frtab
 						 INNER JOIN
-			 (select "STID$acyearshort","STName$acyearshort","MDDS_ST$acyearshort","DTID$acyearshort","DTName$acyearshort","MDDS_DT$acyearshort","SDID$acyearshort","SDName$acyearshort","MDDS_SD$acyearshort"
+			 (select "STID$acyearshort","STName$acyearshort","STStatus$acyearshort","MDDS_ST$acyearshort","DTID$acyearshort","DTName$acyearshort","MDDS_DT$acyearshort","SDID$acyearshort","SDName$acyearshort","MDDS_SD$acyearshort"
 			  ,"VTID" as "VTID$acyearshort","VTName" as "VTName$acyearshort","MDDS_VT" as "MDDS_VT$acyearshort","Level" as "Level$acyearshort","Status" as "Status$acyearshort","is_deleted" from vt$acyear 
-			  INNER JOIN (select "STID" AS "STID$acyearshort","STName" AS "STName$acyearshort","MDDS_ST" AS "MDDS_ST$acyearshort" from st$acyear where is_deleted=1) as st$acyearshort ON st$acyearshort."STID$acyearshort"=vt$acyear."STID"
+			  INNER JOIN (select "STID" AS "STID$acyearshort","STName" AS "STName$acyearshort","Status" AS "STStatus$acyearshort","MDDS_ST" AS "MDDS_ST$acyearshort" from st$acyear where is_deleted=1) as st$acyearshort ON st$acyearshort."STID$acyearshort"=vt$acyear."STID"
 			INNER JOIN (select "DTID" AS "DTID$acyearshort","DTName" AS "DTName$acyearshort","MDDS_DT" AS "MDDS_DT$acyearshort" from dt$acyear where is_deleted=1) as dt$acyearshort ON dt$acyearshort."DTID$acyearshort"=vt$acyear."DTID"
 			INNER JOIN (select "SDID" AS "SDID$acyearshort","SDName" AS "SDName$acyearshort","MDDS_SD" AS "MDDS_SD$acyearshort" from sd$acyear where is_deleted=1) as sd$acyearshort ON sd$acyearshort."SDID$acyearshort"=vt$acyear."SDID"
 			    $cond1) as vt$acyear ON frtab."VTIDACTIVE" = vt$acyear."VTID$acyearshort" 
 				
 			LEFT JOIN
-			 (select "STID$olyear","STName$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear"
+			 (select "STID$olyear","STName$olyear","STStatus$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear"
 			  ,"VTID" as "VTID$olyear","VTName" as "VTName$olyear","MDDS_VT" as "MDDS_VT$olyear","Level" as "Level$olyear","Status" as "Status$olyear" from vt$olyear 
-			  INNER JOIN (select "STID" AS "STID$olyear","STName" AS "STName$olyear","MDDS_ST" AS "MDDS_ST$olyear" from st$olyear) as st11 ON st11."STID$olyear"=vt$olyear."STID"
+			  INNER JOIN (select "STID" AS "STID$olyear","STName" AS "STName$olyear","Status" AS "STStatus$olyear","MDDS_ST" AS "MDDS_ST$olyear" from st$olyear) as st11 ON st11."STID$olyear"=vt$olyear."STID"
 			INNER JOIN (select "DTID" AS "DTID$olyear","DTName" AS "DTName$olyear","MDDS_DT" AS "MDDS_DT$olyear" from dt$olyear) as dt11 ON dt11."DTID$olyear"=vt$olyear."DTID"
 			INNER JOIN (select "SDID" AS "SDID$olyear","SDName" AS "SDName$olyear","MDDS_SD" AS "MDDS_SD$olyear" from sd$olyear) as sd11 ON sd11."SDID$olyear"=vt$olyear."SDID"
 			    $cond3) as vt$olyear ON frtab."VTIDR" = vt$olyear."VTID$olyear") AS TAB1
@@ -812,21 +1143,21 @@ else if($_POST['flag']=='DT')
 
 			SELECT * FROM (select DISTINCT ( fr$acyearshort."VTIDACTIVE"),fr$acyearshort."frids",vt$olyear.*,fr$acyearshort.frcomment,fr$acyearshort.comeaction,vt$acyear.* from forreaddata$acyear as fr$acyearshort
 			LEFT JOIN
-			 (select "STID$olyear","STName$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear"
+			 (select "STID$olyear","STName$olyear","STStatus$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear"
 			  ,"VTID" as "VTID$olyear","VTName" as "VTName$olyear","MDDS_VT" as "MDDS_VT$olyear","Level" as "Level$olyear","Status" as "Status$olyear" from vt$olyear 
-			  INNER JOIN (select "STID" AS "STID$olyear","STName" AS "STName$olyear","MDDS_ST" AS "MDDS_ST$olyear" from st$olyear) as st11 ON st11."STID$olyear"=vt$olyear."STID"
+			  INNER JOIN (select "STID" AS "STID$olyear","STName" AS "STName$olyear","Status" AS "STStatus$olyear","MDDS_ST" AS "MDDS_ST$olyear" from st$olyear) as st11 ON st11."STID$olyear"=vt$olyear."STID"
 			INNER JOIN (select "DTID" AS "DTID$olyear","DTName" AS "DTName$olyear","MDDS_DT" AS "MDDS_DT$olyear" from dt$olyear) as dt11 ON dt11."DTID$olyear"=vt$olyear."DTID"
 			INNER JOIN (select "SDID" AS "SDID$olyear","SDName" AS "SDName$olyear","MDDS_SD" AS "MDDS_SD$olyear" from sd$olyear) as sd11 ON sd11."SDID$olyear"=vt$olyear."SDID"
 			   $cond1) as vt$olyear ON fr$acyearshort."VTIDR" = vt$olyear."VTID$olyear"
 			  
 			  LEFT JOIN
-			 (select "STID$acyearshort","STName$acyearshort","MDDS_ST$acyearshort","DTID$acyearshort","DTName$acyearshort","MDDS_DT$acyearshort","SDID$acyearshort","SDName$acyearshort","MDDS_SD$acyearshort"
+			 (select "STID$acyearshort","STName$acyearshort", "STStatus$acyearshort","MDDS_ST$acyearshort","DTID$acyearshort","DTName$acyearshort","MDDS_DT$acyearshort","SDID$acyearshort","SDName$acyearshort","MDDS_SD$acyearshort"
 			  ,"VTID" as "VTID$acyearshort","VTName" as "VTName$acyearshort","MDDS_VT" as "MDDS_VT$acyearshort","Level" as "Level$acyearshort","Status" as "Status$acyearshort","is_deleted" from vt$acyear 
-			  INNER JOIN (select "STID" AS "STID$acyearshort","STName" AS "STName$acyearshort","MDDS_ST" AS "MDDS_ST$acyearshort" from st$acyear) as st$acyearshort ON st$acyearshort."STID$acyearshort"=vt$acyear."STID"
+			  INNER JOIN (select "STID" AS "STID$acyearshort","STName" AS "STName$acyearshort","Status" AS "STStatus$acyearshort","MDDS_ST" AS "MDDS_ST$acyearshort" from st$acyear) as st$acyearshort ON st$acyearshort."STID$acyearshort"=vt$acyear."STID"
 			INNER JOIN (select "DTID" AS "DTID$acyearshort","DTName" AS "DTName$acyearshort","MDDS_DT" AS "MDDS_DT$acyearshort" from dt$acyear) as dt$acyearshort ON dt$acyearshort."DTID$acyearshort"=vt$acyear."DTID"
 			INNER JOIN (select "SDID" AS "SDID$acyearshort","SDName" AS "SDName$acyearshort","MDDS_SD" AS "MDDS_SD$acyearshort" from sd$acyear) as sd$acyearshort ON sd$acyearshort."SDID$acyearshort"=vt$acyear."SDID"
 			   $cond1) as vt$acyear ON fr$acyearshort."VTIDACTIVE" = vt$acyear."VTID$acyearshort"
-			   WHERE fr$acyearshort."VTIDACTIVE"!=0   $cond AND fr$acyearshort."VTIDACTIVE"!=fr$acyearshort."VTID"  ORDER BY "VTIDACTIVE", "frids" DESC) AS TAB2
+			   WHERE fr$acyearshort."VTIDACTIVE"!=0   $cond AND fr$acyearshort."VTIDACTIVE"!=fr$acyearshort."VTIDR"  ORDER BY "VTIDACTIVE", "frids" DESC) AS TAB2
 
 			    
 			 ) temp
@@ -937,17 +1268,18 @@ else if($_POST['flag']=='DT')
 			array( 'db' => '"STID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 0,'db1' => 'STID'.$_SESSION['logindetails']['baseyear'].''),
 			array( 'db' => '"MDDS_ST'.$_SESSION['logindetails']['baseyear'].'"','dt' => 1,'db1' => 'MDDS_ST'.$_SESSION['logindetails']['baseyear'].''),
 			array( 'db' => '"STName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 2,'db1' => 'STName'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"DTID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 3,'db1' => 'DTID'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"MDDS_DT'.$_SESSION['logindetails']['baseyear'].'"','dt' => 4,'db1' => 'MDDS_DT'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"DTName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 5,'db1' => 'DTName'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"SDID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 6,'db1' => 'SDID'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"MDDS_SD'.$_SESSION['logindetails']['baseyear'].'"','dt' => 7,'db1' => 'MDDS_SD'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"SDName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 8,'db1' => 'SDName'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"MDDS_VT'.$_SESSION['logindetails']['baseyear'].'"','dt' => 9,'db1' => 'MDDS_VT'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"VTName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 10,'db1' => 'VTName'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"Level'.$_SESSION['logindetails']['baseyear'].'"','dt' => 11,'db1' => 'Level'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"STStatus'.$_SESSION['logindetails']['baseyear'].'"','dt' => 3,'db1' => 'STStatus'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"DTID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 4,'db1' => 'DTID'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"MDDS_DT'.$_SESSION['logindetails']['baseyear'].'"','dt' => 5,'db1' => 'MDDS_DT'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"DTName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 6,'db1' => 'DTName'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"SDID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 7,'db1' => 'SDID'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"MDDS_SD'.$_SESSION['logindetails']['baseyear'].'"','dt' => 8,'db1' => 'MDDS_SD'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"SDName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 9,'db1' => 'SDName'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"MDDS_VT'.$_SESSION['logindetails']['baseyear'].'"','dt' => 10,'db1' => 'MDDS_VT'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"VTName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 11,'db1' => 'VTName'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"Level'.$_SESSION['logindetails']['baseyear'].'"','dt' => 12,'db1' => 'Level'.$_SESSION['logindetails']['baseyear'].''),
 			// array( 'db' => '"Status'.$_SESSION['logindetails']['baseyear'].'"','dt' => 12,'db1' => 'Status'.$_SESSION['logindetails']['baseyear'].''),
-			 array( 'db' => '"Status'.$_SESSION['logindetails']['baseyear'].'"', 'dt' => 12,'db1' => 'Status'.$_SESSION['logindetails']['baseyear'].'',
+			 array( 'db' => '"Status'.$_SESSION['logindetails']['baseyear'].'"', 'dt' => 13,'db1' => 'Status'.$_SESSION['logindetails']['baseyear'].'',
                 'formatter' => function( $d, $row ) {
                 if (!is_null($d) && $d=='Village')
              	{
@@ -961,10 +1293,10 @@ else if($_POST['flag']=='DT')
                 } ),
 			 
 
-			array( 'db' => '"VTID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 13,'db1' => 'VTID'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"VTID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 14,'db1' => 'VTID'.$_SESSION['logindetails']['baseyear'].''),
 			
-			array( 'db' => '"STID'.$acyearshort.'"','dt' => 14,'db1' => 'STID'.$acyearshort.''),
-			 array( 'db' => '"MDDS_ST'.$acyearshort.'"', 'dt' => 15,'db1' => 'MDDS_ST'.$acyearshort.'',
+			array( 'db' => '"STID'.$acyearshort.'"','dt' => 15,'db1' => 'STID'.$acyearshort.''),
+			 array( 'db' => '"MDDS_ST'.$acyearshort.'"', 'dt' => 16,'db1' => 'MDDS_ST'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -978,7 +1310,7 @@ else if($_POST['flag']=='DT')
              	}
                 
                 } ),
-			 array( 'db' => '"STName'.$acyearshort.'"', 'dt' => 16,'db1' => 'STName'.$acyearshort.'',
+			 array( 'db' => '"STName'.$acyearshort.'"', 'dt' => 17,'db1' => 'STName'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -993,10 +1325,26 @@ else if($_POST['flag']=='DT')
                 
                 } ),
 
+				
+				array( 'db' => '"STStatus'.$acyearshort.'"', 'dt' => 18,'db1' => 'STStatus'.$acyearshort.'',
+				'formatter' => function( $d, $row ) {
+					
+					//  print_r($row['is_deleted']);
+				if ($row['is_deleted']==0)
+				{
+					return '';
+				}
+				else
+				{
+				return $d;	
+				}
+				
+				} ),
+
 			// array( 'db' => '"MDDS_ST'.$acyearshort.'"','dt' => 15,'db1' => 'MDDS_ST'.$acyearshort.''),
 			// array( 'db' => '"STName'.$acyearshort.'"','dt' => 16,'db1' => 'STName'.$acyearshort.''),
-			array( 'db' => '"DTID'.$acyearshort.'"','dt' => 17,'db1' => 'DTID'.$acyearshort.''),
-			array( 'db' => '"MDDS_DT'.$acyearshort.'"', 'dt' => 18,'db1' => 'MDDS_DT'.$acyearshort.'',
+			array( 'db' => '"DTID'.$acyearshort.'"','dt' => 19,'db1' => 'DTID'.$acyearshort.''),
+			array( 'db' => '"MDDS_DT'.$acyearshort.'"', 'dt' => 20,'db1' => 'MDDS_DT'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -1010,7 +1358,7 @@ else if($_POST['flag']=='DT')
              	}
                 
                 } ),
-			array( 'db' => '"DTName'.$acyearshort.'"', 'dt' => 19,'db1' => 'DTName'.$acyearshort.'',
+			array( 'db' => '"DTName'.$acyearshort.'"', 'dt' => 21,'db1' => 'DTName'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -1026,8 +1374,8 @@ else if($_POST['flag']=='DT')
                 } ),
 			// array( 'db' => '"MDDS_DT'.$acyearshort.'"','dt' => 18,'db1' => 'MDDS_DT'.$acyearshort.''),
 			// array( 'db' => '"DTName'.$acyearshort.'"','dt' => 19,'db1' => 'DTName'.$acyearshort.''),
-			array( 'db' => '"SDID'.$acyearshort.'"','dt' => 20,'db1' => 'SDID'.$acyearshort.''),
-			array( 'db' => '"MDDS_SD'.$acyearshort.'"', 'dt' => 21,'db1' => 'MDDS_SD'.$acyearshort.'',
+			array( 'db' => '"SDID'.$acyearshort.'"','dt' => 22,'db1' => 'SDID'.$acyearshort.''),
+			array( 'db' => '"MDDS_SD'.$acyearshort.'"', 'dt' => 23,'db1' => 'MDDS_SD'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -1041,7 +1389,7 @@ else if($_POST['flag']=='DT')
              	}
                 
                 } ),
-			array( 'db' => '"SDName'.$acyearshort.'"', 'dt' => 22,'db1' => 'SDName'.$acyearshort.'',
+			array( 'db' => '"SDName'.$acyearshort.'"', 'dt' => 24,'db1' => 'SDName'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -1057,8 +1405,8 @@ else if($_POST['flag']=='DT')
                 } ),
 			// array( 'db' => '"MDDS_SD'.$acyearshort.'"','dt' => 21,'db1' => 'MDDS_SD'.$acyearshort.''),
 			// array( 'db' => '"SDName'.$acyearshort.'"','dt' => 22,'db1' => 'SDName'.$acyearshort.''),
-			array( 'db' => '"MDDS_VT'.$acyearshort.'"','dt' => 23,'db1' => 'MDDS_VT'.$acyearshort.''),
-			array( 'db' => '"VTName'.$acyearshort.'"', 'dt' => 24,'db1' => 'VTName'.$acyearshort.'',
+			array( 'db' => '"MDDS_VT'.$acyearshort.'"','dt' => 25,'db1' => 'MDDS_VT'.$acyearshort.''),
+			array( 'db' => '"VTName'.$acyearshort.'"', 'dt' => 26,'db1' => 'VTName'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -1072,7 +1420,7 @@ else if($_POST['flag']=='DT')
              	}
                 
                 } ),
-			array( 'db' => '"Level'.$acyearshort.'"', 'dt' => 25,'db1' => 'Level'.$acyearshort.'',
+			array( 'db' => '"Level'.$acyearshort.'"', 'dt' => 27,'db1' => 'Level'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -1086,7 +1434,7 @@ else if($_POST['flag']=='DT')
              	}
                 
                 } ),
-			array( 'db' => '"Status'.$acyearshort.'"', 'dt' => 26,'db1' => 'Status'.$acyearshort.'',
+			array( 'db' => '"Status'.$acyearshort.'"', 'dt' => 28,'db1' => 'Status'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -1104,9 +1452,9 @@ else if($_POST['flag']=='DT')
 			// array( 'db' => '"VTName'.$acyearshort.'"','dt' => 24,'db1' => 'VTName'.$acyearshort.''),
 			//array( 'db' => '"Level'.$acyearshort.'"','dt' => 25,'db1' => 'Level'.$acyearshort.''),
 			// array( 'db' => '"Status'.$acyearshort.'"','dt' => 26,'db1' => 'Status'.$acyearshort.''),
-			array( 'db' => '"VTID'.$acyearshort.'"','dt' => 27,'db1' => 'VTID'.$acyearshort.''),
-			array( 'db' => '"VTID'.$acyearshort.'"','dt' => 28,'db1' => 'VTID'.$acyearshort.''),
-			array( 'db' => '"is_deleted"','dt' => 29,'db1' => 'is_deleted'),
+			array( 'db' => '"VTID'.$acyearshort.'"','dt' => 29,'db1' => 'VTID'.$acyearshort.''),
+			array( 'db' => '"VTID'.$acyearshort.'"','dt' => 30,'db1' => 'VTID'.$acyearshort.''),
+			array( 'db' => '"is_deleted"','dt' => 31,'db1' => 'is_deleted'),
 		
 
 			);
@@ -1207,13 +1555,18 @@ else if($_POST['flag']=='SD')
 			$table = <<<EOT
 			 (
 
-			SELECT * FROM (select "VTIDACTIVE","frids","STID$olyear","STName$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear",
+			SELECT * FROM (select "VTIDACTIVE","frids","STID$olyear","STName$olyear","STStatus$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear",
 			"VTID$olyear","VTName$olyear","MDDS_VT$olyear","Level$olyear","Status$olyear","frcomment","comeaction","STID$acyearshort"
 						
 						,CASE
 			            WHEN "frfromaction"='Sub-Merge'  THEN ''
 			            ELSE "STName$acyearshort"
 			       		END AS "STName$acyearshort"
+
+						 ,CASE
+						 WHEN "frfromaction"='Sub-Merge'  THEN ''
+						 ELSE "STStatus$acyearshort"
+						 END AS "STStatus$acyearshort"
 
 			       		,CASE
 			            WHEN "frfromaction"='Sub-Merge'  THEN ''
@@ -1272,17 +1625,17 @@ else if($_POST['flag']=='SD')
 						   
 						    WHERE fr$acyearshort."VTIDACTIVE"!=0  AND fr$acyearshort."VTIDACTIVE"=fr$acyearshort."VTIDR" $cond AND fr$acyearshort."VTIDACTIVE"=fr$acyearshort."VTID"   ORDER BY "VTIDACTIVE", "frids" DESC) as frtab
 						 INNER JOIN
-			 (select "STID$acyearshort","STName$acyearshort","MDDS_ST$acyearshort","DTID$acyearshort","DTName$acyearshort","MDDS_DT$acyearshort","SDID$acyearshort","SDName$acyearshort","MDDS_SD$acyearshort"
+			 (select "STID$acyearshort","STName$acyearshort","STStatus$acyearshort","MDDS_ST$acyearshort","DTID$acyearshort","DTName$acyearshort","MDDS_DT$acyearshort","SDID$acyearshort","SDName$acyearshort","MDDS_SD$acyearshort"
 			  ,"VTID" as "VTID$acyearshort","VTName" as "VTName$acyearshort","MDDS_VT" as "MDDS_VT$acyearshort","Level" as "Level$acyearshort","Status" as "Status$acyearshort","is_deleted" from vt$acyear 
-			  INNER JOIN (select "STID" AS "STID$acyearshort","STName" AS "STName$acyearshort","MDDS_ST" AS "MDDS_ST$acyearshort" from st$acyear where is_deleted=1) as st$acyearshort ON st$acyearshort."STID$acyearshort"=vt$acyear."STID"
+			  INNER JOIN (select "STID" AS "STID$acyearshort","STName" AS "STName$acyearshort","Status" AS "STStatus$acyearshort","MDDS_ST" AS "MDDS_ST$acyearshort" from st$acyear where is_deleted=1) as st$acyearshort ON st$acyearshort."STID$acyearshort"=vt$acyear."STID"
 			INNER JOIN (select "DTID" AS "DTID$acyearshort","DTName" AS "DTName$acyearshort","MDDS_DT" AS "MDDS_DT$acyearshort" from dt$acyear where is_deleted=1) as dt$acyearshort ON dt$acyearshort."DTID$acyearshort"=vt$acyear."DTID"
 			INNER JOIN (select "SDID" AS "SDID$acyearshort","SDName" AS "SDName$acyearshort","MDDS_SD" AS "MDDS_SD$acyearshort" from sd$acyear where is_deleted=1) as sd$acyearshort ON sd$acyearshort."SDID$acyearshort"=vt$acyear."SDID"
 			    $cond1) as vt$acyear ON frtab."VTIDACTIVE" = vt$acyear."VTID$acyearshort" 
 				
 			LEFT JOIN
-			 (select "STID$olyear","STName$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear"
+			 (select "STID$olyear","STName$olyear","STStatus$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear"
 			  ,"VTID" as "VTID$olyear","VTName" as "VTName$olyear","MDDS_VT" as "MDDS_VT$olyear","Level" as "Level$olyear","Status" as "Status$olyear" from vt$olyear 
-			  INNER JOIN (select "STID" AS "STID$olyear","STName" AS "STName$olyear","MDDS_ST" AS "MDDS_ST$olyear" from st$olyear) as st11 ON st11."STID$olyear"=vt$olyear."STID"
+			  INNER JOIN (select "STID" AS "STID$olyear","STName" AS "STName$olyear","Status" AS "STStatus$olyear","MDDS_ST" AS "MDDS_ST$olyear" from st$olyear) as st11 ON st11."STID$olyear"=vt$olyear."STID"
 			INNER JOIN (select "DTID" AS "DTID$olyear","DTName" AS "DTName$olyear","MDDS_DT" AS "MDDS_DT$olyear" from dt$olyear) as dt11 ON dt11."DTID$olyear"=vt$olyear."DTID"
 			INNER JOIN (select "SDID" AS "SDID$olyear","SDName" AS "SDName$olyear","MDDS_SD" AS "MDDS_SD$olyear" from sd$olyear) as sd11 ON sd11."SDID$olyear"=vt$olyear."SDID"
 			    $cond3) as vt$olyear ON frtab."VTIDR" = vt$olyear."VTID$olyear") AS TAB1
@@ -1291,21 +1644,21 @@ else if($_POST['flag']=='SD')
 
 			SELECT * FROM (select DISTINCT ( fr$acyearshort."VTIDACTIVE"),fr$acyearshort."frids",vt$olyear.*,fr$acyearshort.frcomment,fr$acyearshort.comeaction,vt$acyear.* from forreaddata$acyear as fr$acyearshort
 			LEFT JOIN
-			 (select "STID$olyear","STName$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear"
+			 (select "STID$olyear","STName$olyear","STStatus$olyear","MDDS_ST$olyear","DTID$olyear","DTName$olyear","MDDS_DT$olyear","SDID$olyear","SDName$olyear","MDDS_SD$olyear"
 			  ,"VTID" as "VTID$olyear","VTName" as "VTName$olyear","MDDS_VT" as "MDDS_VT$olyear","Level" as "Level$olyear","Status" as "Status$olyear" from vt$olyear 
-			  INNER JOIN (select "STID" AS "STID$olyear","STName" AS "STName$olyear","MDDS_ST" AS "MDDS_ST$olyear" from st$olyear) as st11 ON st11."STID$olyear"=vt$olyear."STID"
+			  INNER JOIN (select "STID" AS "STID$olyear","STName" AS "STName$olyear","Status" AS "STStatus$olyear","MDDS_ST" AS "MDDS_ST$olyear" from st$olyear) as st11 ON st11."STID$olyear"=vt$olyear."STID"
 			INNER JOIN (select "DTID" AS "DTID$olyear","DTName" AS "DTName$olyear","MDDS_DT" AS "MDDS_DT$olyear" from dt$olyear) as dt11 ON dt11."DTID$olyear"=vt$olyear."DTID"
 			INNER JOIN (select "SDID" AS "SDID$olyear","SDName" AS "SDName$olyear","MDDS_SD" AS "MDDS_SD$olyear" from sd$olyear) as sd11 ON sd11."SDID$olyear"=vt$olyear."SDID"
 			   $cond1) as vt$olyear ON fr$acyearshort."VTIDR" = vt$olyear."VTID$olyear"
 			  
 			  LEFT JOIN
-			 (select "STID$acyearshort","STName$acyearshort","MDDS_ST$acyearshort","DTID$acyearshort","DTName$acyearshort","MDDS_DT$acyearshort","SDID$acyearshort","SDName$acyearshort","MDDS_SD$acyearshort"
+			 (select "STID$acyearshort","STName$acyearshort","STStatus$acyearshort","MDDS_ST$acyearshort","DTID$acyearshort","DTName$acyearshort","MDDS_DT$acyearshort","SDID$acyearshort","SDName$acyearshort","MDDS_SD$acyearshort"
 			  ,"VTID" as "VTID$acyearshort","VTName" as "VTName$acyearshort","MDDS_VT" as "MDDS_VT$acyearshort","Level" as "Level$acyearshort","Status" as "Status$acyearshort","is_deleted" from vt$acyear 
-			  INNER JOIN (select "STID" AS "STID$acyearshort","STName" AS "STName$acyearshort","MDDS_ST" AS "MDDS_ST$acyearshort" from st$acyear) as st$acyearshort ON st$acyearshort."STID$acyearshort"=vt$acyear."STID"
+			  INNER JOIN (select "STID" AS "STID$acyearshort","STName" AS "STName$acyearshort","Status" AS "STStatus$acyearshort","MDDS_ST" AS "MDDS_ST$acyearshort" from st$acyear) as st$acyearshort ON st$acyearshort."STID$acyearshort"=vt$acyear."STID"
 			INNER JOIN (select "DTID" AS "DTID$acyearshort","DTName" AS "DTName$acyearshort","MDDS_DT" AS "MDDS_DT$acyearshort" from dt$acyear) as dt$acyearshort ON dt$acyearshort."DTID$acyearshort"=vt$acyear."DTID"
 			INNER JOIN (select "SDID" AS "SDID$acyearshort","SDName" AS "SDName$acyearshort","MDDS_SD" AS "MDDS_SD$acyearshort" from sd$acyear) as sd$acyearshort ON sd$acyearshort."SDID$acyearshort"=vt$acyear."SDID"
 			   $cond1) as vt$acyear ON fr$acyearshort."VTIDACTIVE" = vt$acyear."VTID$acyearshort"
-			   WHERE fr$acyearshort."VTIDACTIVE"!=0   $cond AND fr$acyearshort."VTIDACTIVE"!=fr$acyearshort."VTID"  ORDER BY "VTIDACTIVE", "frids" DESC) AS TAB2
+			   WHERE fr$acyearshort."VTIDACTIVE"!=0   $cond AND fr$acyearshort."VTIDACTIVE"!=fr$acyearshort."VTIDR"  ORDER BY "VTIDACTIVE", "frids" DESC) AS TAB2
 
 			    
 			 ) temp
@@ -1315,17 +1668,18 @@ else if($_POST['flag']=='SD')
 			array( 'db' => '"STID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 0,'db1' => 'STID'.$_SESSION['logindetails']['baseyear'].''),
 			array( 'db' => '"MDDS_ST'.$_SESSION['logindetails']['baseyear'].'"','dt' => 1,'db1' => 'MDDS_ST'.$_SESSION['logindetails']['baseyear'].''),
 			array( 'db' => '"STName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 2,'db1' => 'STName'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"DTID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 3,'db1' => 'DTID'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"MDDS_DT'.$_SESSION['logindetails']['baseyear'].'"','dt' => 4,'db1' => 'MDDS_DT'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"DTName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 5,'db1' => 'DTName'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"SDID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 6,'db1' => 'SDID'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"MDDS_SD'.$_SESSION['logindetails']['baseyear'].'"','dt' => 7,'db1' => 'MDDS_SD'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"SDName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 8,'db1' => 'SDName'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"MDDS_VT'.$_SESSION['logindetails']['baseyear'].'"','dt' => 9,'db1' => 'MDDS_VT'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"VTName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 10,'db1' => 'VTName'.$_SESSION['logindetails']['baseyear'].''),
-			array( 'db' => '"Level'.$_SESSION['logindetails']['baseyear'].'"','dt' => 11,'db1' => 'Level'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"STStatus'.$_SESSION['logindetails']['baseyear'].'"','dt' => 3,'db1' => 'STStatus'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"DTID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 4,'db1' => 'DTID'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"MDDS_DT'.$_SESSION['logindetails']['baseyear'].'"','dt' => 5,'db1' => 'MDDS_DT'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"DTName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 6,'db1' => 'DTName'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"SDID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 7,'db1' => 'SDID'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"MDDS_SD'.$_SESSION['logindetails']['baseyear'].'"','dt' => 8,'db1' => 'MDDS_SD'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"SDName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 9,'db1' => 'SDName'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"MDDS_VT'.$_SESSION['logindetails']['baseyear'].'"','dt' => 10,'db1' => 'MDDS_VT'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"VTName'.$_SESSION['logindetails']['baseyear'].'"','dt' => 11,'db1' => 'VTName'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"Level'.$_SESSION['logindetails']['baseyear'].'"','dt' => 12,'db1' => 'Level'.$_SESSION['logindetails']['baseyear'].''),
 			// array( 'db' => '"Status'.$_SESSION['logindetails']['baseyear'].'"','dt' => 12,'db1' => 'Status'.$_SESSION['logindetails']['baseyear'].''),
-			 array( 'db' => '"Status'.$_SESSION['logindetails']['baseyear'].'"', 'dt' => 12,'db1' => 'Status'.$_SESSION['logindetails']['baseyear'].'',
+			 array( 'db' => '"Status'.$_SESSION['logindetails']['baseyear'].'"', 'dt' => 13,'db1' => 'Status'.$_SESSION['logindetails']['baseyear'].'',
                 'formatter' => function( $d, $row ) {
                 if (!is_null($d) && $d=='Village')
              	{
@@ -1339,10 +1693,10 @@ else if($_POST['flag']=='SD')
                 } ),
 			 
 
-			array( 'db' => '"VTID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 13,'db1' => 'VTID'.$_SESSION['logindetails']['baseyear'].''),
+			array( 'db' => '"VTID'.$_SESSION['logindetails']['baseyear'].'"','dt' => 14,'db1' => 'VTID'.$_SESSION['logindetails']['baseyear'].''),
 			
-			array( 'db' => '"STID'.$acyearshort.'"','dt' => 14,'db1' => 'STID'.$acyearshort.''),
-			 array( 'db' => '"MDDS_ST'.$acyearshort.'"', 'dt' => 15,'db1' => 'MDDS_ST'.$acyearshort.'',
+			array( 'db' => '"STID'.$acyearshort.'"','dt' => 15,'db1' => 'STID'.$acyearshort.''),
+			 array( 'db' => '"MDDS_ST'.$acyearshort.'"', 'dt' => 16,'db1' => 'MDDS_ST'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -1356,7 +1710,7 @@ else if($_POST['flag']=='SD')
              	}
                 
                 } ),
-			 array( 'db' => '"STName'.$acyearshort.'"', 'dt' => 16,'db1' => 'STName'.$acyearshort.'',
+			 array( 'db' => '"STName'.$acyearshort.'"', 'dt' => 17,'db1' => 'STName'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -1371,10 +1725,25 @@ else if($_POST['flag']=='SD')
                 
                 } ),
 
+				array( 'db' => '"STStatus'.$acyearshort.'"', 'dt' => 18,'db1' => 'STStatus'.$acyearshort.'',
+				'formatter' => function( $d, $row ) {
+					
+					//  print_r($row['is_deleted']);
+				if ($row['is_deleted']==0)
+				{
+					return '';
+				}
+				else
+				{
+				return $d;	
+				}
+				
+				} ),
+
 			// array( 'db' => '"MDDS_ST'.$acyearshort.'"','dt' => 15,'db1' => 'MDDS_ST'.$acyearshort.''),
 			// array( 'db' => '"STName'.$acyearshort.'"','dt' => 16,'db1' => 'STName'.$acyearshort.''),
-			array( 'db' => '"DTID'.$acyearshort.'"','dt' => 17,'db1' => 'DTID'.$acyearshort.''),
-			array( 'db' => '"MDDS_DT'.$acyearshort.'"', 'dt' => 18,'db1' => 'MDDS_DT'.$acyearshort.'',
+			array( 'db' => '"DTID'.$acyearshort.'"','dt' => 19,'db1' => 'DTID'.$acyearshort.''),
+			array( 'db' => '"MDDS_DT'.$acyearshort.'"', 'dt' => 20,'db1' => 'MDDS_DT'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -1388,7 +1757,7 @@ else if($_POST['flag']=='SD')
              	}
                 
                 } ),
-			array( 'db' => '"DTName'.$acyearshort.'"', 'dt' => 19,'db1' => 'DTName'.$acyearshort.'',
+			array( 'db' => '"DTName'.$acyearshort.'"', 'dt' => 21,'db1' => 'DTName'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -1404,8 +1773,8 @@ else if($_POST['flag']=='SD')
                 } ),
 			// array( 'db' => '"MDDS_DT'.$acyearshort.'"','dt' => 18,'db1' => 'MDDS_DT'.$acyearshort.''),
 			// array( 'db' => '"DTName'.$acyearshort.'"','dt' => 19,'db1' => 'DTName'.$acyearshort.''),
-			array( 'db' => '"SDID'.$acyearshort.'"','dt' => 20,'db1' => 'SDID'.$acyearshort.''),
-			array( 'db' => '"MDDS_SD'.$acyearshort.'"', 'dt' => 21,'db1' => 'MDDS_SD'.$acyearshort.'',
+			array( 'db' => '"SDID'.$acyearshort.'"','dt' => 22,'db1' => 'SDID'.$acyearshort.''),
+			array( 'db' => '"MDDS_SD'.$acyearshort.'"', 'dt' => 23,'db1' => 'MDDS_SD'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -1419,7 +1788,7 @@ else if($_POST['flag']=='SD')
              	}
                 
                 } ),
-			array( 'db' => '"SDName'.$acyearshort.'"', 'dt' => 22,'db1' => 'SDName'.$acyearshort.'',
+			array( 'db' => '"SDName'.$acyearshort.'"', 'dt' => 24,'db1' => 'SDName'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -1435,8 +1804,8 @@ else if($_POST['flag']=='SD')
                 } ),
 			// array( 'db' => '"MDDS_SD'.$acyearshort.'"','dt' => 21,'db1' => 'MDDS_SD'.$acyearshort.''),
 			// array( 'db' => '"SDName'.$acyearshort.'"','dt' => 22,'db1' => 'SDName'.$acyearshort.''),
-			array( 'db' => '"MDDS_VT'.$acyearshort.'"','dt' => 23,'db1' => 'MDDS_VT'.$acyearshort.''),
-			array( 'db' => '"VTName'.$acyearshort.'"', 'dt' => 24,'db1' => 'VTName'.$acyearshort.'',
+			array( 'db' => '"MDDS_VT'.$acyearshort.'"','dt' => 25,'db1' => 'MDDS_VT'.$acyearshort.''),
+			array( 'db' => '"VTName'.$acyearshort.'"', 'dt' => 26,'db1' => 'VTName'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -1450,7 +1819,7 @@ else if($_POST['flag']=='SD')
              	}
                 
                 } ),
-			array( 'db' => '"Level'.$acyearshort.'"', 'dt' => 25,'db1' => 'Level'.$acyearshort.'',
+			array( 'db' => '"Level'.$acyearshort.'"', 'dt' => 27,'db1' => 'Level'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -1464,7 +1833,7 @@ else if($_POST['flag']=='SD')
              	}
                 
                 } ),
-			array( 'db' => '"Status'.$acyearshort.'"', 'dt' => 26,'db1' => 'Status'.$acyearshort.'',
+			array( 'db' => '"Status'.$acyearshort.'"', 'dt' => 28,'db1' => 'Status'.$acyearshort.'',
                 'formatter' => function( $d, $row ) {
                 	
                 	//  print_r($row['is_deleted']);
@@ -1482,12 +1851,13 @@ else if($_POST['flag']=='SD')
 			// array( 'db' => '"VTName'.$acyearshort.'"','dt' => 24,'db1' => 'VTName'.$acyearshort.''),
 			//array( 'db' => '"Level'.$acyearshort.'"','dt' => 25,'db1' => 'Level'.$acyearshort.''),
 			// array( 'db' => '"Status'.$acyearshort.'"','dt' => 26,'db1' => 'Status'.$acyearshort.''),
-			array( 'db' => '"VTID'.$acyearshort.'"','dt' => 27,'db1' => 'VTID'.$acyearshort.''),
-			array( 'db' => '"VTID'.$acyearshort.'"','dt' => 28,'db1' => 'VTID'.$acyearshort.''),
-			array( 'db' => '"is_deleted"','dt' => 29,'db1' => 'is_deleted'),
+			array( 'db' => '"VTID'.$acyearshort.'"','dt' => 29,'db1' => 'VTID'.$acyearshort.''),
+			array( 'db' => '"VTID'.$acyearshort.'"','dt' => 30,'db1' => 'VTID'.$acyearshort.''),
+			array( 'db' => '"is_deleted"','dt' => 31,'db1' => 'is_deleted'),
 		
 
 			);
+
 }
 else if($_POST['flag']=='VT')
 {
@@ -2642,7 +3012,7 @@ else if($_POST['formname']=='get_all_remarks' ) {
 	if($_SESSION['logindetails']['assignlist']!='')
 	{
 			// $cond = 'AND "STIDACTIVE"='.$_SESSION['logindetails']['assignlist'].'';
-	$cond = ' "STIDACTIVE"='.$_SESSION['logindetails']['assignlist'].'';
+	$cond = 'AND "STIDACTIVE"='.$_SESSION['logindetails']['assignlist'].'';
 	}
 	else
 	{
@@ -2651,22 +3021,48 @@ else if($_POST['formname']=='get_all_remarks' ) {
 
 	
 
-	$st2011 = trim($dataof[0]);
-	$dt2011 = trim($dataof[3]);
-	$sd2011 = trim($dataof[6]);
-	$vt2011 = trim($dataof[13]);
-	$is_deleted = trim($dataof[29]);
+	// $st2011 = trim($dataof[0]);
+	// $dt2011 = trim($dataof[3]);
+	// $sd2011 = trim($dataof[6]);
+	// $vt2011 = trim($dataof[13]);
+	// $is_deleted = trim($dataof[29]);
 
-	$st2021 = trim($dataof[14]);
-	$st2021new = trim($dataof[15]);
-	$dt2021 = trim($dataof[17]);
-	$dt2021new = trim($dataof[18]);
-	$sd2021 = trim($dataof[20]);
-	$sd2021new = trim($dataof[21]);
-	$vt2021 = trim($dataof[27]);
-
+	// $st2021 = trim($dataof[14]);
+	// $st2021new = trim($dataof[15]);
+	// $dt2021 = trim($dataof[17]);
+	// $dt2021new = trim($dataof[18]);
+	// $sd2021 = trim($dataof[20]);
+	// $sd2021new = trim($dataof[21]);
+	// $vt2021 = trim($dataof[27]);
 
  // print_r($dataof);
+	//  $st2011 = trim($dataof[0]);
+    // $dt2011 = trim($dataof[4]);
+    // $sd2011 = trim($dataof[7]);
+    // $vt2011 = trim($dataof[14]);
+    // $is_deleted = trim($dataof[31]);
+    // $st2021 = trim($dataof[15]);
+    // $st2021new = trim($dataof[16]);
+    // $dt2021 = trim($dataof[18]);
+    // $dt2021new = trim($dataof[20]);
+    // $sd2021 = trim($dataof[22]);
+    // $sd2021new = trim($dataof[23]);
+    // $vt2021 = trim($dataof[29]);
+
+		$st2011 = trim($dataof[0]);
+		$dt2011 = trim($dataof[4]);
+		$sd2011 = trim($dataof[7]);
+		$vt2011 = trim($dataof[14]);
+		$is_deleted = trim($dataof[31]);
+		$st2021 = trim($dataof[15]);
+		$st2021new = trim($dataof[17]);
+		$dt2021 = trim($dataof[19]);
+		$dt2021new = trim($dataof[21]);
+		$sd2021 = trim($dataof[22]);
+		$sd2021new = trim($dataof[24]);
+		$vt2021 = trim($dataof[29]);
+
+ 
 
  $cond='';
  if($st2021!='')
@@ -2683,10 +3079,11 @@ else if($_POST['formname']=='get_all_remarks' ) {
 	}
 	// Sl 22
 	$cond2 = '';
-	if($vt2011!=''&& $vt2011='' )
+	if($vt2011!='' )
 	{
 		$cond2 = ' AND "VTIDR"='.$vt2011.'';
 		$condd = ' AND "VTIDR"='.$vt2021.'';
+		$cond8 = ' AND "VTID"='.$vt2011.'';
 	}
 
 
@@ -2777,7 +3174,7 @@ else if($_POST['formname']=='get_all_remarks' ) {
 				LEFT JOIN admin_login 
 				ON admin_login."id"=forreaddata2021."created_by"  
 				INNER JOIN (select "docids","docstid","docnotification" from documentdata2021) as dc21 ON  forreaddata2021."frdocids"=dc21."docids"
-				where '.$cond.' '.$cond1.' '.$cond2.' 
+				where '.$cond.' '.$cond1.' '.$cond2.' '.$cond8.' 
 				UNION ALL
 				select DISTINCT (forreaddata2021."DTIDACTIVE") AS "DTIDACTIVE",forreaddata2021."frfromids",forreaddata2021."frdocids"
 				,to_char(created_date at time zone \'utc\' at time zone \'Asia/Kolkata\', \'dd-mm-yyyy HH24:MI:SS\') AS createddate,forreaddata2021."created_by",forreaddata2021."frcomment"
@@ -2786,7 +3183,7 @@ else if($_POST['formname']=='get_all_remarks' ) {
 				ON admin_login."id"=forreaddata2021."created_by"  
 				INNER JOIN (select "docids","docstid","docnotification" from documentdata2021) as dc21 ON  forreaddata2021."frdocids"=dc21."docids"
 
-				INNER JOIN (select "STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE" from forreaddata2021 where  '.$cond.' '.$cond1.' '.$cond2.' ) as vt
+				INNER JOIN (select "STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE" from forreaddata2021 where  '.$cond.' '.$cond1.' '.$cond2.' '.$cond8.' ) as vt
 				ON forreaddata2021."STIDACTIVE"=vt."STIDACTIVE" AND (forreaddata2021."frfromids"=vt."VTIDACTIVE")';
 	
 			}
@@ -2818,7 +3215,7 @@ else if($_POST['formname']=='get_all_remarks' ) {
 				LEFT JOIN admin_login 
 				ON admin_login."id"=forreaddata2021."created_by"  
 				INNER JOIN (select "docids","docstid","docnotification" from documentdata2021) as dc21 ON  forreaddata2021."frdocids"=dc21."docids"
-				where '.$cond.' '.$cond1.' '.$cond2.'
+				where '.$cond.' '.$cond1.' '.$cond2.' '.$cond8.'
 				UNION ALL
 				select DISTINCT (forreaddata2021."DTIDACTIVE") AS "DTIDACTIVE",forreaddata2021."frfromids",forreaddata2021."frdocids"
 				,to_char(created_date at time zone \'utc\' at time zone \'Asia/Kolkata\', \'dd-mm-yyyy HH24:MI:SS\') AS createddate,forreaddata2021."created_by",forreaddata2021."frcomment"
@@ -2827,7 +3224,7 @@ else if($_POST['formname']=='get_all_remarks' ) {
 				ON admin_login."id"=forreaddata2021."created_by"  
 				INNER JOIN (select "docids","docstid","docnotification" from documentdata2021) as dc21 ON  forreaddata2021."frdocids"=dc21."docids"
 
-				INNER JOIN (select "STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE" from forreaddata2021 where  '.$cond.' '.$cond1.' '.$cond2.' ) as vt
+				INNER JOIN (select "STIDACTIVE","DTIDACTIVE","SDIDACTIVE","VTIDACTIVE" from forreaddata2021 where  '.$cond.' '.$cond1.' '.$cond2.' '.$cond8.' ) as vt
 				ON forreaddata2021."STIDACTIVE"=vt."STIDACTIVE" AND (forreaddata2021."frfromids"=vt."VTIDACTIVE")';
 
 			}
@@ -3034,6 +3431,45 @@ else if($_POST['formname']=='get_all_remarks' ) {
 			}
 			
 		}
+		//by sahana forread state split issue state dropdown remark
+		else if($st2011!=$st2021 && $dt2011==$dt2021 && $sd2011==$sd2021){
+			$sql = 'select forreaddata2021."DTIDACTIVE","frfromids","frdocids",to_char(created_date at time zone \'utc\' at time zone \'Asia/Kolkata\', \'dd-mm-yyyy HH24:MI:SS\') AS createddate,forreaddata2021."created_by",
+				forreaddata2021."frcomment",admin_login."admin_name",dc21."docids",dc21."docstid",dc21."docnotification"
+				from forreaddata2021
+				LEFT JOIN admin_login 
+				ON admin_login."id"=forreaddata2021."created_by"  
+				INNER JOIN (select "docids","docstid","docnotification" from documentdata2021) as dc21 ON  forreaddata2021."frdocids"=dc21."docids" AND forreaddata2021."STID"=dc21."docstid"
+				where '.$cond.' '.$cond1.' '.$cond2.'';	
+		}
+		//by sahana forread state split issue district dropdown remark
+		else if($st2011!=$st2021 && $dt2011!=$dt2021 && $sd2011==$sd2021){
+			$sql = 'select forreaddata2021."DTIDACTIVE","frfromids","frdocids",to_char(created_date at time zone \'utc\' at time zone \'Asia/Kolkata\', \'dd-mm-yyyy HH24:MI:SS\') AS createddate,forreaddata2021."created_by",
+				forreaddata2021."frcomment",admin_login."admin_name",dc21."docids",dc21."docstid",dc21."docnotification"
+				from forreaddata2021
+				LEFT JOIN admin_login 
+				ON admin_login."id"=forreaddata2021."created_by"  
+				INNER JOIN (select "docids","docstid","docnotification" from documentdata2021) as dc21 ON  forreaddata2021."frdocids"=dc21."docids" AND forreaddata2021."STID"=dc21."docstid"
+				where '.$cond.' '.$cond1.' '.$cond2.'';	
+		}
+		//by sahana forread state split issue sub district dropdown remark
+		else if($st2011!=$st2021 && $dt2011!=$dt2021 && $sd2011!=$sd2021){
+			$sql = 'select forreaddata2021."DTIDACTIVE","frfromids","frdocids",to_char(created_date at time zone \'utc\' at time zone \'Asia/Kolkata\', \'dd-mm-yyyy HH24:MI:SS\') AS createddate,forreaddata2021."created_by",
+				forreaddata2021."frcomment",admin_login."admin_name",dc21."docids",dc21."docstid",dc21."docnotification"
+				from forreaddata2021
+				LEFT JOIN admin_login 
+				ON admin_login."id"=forreaddata2021."created_by"  
+				INNER JOIN (select "docids","docstid","docnotification" from documentdata2021) as dc21 ON  forreaddata2021."frdocids"=dc21."docids" AND forreaddata2021."STID"=dc21."docstid"
+				where '.$cond.' '.$cond1.' '.$cond2.'';	
+		}//by sahana forread state merge issue state dropdown remark
+		else if($st2011==$st2021 && $dt2011!=$dt2021 && $sd2011!=$sd2021){
+			$sql = 'select forreaddata2021."DTIDACTIVE","frfromids","frdocids",to_char(created_date at time zone \'utc\' at time zone \'Asia/Kolkata\', \'dd-mm-yyyy HH24:MI:SS\') AS createddate,forreaddata2021."created_by",
+				forreaddata2021."frcomment",admin_login."admin_name",dc21."docids",dc21."docstid",dc21."docnotification"
+				from forreaddata2021
+				LEFT JOIN admin_login 
+				ON admin_login."id"=forreaddata2021."created_by"  
+				INNER JOIN (select "docids","docstid","docnotification" from documentdata2021) as dc21 ON  forreaddata2021."frdocids"=dc21."docids" AND forreaddata2021."STID"=dc21."docstid"
+				where '.$cond.' '.$cond1.'';	
+		}
 
 
 	}
@@ -3137,45 +3573,6 @@ else if($_POST['formname']=='get_all_remarks' ) {
 				';	
 				}
 
-			}
-			//by sahana forread state split issue state dropdown remark
-			else if($st2011!=$st2021 && $dt2011==$dt2021 && $sd2011==$sd2021){
-				$sql = 'select forreaddata2021."DTIDACTIVE","frfromids","frdocids",to_char(created_date at time zone \'utc\' at time zone \'Asia/Kolkata\', \'dd-mm-yyyy HH24:MI:SS\') AS createddate,forreaddata2021."created_by",
-					forreaddata2021."frcomment",admin_login."admin_name",dc21."docids",dc21."docstid",dc21."docnotification"
-					from forreaddata2021
-					LEFT JOIN admin_login 
-					ON admin_login."id"=forreaddata2021."created_by"  
-					INNER JOIN (select "docids","docstid","docnotification" from documentdata2021) as dc21 ON  forreaddata2021."frdocids"=dc21."docids" AND forreaddata2021."STID"=dc21."docstid"
-					where '.$cond.' '.$cond1.' '.$cond2.'';	
-			}
-			//by sahana forread state split issue district dropdown remark
-			else if($st2011!=$st2021 && $dt2011!=$dt2021 && $sd2011==$sd2021){
-				$sql = 'select forreaddata2021."DTIDACTIVE","frfromids","frdocids",to_char(created_date at time zone \'utc\' at time zone \'Asia/Kolkata\', \'dd-mm-yyyy HH24:MI:SS\') AS createddate,forreaddata2021."created_by",
-					forreaddata2021."frcomment",admin_login."admin_name",dc21."docids",dc21."docstid",dc21."docnotification"
-					from forreaddata2021
-					LEFT JOIN admin_login 
-					ON admin_login."id"=forreaddata2021."created_by"  
-					INNER JOIN (select "docids","docstid","docnotification" from documentdata2021) as dc21 ON  forreaddata2021."frdocids"=dc21."docids" AND forreaddata2021."STID"=dc21."docstid"
-					where '.$cond.' '.$cond1.' '.$cond2.'';	
-			}
-			//by sahana forread state split issue sub district dropdown remark
-			else if($st2011!=$st2021 && $dt2011!=$dt2021 && $sd2011!=$sd2021){
-				$sql = 'select forreaddata2021."DTIDACTIVE","frfromids","frdocids",to_char(created_date at time zone \'utc\' at time zone \'Asia/Kolkata\', \'dd-mm-yyyy HH24:MI:SS\') AS createddate,forreaddata2021."created_by",
-					forreaddata2021."frcomment",admin_login."admin_name",dc21."docids",dc21."docstid",dc21."docnotification"
-					from forreaddata2021
-					LEFT JOIN admin_login 
-					ON admin_login."id"=forreaddata2021."created_by"  
-					INNER JOIN (select "docids","docstid","docnotification" from documentdata2021) as dc21 ON  forreaddata2021."frdocids"=dc21."docids" AND forreaddata2021."STID"=dc21."docstid"
-					where '.$cond.' '.$cond1.' '.$cond2.'';	
-			}//by sahana forread state merge issue state dropdown remark
-			else if($st2011==$st2021 && $dt2011!=$dt2021 && $sd2011!=$sd2021){
-				$sql = 'select forreaddata2021."DTIDACTIVE","frfromids","frdocids",to_char(created_date at time zone \'utc\' at time zone \'Asia/Kolkata\', \'dd-mm-yyyy HH24:MI:SS\') AS createddate,forreaddata2021."created_by",
-					forreaddata2021."frcomment",admin_login."admin_name",dc21."docids",dc21."docstid",dc21."docnotification"
-					from forreaddata2021
-					LEFT JOIN admin_login 
-					ON admin_login."id"=forreaddata2021."created_by"  
-					INNER JOIN (select "docids","docstid","docnotification" from documentdata2021) as dc21 ON  forreaddata2021."frdocids"=dc21."docids" AND forreaddata2021."STID"=dc21."docstid"
-					where '.$cond.' '.$cond1.'';	
 			}
 			else if($st2021new!='' && $dt2021new!='' && $sd2021new!='')
 			{
@@ -5941,7 +6338,8 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 
 							for($a=0;$a<count($finaldata['partiallylevel'.$k[$j].'']);$a++)
 								{
-									$partiallylevel .="('".$retdata['comefromcheck']."',".$nonfull[$j].",'Partially Merge',".$retdata['newnamem'][0].",".$retdata['docids'].",".$finaldata['partiallylevel'.$k[$j].''][$a].")," ;
+									//$partiallylevel .="('".$retdata['comefromcheck']."',".$nonfull[$j].",'Partially Merge',".$retdata['newnamem'][0].",".$retdata['docids'].",".$finaldata['partiallylevel'.$k[$j].''][$a].")," ;
+									$partiallylevel .="('".$retdata['comefromcheck']."',".$nonfull[$j].",'Partially Merge',".$retdata['newnamem'][0].",".$retdata['docids'].",".$finaldata['partiallylevel'.$k[$j].''][$a].",".$nonfull[$j].")," ;  //12122023
 								}
 
 
@@ -6551,7 +6949,8 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 
 							for($a=0;$a<count($finaldata['partiallylevel'.$k[$j].'']);$a++)
 								{
-									$partiallylevel .="('".$retdata['comefromcheck']."',".$nonfull[$j].",'".$comestr."',".$retdata['newnamem'][0].",".$retdata['docids'].",".$finaldata['partiallylevel'.$k[$j].''][$a].")," ;
+									//$partiallylevel .="('".$retdata['comefromcheck']."',".$nonfull[$j].",'".$comestr."',".$retdata['newnamem'][0].",".$retdata['docids'].",".$finaldata['partiallylevel'.$k[$j].''][$a].")," ;
+									$partiallylevel .="('".$retdata['comefromcheck']."',".$nonfull[$j].",'".$comestr."',".$retdata['newnamem'][0].",".$retdata['docids'].",".$finaldata['partiallylevel'.$k[$j].''][$a].",".$retdata['fromstate'][0].",".$nonfull[$j].")," ; //12122023
 								}
 
 
@@ -6681,7 +7080,7 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 					$partiallylevelquery = rtrim($partiallylevel, ',');
 
 
-					pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids) VALUES ".$partiallylevelquery." ");
+					pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids,stid,dtid) VALUES ".$partiallylevelquery." ");  // 12122023
 					}
 
 					if($finaldata['partiallyids']!='')
@@ -7262,7 +7661,9 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 
 									for($a=0;$a<count($finaldata['partiallylevel'.$k[$j].'']);$a++)
 										{
-											$partiallylevel .="('".$retdata['comefromcheck']."',".$nonfull[$j].",'Partially Merge',".$retdata['newnamem'][0].",".$retdata['docids'].",".$finaldata['partiallylevel'.$k[$j].''][$a].")," ;
+											// modified by gowthami village partially
+											//$partiallylevel .="('".$retdata['comefromcheck']."',".$nonfull[$j].",'Partially Merge',".$retdata['newnamem'][0].",".$retdata['docids'].",".$finaldata['partiallylevel'.$k[$j].''][$a].")," ;
+											$partiallylevel .="('".$retdata['comefromcheck']."',".$nonfull[$j].",'Partially Merge',".$retdata['newnamem'][0].",".$retdata['docids'].",".$finaldata['partiallylevel'.$k[$j].''][$a].",".$retdata['fromstate'][0].",".$retdata['districtget'][0].")," ;
 										}
 
 
@@ -7388,8 +7789,9 @@ if($_POST['clickbutton']=='Merge' || $_POST['clickbutton']=='Partiallysm')
 					$partiallylevelquery = rtrim($partiallylevel, ',');
 
 
-					pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids) VALUES ".$partiallylevelquery." ");
-					}
+					//pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids) VALUES ".$partiallylevelquery." ");
+					pg_query("insert into partiallydata".$_SESSION['activeyears']." (comefrom,fromids,comeaction,toids,docids,partiallydataids,stid,dtid) VALUES ".$partiallylevelquery." ");   //12122023
+				}
 
 					if($finaldata['partiallyids']!='')
 					{
@@ -11962,37 +12364,61 @@ else
 								$frcomment='';
 								$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarray[0].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarray[0].'; <strong style="color:blue;"><u>Sub District:</u></strong> '.$sddistrictnewarray[0].'; ';
 								
-						// village level remarks split and full merge code modified by shahsi		
-					$namefromtextt = explode(',',$finaldata['namefromtext']);
-					// if ($finaldata['vStateStatus'][0] == 'VILLAGE') {
-						// village create level remarks code resolved by shashi
-						// $frcomment .= '<strong style="color:#15bed2;"><u>Village:</u></strong> : ' . $finaldata['newname'][0] . '(' . $finaldata['vstatus'][0] . ') Created from ' . $frcommentt . ' ;';
-					// } else {
-						// village create level remarks code resolved by shashi
-						// $frcomment .= '<strong style="color:#45b0e2;"><u>Town:</u></strong> : ' . $finaldata['newname'][0] . ' (' . $finaldata['vstatus'][0] . ')  Created from ' .$frcommentt. ' ;';
-					
-						$frcommentt = '';
-					if (isset($finaldata['action']) && is_array($finaldata['action']) && isset($finaldata['namefromtext'])) {
-						$namefromtextt = explode(',', $finaldata['namefromtext']);
-					
-						for ($a = 0; $a < count($namefromtextt); $a++) {
-							$frcommentt .= ' ' . $namefromtextt[$a] . ' (' . $finaldata['action'][$a] . ')';
+						// village level remarks split and full merge code modified by shashi (12122023)		
+						$actionLength = count($finaldata['action']);
+						$namefromtextarray = explode(",", $finaldata['namefromtext']);
+						$namefromtextarrayLength = count($namefromtextarray);
+						$subArrays = [];
+						$namefromCounter = 0;
+						
+						$keys = [];
+						for ($i = 1; $i <= $actionLength; $i++) {
+							$keys[] = 'namefrom' . ($i > 1 ? $i : '');
 						}
-					}
-					if ($finaldata['vStateStatus'][0] == 'VILLAGE') {
-						// village create level remarks code resolved by shashi
-						$frcomment .= '<strong style="color:#15bed2;"><u>Village:</u></strong> : ' . $finaldata['newname'][0] . '(' . $finaldata['vstatus'][0] . ') Created from ' . $frcommentt . ' ;';
-					} else {
-						// village create level remarks code resolved by shashi
-						$frcomment .= '<strong style="color:#45b0e2;"><u>Town:</u></strong> : ' . $finaldata['newname'][0] . ' (' . $finaldata['vstatus'][0] . ')  Created from ' .$frcommentt. ' ;';
-						// $frcomment .= '<strong style="color:#15bed2;"><u>Village:</u></strong> : ' . $finaldata['newname'][0] . '(' . $finaldata['vstatus'][0] . ') Created from ' . $frcommentt . ' ;';
-					}
-					// else {
-					// 	$frcomment .= '<strong style="color:#45b0e2;"><u>Town:</u></strong> : ' . $finaldata['newname'][0] . ' (' . $finaldata['vstatus'][0] . ')  Created from ' .$frcommentt. ' ;';
-					// }
-					
-				// }
-			
+						
+						$final_string = "";
+						$frcommentt = '';
+						$frcommenttString ='';
+						
+						foreach ($keys as $key) {
+							if (isset($finaldata[$key]) && is_array($finaldata[$key])) {
+								$tempArray = [];
+								
+								foreach ($finaldata[$key] as $value) {
+									if ($namefromCounter < $namefromtextarrayLength) {
+										$tempArray[] = $namefromtextarray[$namefromCounter++] . " ";
+									}
+								}
+								$subArrays[] = implode(', ', $tempArray);
+							}
+						}
+						
+						$matchedArray = [];
+$subArraysCount = count($subArrays);
+
+for ($i = 0; $i < $subArraysCount; $i++) {
+if (isset($finaldata['action'][$i])) {
+$valueWithoutQuotes = str_replace('"', '', $finaldata['action'][$i]);
+$valueWithParentheses = '(' . $valueWithoutQuotes . ')';
+$matchedArray[$subArrays[$i]] = $valueWithParentheses;
+}
+}
+
+$$frcommentt = '';
+
+foreach ($matchedArray as $key => $value) {
+$frcommentt .= "$key: $value ";
+}
+
+$frcommentt = trim($frcommentt);
+
+if ($finaldata['vStateStatus'][0] == 'VILLAGE') {
+
+    $frcomment .= '<strong style="color:#15bed2;"><u>Village:</u></strong> : ' . $finaldata['newname'][0] . '(' . $finaldata['vstatus'][0] . ') Created from ' . $frcommentt . ' ;';
+} else {
+
+    $frcomment .= '<strong style="color:#45b0e2;"><u>Town:</u></strong> : ' . $finaldata['newname'][0] . ' (' . $finaldata['vstatus'][0] . ')  Created from ' . $frcommentt . ' ;';
+}		
 								$frcomment1='';
 							
 								$frcomment1 .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarrayfrom[$o].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarrayfrom[$o].'; <strong style="color:blue;"><u>Sub District:</u></strong> '.$sddistrictnewarrayfrom[$o].';';
@@ -12137,31 +12563,52 @@ else
 								$frcomment='';
 							$frcomment .='<strong style="color:#aa81f3;"><u>State/UT:</u></strong> '.$statenewarray[0].'; <strong style="color:Green;"><u>District:</u></strong> '.$districtnewarray[0].'; <strong style="color:blue;"><u>Sub District:</u></strong> '.$sddistrictnewarray[0].'; ';
 								
-								$frcommentt='';
-                            if (
-                                isset($finaldata['action']) && is_array($finaldata['action']) &&
-                                isset($finaldata['namefrom']) && is_array($finaldata['namefrom']) &&
-                                count($finaldata['action']) && count($finaldata['namefrom'])
-                            ) {
-                                $frcommentt = '';
-                            
-                                for ($a = 0; $a < count($finaldata['namefrom']); $a++) {
-                                    $namefromtextt = $finaldata['namefrom'][$a];
-                                    $frcommentt .= ' ' . $namefromtextt . ' (' . $finaldata['action'][0] . ')';
-                                }
-                            } 
-                             if (
-                                isset($finaldata['action']) && is_array($finaldata['action']) &&
-                                isset($finaldata['namefrom2']) && is_array($finaldata['namefrom2']) &&
-                                count($finaldata['action']) && count($finaldata['namefrom2'])
-                            ) {
-                                
-                            
-                                for ($b = 0; $b < count($finaldata['namefrom2']); $b++) {
-                                    $namefromtextt = $finaldata['namefrom2'][$b];
-                                    $frcommentt .= ' ' . $namefromtextt. ' (' . $finaldata['action'][1] . ')';
-                                }
-                            }
+							$actionLength = count($finaldata['action']);
+							$namefromtextarray = explode(",", $finaldata['namefromtext']);
+							$namefromtextarrayLength = count($namefromtextarray);
+							$subArrays = [];
+							$namefromCounter = 0;
+							
+							$keys = [];
+							for ($i = 1; $i <= $actionLength; $i++) {
+								$keys[] = 'namefrom' . ($i > 1 ? $i : '');
+							}
+							
+							$final_string = "";
+							$frcommentt = '';
+							$frcommenttString ='';
+							
+							foreach ($keys as $key) {
+								if (isset($finaldata[$key]) && is_array($finaldata[$key])) {
+									$tempArray = [];
+									
+									foreach ($finaldata[$key] as $value) {
+										if ($namefromCounter < $namefromtextarrayLength) {
+											$tempArray[] = $namefromtextarray[$namefromCounter++] . " ";
+										}
+									}
+									$subArrays[] = implode(', ', $tempArray);
+								}
+							}
+							
+							$matchedArray = [];
+$subArraysCount = count($subArrays);
+
+for ($i = 0; $i < $subArraysCount; $i++) {
+if (isset($finaldata['action'][$i])) {
+	$valueWithoutQuotes = str_replace('"', '', $finaldata['action'][$i]);
+	$valueWithParentheses = '(' . $valueWithoutQuotes . ')';
+	$matchedArray[$subArrays[$i]] = $valueWithParentheses;
+}
+}
+
+$$frcommentt = '';
+
+foreach ($matchedArray as $key => $value) {
+$frcommentt .= "$key: $value ";
+}
+
+$frcommentt = trim($frcommentt);
                             
 								
 								if($finaldata['vStateStatus'][0]=='VILLAGE')
@@ -12214,11 +12661,11 @@ else
 								if($finaldata['vStateStatus'][0]=='VILLAGE')
 								{
 							
-								$frcomment .='<strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['newname'][0].' Created From '.$frcommentt.';';
+								$frcomment .='<strong style="color:#15bed2;"><u>Village:</u></strong> '.$finaldata['newname'][0].' ('.$finaldata['vstatus'][0].')  Created From '.$frcommentt.';';
 								}
 								else
 								{
-									$frcomment .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['newname'][0].' Created From '.$frcommentt.';';
+									$frcomment .='<strong style="color:#45b0e2;"><u>Town:</u></strong> '.$finaldata['newname'][0].' ('.$finaldata['vstatus'][0].')  Created From '.$frcommentt.';';
 								
 								}
 
