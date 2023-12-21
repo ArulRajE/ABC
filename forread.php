@@ -240,6 +240,7 @@ function export_data() {
     var columnNames = [
         'State / UT MDDS Code 2011',
         'State / UT Name 2011',
+        'State / UT  Status 2011',
         'District MDDS Code 2011',
         'District Name 2011',
         'Sub-District MDDS Code 2011',
@@ -250,6 +251,7 @@ function export_data() {
         'Village / Town Status 2011',
         'State / UT MDDS Code 2021',
         'State / UT Name 2021',
+        'State / UT  Status 2021',
         'District MDDS Code 2021',
         'District Name 2021',
         'Sub-District MDDS Code 2021',

@@ -296,8 +296,8 @@ function s2ab(s) {
 
                                          $fla=false;                                                 
                                         if (in_array($data['SDID'], $arraydata))
-                                        { //modified by gowthami isuue related to wineline in AU
-                                            if($data['STID2011']!=$data2['STID'] || $data['STID2011']==$data2['STID'] && $STIDDATA[1]==$data['STID'])
+                                        { //modified by gowthami issue related to wineline in AU
+                                            if(($data['STID2011']!=$data2['STID'] || $data['STID2011']==$data2['STID']) && $STIDDATA[4]==$data['STID'])
                                             {
                                                 $fla=true;
                                             }else if($data['STID2011']==$data['STID'] && $data['DTID2011']==$data['DTID'] && $data['SDID2011']==$data['SDID'])

@@ -377,10 +377,13 @@ function s2ab(s) {
                                         }
 
                                         //By sahana 0111
-                                        $vtid = $data['VTID']; 
+                                        $vtid = $data['VTID2011']; 
                                         $query2 = 'SELECT "STID","DTID","SDID","VTID", "VTName", "auflag", "auaction" FROM vt' . $_SESSION['activeyears'] . ' WHERE "VTID" = $1';
                                         $result2 = pg_query_params($db, $query2, array($vtid));
-                                        $data2 = pg_fetch_array($result2)
+                                        $data2 = pg_fetch_array($result2);
+                                        if ($data2['auaction']== 'submerge'){
+                                            echo ''; 
+                                        }
                                        
                                                     ?>
                                    <tr>
@@ -411,6 +414,10 @@ function s2ab(s) {
                                         else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && ($data['DTID']!=$data2['DTID'])) //0412 && ($data['DTID']!=$data2['DTID'])
                                         {
                                             echo $data['MDDS_VT'.$_SESSION['logindetails']['baseyear'].'']; 
+                                        }
+                                        else if ($data['STID2011']!=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[4]!=$data2['DTID'] && $STIDDATA[1]==$data['SDID2011']) //1812
+                                        {
+                                            echo ""; 
                                         }
                                         else if ($data['STID2011']!=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[4]!=$data2['DTID']) //1212
                                         {
@@ -498,6 +505,9 @@ function s2ab(s) {
                                             echo ''; 
                                         }
                                     }
+                                    else if ($data2['auaction']== 'submerge'){
+                                        echo ''; 
+                                    }
                                     else 
                                     {
                                         echo $data['MDDS_VT'.$_SESSION['logindetails']['baseyear'].''];
@@ -531,6 +541,10 @@ function s2ab(s) {
                                         else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && ($data['DTID']!=$data2['DTID'])) //0412 && ($data['DTID']!=$data2['DTID'])
                                         {
                                             echo $data['VTName'.$_SESSION['logindetails']['baseyear'].''];
+                                        }
+                                        else if ($data['STID2011']!=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[4]!=$data2['DTID'] && $STIDDATA[1]==$data['SDID2011']) //1812
+                                        {
+                                            echo ""; 
                                         }
                                         else if ($data['STID2011']!=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[4]!=$data2['DTID']) //1212
                                         {
@@ -622,6 +636,9 @@ function s2ab(s) {
                                             echo ''; 
                                         }
                                     }
+                                    else if ($data2['auaction']== 'submerge'){
+                                        echo ''; 
+                                    }
                                     else 
                                     {
                                         echo $data['VTName'.$_SESSION['logindetails']['baseyear'].'']; 
@@ -655,6 +672,10 @@ function s2ab(s) {
                                             else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && ($data['DTID']!=$data2['DTID'])) //0412 && ($data['DTID']!=$data2['DTID'])
                                             {
                                                 echo $data['Level'.$_SESSION['logindetails']['baseyear'].'']; 
+                                            }
+                                            else if ($data['STID2011']!=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[4]!=$data2['DTID'] && $STIDDATA[1]==$data['SDID2011']) //1812
+                                            {
+                                                echo ""; 
                                             }
                                             else if ($data['STID2011']!=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[4]!=$data2['DTID']) //1212
                                             {
@@ -742,6 +763,9 @@ function s2ab(s) {
                                             echo ''; 
                                         }
                                     }
+                                    else if ($data2['auaction']== 'submerge'){
+                                        echo ''; 
+                                    }
                                     else 
                                     {
                                         echo $data['Level'.$_SESSION['logindetails']['baseyear'].'']; 
@@ -775,6 +799,10 @@ function s2ab(s) {
                                             else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && ($data['DTID']!=$data2['DTID'])) //0412 && ($data['DTID']!=$data2['DTID'])
                                             {
                                                 echo $sta_baseyear; 
+                                            }
+                                            else if ($data['STID2011']!=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[4]!=$data2['DTID'] && $STIDDATA[1]==$data['SDID2011']) //1812
+                                            {
+                                                echo ""; 
                                             }
                                             else if ($data['STID2011']!=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[4]!=$data2['DTID']) //1212
                                             {
@@ -862,6 +890,9 @@ function s2ab(s) {
                                             echo ''; 
                                         }
                                     }
+                                    else if ($data2['auaction']== 'submerge'){
+                                        echo ''; 
+                                    }
                                     else 
                                     {
                                         echo $sta_baseyear; 
@@ -895,6 +926,10 @@ function s2ab(s) {
                                             else if ($data['SDID']==$data2['SDID'] && $STIDDATA[1]!=$data['SDID'] && ($data['DTID']!=$data2['DTID'])) //0412 && ($data['DTID']!=$data2['DTID'])
                                             {
                                                 echo $data['Pop'.$_SESSION['logindetails']['baseyear'].'']; 
+                                            }
+                                            else if ($data['STID2011']!=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[4]!=$data2['DTID'] && $STIDDATA[1]==$data['SDID2011']) //1812
+                                            {
+                                                echo ""; 
                                             }
                                             else if ($data['STID2011']!=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[4]!=$data2['DTID']) //1212
                                             {
@@ -981,6 +1016,9 @@ function s2ab(s) {
                                         else {
                                             echo ''; 
                                         }
+                                    }
+                                    else if ($data2['auaction']== 'submerge'){
+                                        echo ''; 
                                     }
                                     else 
                                         {
