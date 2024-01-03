@@ -2507,7 +2507,7 @@ function get_sub_district_popup_list(data) {
                     afterSelect: function (values) {
                         var $el = $("#ms-selected_comesub"+i); // jc_b
 
-                        $("#totaldefultselected_1").html(
+                        $("#totaldefultselected_"+i).html( // jc_b
                             $el.find('[class*="ms-elem-selection ms-selected"]').length
                         );
 
@@ -2529,7 +2529,7 @@ function get_sub_district_popup_list(data) {
                     afterDeselect: function () {
                         var $el = $("#ms-selected_comesub"+i); // jc_b
 
-                        $("#totaldefultselected_1").html(
+                        $("#totaldefultselected_"+i).html( // jc_b
                             $el.find('[class*="ms-elem-selection ms-selected"]').length
                         );
 
@@ -2562,18 +2562,18 @@ function get_sub_district_popup_list_ii(data, i) {
     var seleted = $("#applyon").val();
     var clickpopup = $("#clickpopup").val();
 
-    var fstids = $('select[name="stategetsub' + i + '[]"] option:selected')
+    var fstids = $('select[id="stategetsub'+i+'"] option:selected')
         .map(function () {
             return this.value;
         })
         .get();
 
-    var fdtids = $('select[name="districtgetsub' + i + '[]"] option:selected')
+    var fdtids = $('select[id="districtgetsub'+i+'"] option:selected')
         .map(function () {
             return this.value;
         })
         .get();
-    var fsdids = $('select[name="subdistrictgetsub' + i + '[]"] option:selected')
+    var fsdids = $('select[id="subdistrictgetsub'+i+'"] option:selected')
         .map(function () {
             return this.value;
         })
@@ -2892,13 +2892,14 @@ function get_district_popup_sublist_ii(data, i) {
     var seleted = $("#applyon").val();
     var clickpopup = $("#clickpopup").val();
 
-    var fstids = $('select[name="stategetsub'+i+'[]"] option:selected')
-        .map(function () {
-            return this.value;
-        })
-        .get();
+    var fstids = $('select[id="stategetsub'+i+'"] option:selected')
+    .map(function () {
+        return this.value;
+    })
+    .get();
 
-    var fdtids = $('select[name="districtgetsub'+i+'[]"] option:selected')
+
+    var fdtids = $('select[id="districtgetsub'+i+'"] option:selected')
         .map(function () {
             return this.value;
         })
@@ -3148,7 +3149,7 @@ function get_district_popup_list_ii(data, i) {
     var seleted = $("#applyon").val();
     var clickpopup = $("#clickpopup").val();
 
-    var fstids = $('select[name="stategetsub'+i+'[]"] option:selected')
+    var fstids = $('select[id="stategetsub'+i+'"] option:selected')
         .map(function () {
             return this.value;
         })
@@ -10331,13 +10332,13 @@ function handleClick(ck, i, popup) {
     var comefrom = $("#applyon").val();
 
     if (popup == "submerge") {
-        var valueof = $('select[name="selected_comesub' + i + '[]"] option:selected') // jc_b
+        var valueof = $('select[id="selected_comesub' + i + '"] option:selected') // jc_b
             .map(function () {
                 return this.value;
             })
             .get();
 
-        var valueoftext = $('select[name="selected_comesub' + i + '[]"] option:selected') // jc_b
+            var valueoftext = $('select[id="selected_comesub' + i + '"] option:selected') // jc_b
             .map(function () {
                 return this.text;
             })
@@ -10877,7 +10878,6 @@ $(function () {
             $("#submergedata")
                 .find("input, textarea, button, select")
                 .removeAttr("disabled", "disabled");
-            // end
             //   $(this)[0].reset();
 
             //  $('#submerge').find('form').parsley().reset();
@@ -14339,46 +14339,87 @@ $(function () {
     $("#submergedata").submit(function (e) {
         ////SWAMI
 
-        var namefromtext = $('select[name="selected_comesub0[]"] option:selected') // jc_b
-            .map(function () {
-                return this.text;
-            })
-            .get();
+        // jc_b
 
+        // var namefromtext = $('select[name="selected_comesub[]"] option:selected')
+        //     .map(function () {
+        //         return this.text;
+        //     })
+        //     .get();
+
+        // namefromtextlevel = $('select[name="partiallylevel0[]"] option:selected')
+        //     .map(function () {
+        //         return this.text;
+        //     })
+        //     .get();
+
+        // myArray = namefromtext.filter((el) => !namefromtextlevel.includes(el));
+
+        // var statenew = $('select[name="stategetsub[]"] option:selected')
+        //     .map(function () {
+        //         return this.text;
+        //     })
+        //     .get();
+
+        // var districtnew = $('select[name="districtgetsub[]"] option:selected')
+        //     .map(function () {
+        //         return this.text;
+        //     })
+        //     .get();
+
+        // var sddistrictnew = $('select[name="subdistrictgetsub[]"] option:selected')
+        //     .map(function () {
+        //         return this.text;
+        //     })
+        //     .get();
+        var statenewarray = [];
+        var districtnewarray = [];
+        var sddistrictnewarray = [];
+        var namefromtextarray = [];
+        var namefromtextlevelarray = [];
+        var dataform = new FormData();
+
+        $('#submergedata select, #submergedata textarea, #submergedata input[type="hidden"], #submergedata form').each(function() {
+            var element = $(this);
+            var name = element.attr('name');
+            if (element.is('select') && element.prop('multiple')) {
+                element.find('option:selected').each(function() {
+                    dataform.append(name, $(this).val());
+                });
+            } else {
+                dataform.append(name, element.val());
+            }
+        });
+        $('select[name^="stategetsub"] option:selected').map(function () {
+            statenewarray.push($(this).text());
+        });
+        $('select[name^="districtgetsub"] option:selected').map(function () {
+            districtnewarray.push($(this).text());
+        });
+        $('select[name^="subdistrictgetsub"] option:selected').map(function () {
+            sddistrictnewarray.push($(this).text());
+        });        
+        $('select[name^="selected_comesub"] option:selected').map(function () {
+            namefromtextarray.push($(this).text());
+        });     
+        $('select[name^="partiallylevel"] option:selected').map(function () {
+            namefromtextlevelarray.push($(this).text());
+        });
         namefromtextlevel = $('select[name="partiallylevel0[]"] option:selected')
-            .map(function () {
-                return this.text;
-            })
-            .get();
+        .map(function () {
+            return this.text;
+        })
+        .get();
 
-        myArray = namefromtext.filter((el) => !namefromtextlevel.includes(el));
+        myArray = namefromtextarray.filter((el) => !namefromtextlevelarray.includes(el));
 
-        var statenew = $('select[name="stategetsub[]"] option:selected')
-            .map(function () {
-                return this.text;
-            })
-            .get();
-
-        var districtnew = $('select[name="districtgetsub[]"] option:selected')
-            .map(function () {
-                return this.text;
-            })
-            .get();
-
-        var sddistrictnew = $('select[name="subdistrictgetsub[]"] option:selected')
-            .map(function () {
-                return this.text;
-            })
-            .get();
-
-        var dataform = new FormData(this);
         dataform.append("namefromtext", myArray);
-        dataform.append("namefromtextall", namefromtext);
-        dataform.append("namefromtextlevel", namefromtextlevel);
+        dataform.append("namefromtextall", namefromtextarray);
+        dataform.append("namefromtextlevel", namefromtextlevelarray);
 
-        dataform.append("statenewarray", statenew);
-        dataform.append("districtnewarray", districtnew);
-        dataform.append("sddistrictnewarray", sddistrictnew);
+        dataform.append("statenewarray", statenewarray);
+        dataform.append("districtnewarray", districtnewarray);
+        dataform.append("sddistrictnewarray", sddistrictnewarray);
 
         toastr.options = {
             closeButton: false,
@@ -14548,7 +14589,7 @@ $(function () {
 
                         var noflag = false;
                         if (dataarray["comefromchecksub"] == "State") {
-                            for (var i = 0; i < dataarray["selected_comesub0"].length; i++) { // jc_b
+                            for (var i = 0; i < dataarray["selected_comesub"].length; i++) {
                                 if (dataarray["stStatus"][i] == "ST") {
                                     totalstcount = totalstcount + 1;
                                     stflag = "State(s)";
@@ -14571,7 +14612,7 @@ $(function () {
                             // console.log(dataarray);
 
                             if (dataarray["namefromtextlevel"] == "") {
-                                for (var i = 0; i < dataarray["selected_comesub0"].length; i++) { // jc_b
+                                for (var i = 0; i < dataarray["selected_comesub"].length; i++) {
                                     if (dataarray["vtLevel"][i] == "VILLAGE") {
                                         totalstcount = totalstcount + 1;
                                         stflag = "Village(s)";
@@ -14594,11 +14635,11 @@ $(function () {
                                 noflag = true;
                                 namefromtextall = dataarray["namefromtextall"].split(",");
                                 namefromtextlevel = dataarray["namefromtextlevel"].split(",");
-                                for (var i = 0; i < dataarray["selected_comesub0"].length; i++) { // jc_b
+                                for (var i = 0; i < dataarray["selected_comesub"].length; i++) {
                                     if (dataarray["vtLevel"][i] == "VILLAGE") {
                                         if (
                                             dataarray["partiallylevel0"].includes(
-                                                dataarray["selected_comesub0"][i] // jc_b
+                                                dataarray["selected_comesub"][i]
                                             )
                                         ) {
                                             stmsgnameplsm +=
@@ -14625,7 +14666,7 @@ $(function () {
 
                                         if (
                                             dataarray["partiallylevel0"].includes(
-                                                dataarray["selected_comesub0"][i] // jc_b
+                                                dataarray["selected_comesub"][i]
                                             )
                                         ) {
                                             utmsgnameplsm +=
@@ -14754,7 +14795,7 @@ $(function () {
                         } else {
                             fmsg =
                                 "(Total - " +
-                                dataarray["selected_comesub0"].length + // jc_b
+                                dataarray["selected_comesub"].length +
                                 " ) <strong>" +
                                 dataarray["comefromchecksub"] +
                                 '(s) - <span class="trinstrong1">' +
@@ -20847,7 +20888,6 @@ function EnableAddButton3() {
 function ResetRowNumber() {
     $("#rowno").val(1);
 }
-// Ends
 // jc_b
 $('.sub-remark').on('keyup', function(){
     var value = $(this).val();

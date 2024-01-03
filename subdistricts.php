@@ -306,7 +306,7 @@ function s2ab(s) {
                                             }
                                         }
                                     ?>
-                                        <tr id="<?php echo $data['SDID']."*****".$data['SDID'.$_SESSION['logindetails']['baseyear'].'']; ?>" <?php if($fla){ ?>class="incompleted"<?php  } ?>>
+                                          <tr id="<?php echo $data['SDID']."*****".$data['SDID'.$_SESSION['logindetails']['baseyear'].'']; ?>" <?php if($fla){ ?>class="incompleted"<?php  } ?>>
                                         
                                           <!-- Modified by sahana Split_Action_Administrative_Units 0310 Defect_JC_38-->  
                                           <td>
@@ -332,7 +332,7 @@ function s2ab(s) {
                                                         {
                                                            echo '';    
                                                         }
-                                                        else if($STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID'] && $data['STID2011']!=$data['STID'] &&  $data['DTID']==$data2['DTID']) //1212
+                                                        else if($STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID'] && $data['STID2011']!=$data['STID'] &&  $data['DTID']==$data2['DTID'] && $data['STID2011']==$data['STID']) //1212 //2212
                                                         {
                                                             echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
                                                         }
@@ -382,6 +382,11 @@ function s2ab(s) {
                                                     echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
                                                     
                                                 }
+                                                else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID']){ //2112
+                                                    
+                                                    echo ''; 
+                                                    
+                                                }
                                                 else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['STID2011']==$data['STID']){ //1311
                                                     
                                                     echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
@@ -419,8 +424,20 @@ function s2ab(s) {
                                                 } 
                                             }
                                             else if ($data2['auaction']== 'Reshuffle'){
-                                                if (($data['STID']==$data2['STID']) && ($STIDDATA[1]==$data2['DTID'])){
+                                                if (($data['STID']==$data2['STID'] && $STIDDATA[1]==$data2['DTID'])){
                                                     
+                                                    echo ''; 
+                                                }
+                                                else if ($data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[1]==$data['DTID2011'] && $STIDDATA[1]!=$data2['DTID']) //2612
+                                                {
+                                                    echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
+                                                }
+                                                else if ($data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']==$data['SDID']) //2112
+                                                {
+                                                    echo ''; 
+                                                }
+                                                else if ($data['STID2011']!=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']==$data['SDID']) //2212
+                                                {
                                                     echo ''; 
                                                 }
                                                 else {
@@ -436,7 +453,7 @@ function s2ab(s) {
                                                     
                                                     echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
                                                 }
-                                                else if(($data['STID2011']!=$data['STID']) && ($data['DTID2011']!=$data['DTID']) && ($data['SDID2011']==$data['SDID']) && $STIDDATA[1]!=$data2['DTID'] && $STIDDATA[1]==$data['DTID2011']){ //1212
+                                                else if(($data['STID2011']!=$data['STID']) && ($data['DTID2011']!=$data['DTID']) && ($data['SDID2011']==$data['SDID']) && $STIDDATA[1]!=$data2['DTID'] && $STIDDATA[1]==$data['DTID2011'] && $STIDDATA[4]!=$data['STID']){ //1212 2112
                                                     echo $data['MDDS_SD'.$_SESSION['logindetails']['baseyear'].''];  
                                                 }
                                                 else if (($data['STID']==$data2['STID']) && ($STIDDATA[1]==$data2['DTID'])){
@@ -484,7 +501,7 @@ function s2ab(s) {
                                                         {
                                                            echo '';    
                                                         }
-                                                        else if($STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID'] && $data['STID2011']!=$data['STID'] &&  $data['DTID']==$data2['DTID']) //1212
+                                                        else if($STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID'] && $data['STID2011']!=$data['STID'] &&  $data['DTID']==$data2['DTID'] && $data['STID2011']==$data['STID']) //1212 //2212
                                                         {
                                                             echo $data['SDName'.$_SESSION['logindetails']['baseyear'].'']; 
                                                         }
@@ -534,6 +551,11 @@ function s2ab(s) {
                                                 echo $data['SDName'.$_SESSION['logindetails']['baseyear'].'']; 
                                                 
                                             }
+                                            else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID']){ //2112
+                                                    
+                                                echo ''; 
+                                                
+                                            }
                                             else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['STID2011']==$data['STID']){ //1311
                                                     
                                                 echo $data['SDName'.$_SESSION['logindetails']['baseyear'].''];  
@@ -567,6 +589,18 @@ function s2ab(s) {
                                                 
                                                 echo ''; 
                                             }
+                                            else if ($data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[1]==$data['DTID2011'] && $STIDDATA[1]!=$data2['DTID']) //2612
+                                                {
+                                                    echo $data['SDName'.$_SESSION['logindetails']['baseyear'].''];  
+                                                }
+                                            else if ($data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']==$data['SDID']) //2112
+                                            {
+                                                echo ''; 
+                                            }
+                                            else if ($data['STID2011']!=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']==$data['SDID']) //2212
+                                                {
+                                                    echo ''; 
+                                                }
                                             else {
                                                 echo $data['SDName'.$_SESSION['logindetails']['baseyear'].'']; 
                                             }
@@ -580,7 +614,7 @@ function s2ab(s) {
                                                     
                                                 echo $data['SDName'.$_SESSION['logindetails']['baseyear'].'']; 
                                             }
-                                            else if(($data['STID2011']!=$data['STID']) && ($data['DTID2011']!=$data['DTID']) && ($data['SDID2011']==$data['SDID']) && $STIDDATA[1]!=$data2['DTID'] && $STIDDATA[1]==$data['DTID2011']){ //1212
+                                            else if(($data['STID2011']!=$data['STID']) && ($data['DTID2011']!=$data['DTID']) && ($data['SDID2011']==$data['SDID']) && $STIDDATA[1]!=$data2['DTID'] && $STIDDATA[1]==$data['DTID2011'] && $STIDDATA[4]!=$data['STID']){ //1212 2112
                                                 echo $data['SDName'.$_SESSION['logindetails']['baseyear'].''];   
                                             }
                                             else if (($data['STID']==$data2['STID']) && ($STIDDATA[1]==$data2['DTID'])){
@@ -628,7 +662,7 @@ function s2ab(s) {
                                                         {
                                                            echo '';    
                                                         }
-                                                        else if($STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID'] && $data['STID2011']!=$data['STID'] &&  $data['DTID']==$data2['DTID']) //1212
+                                                        else if($STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID'] && $data['STID2011']!=$data['STID'] &&  $data['DTID']==$data2['DTID'] && $data['STID2011']==$data['STID']) //1212 //2212
                                                         {
                                                             echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];   
                                                         }
@@ -678,6 +712,11 @@ function s2ab(s) {
                                                     echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
                                                     
                                                 }
+                                                else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID']){ //2112
+                                                    
+                                                    echo ''; 
+                                                    
+                                                }
                                                 else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['STID2011']==$data['STID']){ //1311
                                                     
                                                     echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
@@ -711,6 +750,18 @@ function s2ab(s) {
                                                     
                                                     echo ''; 
                                                 }
+                                                else if ($data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[1]==$data['DTID2011'] && $STIDDATA[1]!=$data2['DTID']) //2612
+                                                {
+                                                    echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
+                                                }
+                                                else if ($data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']==$data['SDID']) //2112
+                                                {
+                                                    echo ''; 
+                                                }
+                                                else if ($data['STID2011']!=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']==$data['SDID']) //2212
+                                                {
+                                                    echo ''; 
+                                                }
                                                 else {
                                                     echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
                                                 }
@@ -724,7 +775,7 @@ function s2ab(s) {
                                                     
                                                     echo $data['Villages'.$_SESSION['logindetails']['baseyear'].''];  
                                                 }
-                                                else if(($data['STID2011']!=$data['STID']) && ($data['DTID2011']!=$data['DTID']) && ($data['SDID2011']==$data['SDID']) && $STIDDATA[1]!=$data2['DTID'] && $STIDDATA[1]==$data['DTID2011']){ //1212
+                                                else if(($data['STID2011']!=$data['STID']) && ($data['DTID2011']!=$data['DTID']) && ($data['SDID2011']==$data['SDID']) && $STIDDATA[1]!=$data2['DTID'] && $STIDDATA[1]==$data['DTID2011'] && $STIDDATA[4]!=$data['STID']){ //1212 2112
                                                     echo $data['Villages'.$_SESSION['logindetails']['baseyear'].'']; 
                                                 }
                                                 else if (($data['STID']==$data2['STID']) && ($STIDDATA[1]==$data2['DTID'])){
@@ -772,7 +823,7 @@ function s2ab(s) {
                                                         {
                                                            echo '';    
                                                         }
-                                                        else if($STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID'] && $data['STID2011']!=$data['STID'] &&  $data['DTID']==$data2['DTID']) //1212
+                                                        else if($STIDDATA[1]==$data['DTID2011'] && $data['DTID2011']!=$data['DTID'] && $data['STID2011']!=$data['STID'] &&  $data['DTID']==$data2['DTID'] && $data['STID2011']==$data['STID']) //1212 //2212
                                                         {
                                                             echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
                                                         }
@@ -822,6 +873,11 @@ function s2ab(s) {
                                                 echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
                                                 
                                             }
+                                            else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID']){ //2112
+                                                    
+                                                echo ''; 
+                                                
+                                            }
                                             else if($data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $data['STID2011']==$data['STID']){ //1311
                                                     
                                                 echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
@@ -855,6 +911,18 @@ function s2ab(s) {
                                                 
                                                 echo ''; 
                                             }
+                                            else if ($data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']==$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[1]==$data['DTID2011'] && $STIDDATA[1]!=$data2['DTID']) //2612
+                                                {
+                                                    echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
+                                                }
+                                            else if ($data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']==$data['SDID']) //2112
+                                            {
+                                                echo ''; 
+                                            }
+                                            else if ($data['STID2011']!=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']==$data['SDID']) //2212
+                                                {
+                                                    echo ''; 
+                                                }
                                             else {
                                                 echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
                                             }
@@ -868,7 +936,7 @@ function s2ab(s) {
                                                     
                                                 echo $data['Towns'.$_SESSION['logindetails']['baseyear'].'']; 
                                             }
-                                            else if(($data['STID2011']!=$data['STID']) && ($data['DTID2011']!=$data['DTID']) && ($data['SDID2011']==$data['SDID']) && $STIDDATA[1]!=$data2['DTID'] && $STIDDATA[1]==$data['DTID2011']){ //1212
+                                            else if(($data['STID2011']!=$data['STID']) && ($data['DTID2011']!=$data['DTID']) && ($data['SDID2011']==$data['SDID']) && $STIDDATA[1]!=$data2['DTID'] && $STIDDATA[1]==$data['DTID2011'] && $STIDDATA[4]!=$data['STID']){ //1212 2112
                                                 
                                                 echo $data['Towns'.$_SESSION['logindetails']['baseyear'].''];   
                                             

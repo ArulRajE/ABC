@@ -426,7 +426,6 @@
                                         <div class="row">
                                             <div class="col-xl-12">
                                                 <div>
-                                                 
                                                 <div id="srow_1"><!-- jc_b -->
                                                 <div style="display:none;" id="ststatussub">
                                                     <div  class="form-group row">
@@ -509,8 +508,6 @@
                                                         </button>
                                                     </div>
                                                 <!-- ends -->
-
-
 
                                                 
                                                 </div>

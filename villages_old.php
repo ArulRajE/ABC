@@ -18,30 +18,13 @@ $arra=array($STIDDATA[1]);
 
 
 
-/*$result = pg_query_params($db, 'select * from "vtCount'.$_SESSION['logindetails']['baseyear'].'" Full JOIN "vtCount'.$_SESSION['activeyears'].'" 
+$result = pg_query_params($db, 'select * from "vtCount'.$_SESSION['logindetails']['baseyear'].'" Full JOIN "vtCount'.$_SESSION['activeyears'].'" 
 Left JOIN ( SELECT fromids,partiallydataids,toids,docids,partiallyids,comefrom
            FROM "partiallydata'.$_SESSION['activeyears'].'" where pstatus=0 group by fromids,partiallydataids,toids,docids,partiallyids,comefrom) pd 
            LEFT JOIN ( select * from documentdata'.$_SESSION['activeyears'].') dd ON dd.docids=pd.docids
             LEFT JOIN ( select "STID" as "STIDS","DTID" as "DTIDS","SDID" as "SDIDS","SDName" as "SDNameof" from sd'.$_SESSION['activeyears'].') sdt ON sdt."SDIDS"=pd."toids"
            ON "vtCount'.$_SESSION['activeyears'].'"."VTID" = pd."partiallydataids"
- On "vtCount'.$_SESSION['logindetails']['baseyear'].'"."VTID'.$_SESSION['logindetails']['baseyear'].'"="vtCount'.$_SESSION['activeyears'].'"."VTID" where  "vtCount'.$_SESSION['activeyears'].'"."SDID" = $1 OR "vtCount'.$_SESSION['logindetails']['baseyear'].'"."SDID'.$_SESSION['logindetails']['baseyear'].'" = $1',$arra);*/
-
-//ADIT 2 previous query commented and following query appended
-$joinQry = 'select * from ((( select * from "vtCount'.$_SESSION['logindetails']['baseyear'].'" Full JOIN "vtCount'.$_SESSION['activeyears'].'"'; 
-$joinQry .= ' Left JOIN ( SELECT fromids,partiallydataids,toids,docids,partiallyids,comefrom';
-$joinQry .= ' FROM "partiallydata'.$_SESSION['activeyears'].'" where pstatus=0 group by fromids,partiallydataids,toids,docids,partiallyids,comefrom) pd ';
-$joinQry .= ' LEFT JOIN ( select * from documentdata'.$_SESSION['activeyears'].') dd ON dd.docids=pd.docids';
-$joinQry .= ' LEFT JOIN ( select "STID" as "STIDS","DTID" as "DTIDS","SDID" as "SDIDS","SDName" as "SDNameof" from sd'.$_SESSION['activeyears'].') sdt ON sdt."SDIDS"=pd."toids"';
-$joinQry .= ' ON "vtCount'.$_SESSION['activeyears'].'"."VTID" = pd."partiallydataids"';
-$joinQry .= ' On "vtCount'.$_SESSION['logindetails']['baseyear'].'"."VTID'.$_SESSION['logindetails']['baseyear'].'"="vtCount'.$_SESSION['activeyears'].'"."VTID" where ';
-$joinQry .= ' "vtCount'.$_SESSION['activeyears'].'"."SDID" = $1 OR "vtCount'.$_SESSION['logindetails']['baseyear'].'"."SDID'.$_SESSION['logindetails']['baseyear'].'" = $1)cte1 join';
-$joinQry .= ' (SELECT "STID2","DTID2","SDID2","VTID2", "VTName2", "auflag2", "auaction2" FROM ';
-$joinQry .= ' (SELECT "STID" as "STID2","DTID" as "DTID2","SDID" as "SDID2","VTID" as "VTID2", "VTName" as "VTName2", "auflag" as "auflag2", "auaction" as "auaction2" FROM "vt' . $_SESSION['activeyears'].'" )) cte2 on "cte2"."VTID2" = "cte1"."VTID") join';
-$joinQry .= ' (SELECT "STID11","DTID11","SDID11","VTID11", "VTName11", "auflag11", "auaction11" FROM ';
-$joinQry .= ' (SELECT "STID" as "STID11","DTID" as "DTID11","SDID" as "SDID11","VTID" as "VTID11", "VTName" as "VTName11", "auflag" as "auflag11", "auaction" as "auaction11" FROM "vt' . $_SESSION['activeyears'].'")) cte3 on "cte3"."VTID11" = "cte1"."VTID2011")';
-
-//ADIT 2 query above for use in result variable
-$result = pg_query_params($db, $joinQry, $arra); 
+ On "vtCount'.$_SESSION['logindetails']['baseyear'].'"."VTID'.$_SESSION['logindetails']['baseyear'].'"="vtCount'.$_SESSION['activeyears'].'"."VTID" where  "vtCount'.$_SESSION['activeyears'].'"."SDID" = $1 OR "vtCount'.$_SESSION['logindetails']['baseyear'].'"."SDID'.$_SESSION['logindetails']['baseyear'].'" = $1',$arra);
 
 $where = "";
 
@@ -345,8 +328,7 @@ function s2ab(s) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- ADIT 2 - pg_fetch_array changed to pg_fetch_assoc-->                                    
-                                    <?php while ($data = pg_fetch_assoc($result)) { 
+                                    <?php while ($data = pg_fetch_array($result)) { 
 
                                         // if($data['SDID']==$STIDDATA[1])
                                         // {
@@ -401,24 +383,14 @@ function s2ab(s) {
                                         $vtid = $data['VTID']; 
                                         $vtid2011 = $data['VTID2011'];
 
-                                        //ADIT 2 - query2, result2 commented
-                                        //$query2 = 'SELECT "STID","DTID","SDID","VTID", "VTName", "auflag", "auaction" FROM vt' . $_SESSION['activeyears'] . ' WHERE "VTID" = $1';
-                                        //$result2 = pg_query_params($db, $query2, array($vtid));
+                                        $query2 = 'SELECT "STID","DTID","SDID","VTID", "VTName", "auflag", "auaction" FROM vt' . $_SESSION['activeyears'] . ' WHERE "VTID" = $1';
+                                        $result2 = pg_query_params($db, $query2, array($vtid));
 
-                                        //ADIT 2 - query2011, result2011 commented
-                                        //$query2011 = 'SELECT "STID","DTID","SDID","VTID", "VTName", "auflag", "auaction" FROM vt' . $_SESSION['activeyears'] . ' WHERE "VTID" = $1';
-                                        //$result2011 = pg_query_params($db, $query2011, array($vtid2011));
+                                        $query2011 = 'SELECT "STID","DTID","SDID","VTID", "VTName", "auflag", "auaction" FROM vt' . $_SESSION['activeyears'] . ' WHERE "VTID" = $1';
+                                        $result2011 = pg_query_params($db, $query2011, array($vtid2011));
 
-                                        //ADIT 2 data2 and data2011 copied from $data array using key mappings
-                                        $keys_to_copy = array('STID2','DTID2','SDID2','VTID2','VTName2','auflag2','auaction2');
-                                        foreach ($keys_to_copy as $key) {
-                                            $data2[(substr($key,0,-1))] = $data[$key];
-                                        } 
-
-                                        $keys_to_copy = array('STID11','DTID11','SDID11','VTID11','VTName11','auflag11','auaction11');
-                                        foreach ($keys_to_copy as $key) {
-                                            $data2011[(substr($key,0,-2))] = $data[$key];
-                                        }
+                                        $data2 = pg_fetch_array($result2);
+                                        $data2011 = pg_fetch_array($result2011);
                                   
                                                     ?>
                                    <tr>
@@ -1326,7 +1298,7 @@ function s2ab(s) {
                                             { 
                                                 echo $data['MDDS_VT'];
                                             } 
-                                            else if($data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID']) 
+                                            else if($data['STID2011']=$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID']) 
                                             { 
                                                 echo $data['MDDS_VT'];
                                             } 
@@ -1344,10 +1316,6 @@ function s2ab(s) {
                                             { 
                                                 echo $data['MDDS_VT'];
                                             } 
-                                            else if ($data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[4]==$data['DTID2011'] && $STIDDATA[1]==$data['SDID2011']) //0201
-                                            {
-                                                echo $data['MDDS_VT'];
-                                            }
                                             else 
                                             {
                                                  echo ""; 
@@ -1462,10 +1430,6 @@ function s2ab(s) {
                                             { 
                                                 echo $data['VTName']; 
                                             } 
-                                            else if ($data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[4]==$data['DTID2011'] && $STIDDATA[1]==$data['SDID2011']) //0201
-                                            {
-                                                echo $data['VTName']; 
-                                            }
                                             else 
                                             {
                                                  echo ""; 
@@ -1575,10 +1539,6 @@ function s2ab(s) {
                                             {
                                                 echo $data['Level']; 
                                             } 
-                                            else if ($data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[4]==$data['DTID2011'] && $STIDDATA[1]==$data['SDID2011']) //0201
-                                            {
-                                                echo $data['Level']; 
-                                            }
                                             else 
                                             {
                                                  echo ""; 
@@ -1685,10 +1645,6 @@ function s2ab(s) {
                                             { 
                                                 echo $sta; 
                                             } 
-                                            else if ($data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[4]==$data['DTID2011'] && $STIDDATA[1]==$data['SDID2011']) //0201
-                                            {
-                                                echo $sta; 
-                                            }
                                             else 
                                             {
                                                  echo ""; 
@@ -1795,10 +1751,6 @@ function s2ab(s) {
                                             { 
                                                 echo $data['Pop']; 
                                             } 
-                                            else if ($data['STID2011']==$data['STID'] && $data['DTID2011']!=$data['DTID'] && $data['SDID2011']!=$data['SDID'] && $data['STID']==$data2['STID'] && $data['DTID']==$data2['DTID'] && $data['SDID']==$data2['SDID'] && $STIDDATA[4]==$data['DTID2011'] && $STIDDATA[1]==$data['SDID2011']) //0201
-                                            {
-                                                echo $data['Pop']; 
-                                            }
                                             else 
                                             {
                                                  echo ""; 

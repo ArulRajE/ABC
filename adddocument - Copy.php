@@ -993,14 +993,14 @@ $(function() {
  var x1 = 1;
     var y1 = 0;
 
-    var x2 = 1; // jc_b
+
 
     var addButton = $('.add_button');
  var addButton1 = $('.add_button_name');
- var addButtonSub = $('.add_button_sub'); // jc_b
+
     var wrapper = $('.field_wrapper');
     var wrapper_name = $('.field_wrapper_name');
-    var wrapper_sub = $('.field_wrapper_sub'); // jc_b
+   
     // var optionstate = '';
     //  optionstate +=
     //     '<option value = "">Select State</option>';
@@ -1703,13 +1703,7 @@ var statename = $('#statename').val();
 
                 $('.sdnew').css("display", "block");
                 $(".sdnew").prop('required',true);
-
-              // JC_27 code added by srikanth
-                $('.statestatus1').css("display", "none");
-                $(".Statusyear").prop('required',false);
-              //
-
-    if(clickpopup=='Reshuffle')
+if(clickpopup=='Reshuffle')
     {
         $('.vstatestatus1').css("display", "none");
          $(".vstatestatus1").prop('required',false); 
@@ -1723,16 +1717,6 @@ var statename = $('#statename').val();
          $('.VAC').css("display", "block");
          $(".VAC1").prop('required',true); 
     }
-      //JC_27 code 
-      else if (clickpopup == 'Deletion')
-                         {
-                        $('.vstatestatus1').css("display", "none");
-                        $(".vstatestatus1").prop('required', false);
-                        $('.VAC').css("display", "none");
-                        $(".VAC1").prop('required', false);
-                        $('.ORR').css("display", "none");
-                       }
-                        //
     else
     {
          $('.vstatestatus1').css("display", "block");
@@ -2102,8 +2086,7 @@ var statename = $('#statename').val();
                                 });
                               
                                 // JC_16 Modified By Arul For Add Document
-                                // if(stateid != '' && statename !='' && (clickpopup == 'Rename' || clickpopup == 'Addition'))
-                                if(stateid != '' && statename !='' && (clickpopup == 'Rename' || clickpopup == 'Addition' ||  clickpopup == 'Deletion')) // JC_27 code added by srikanth
+                                if(stateid != '' && statename !='')
                                 {
                                     $("#statenew"+x1+"").append($('<option>', {
                                 value: stateid,
@@ -2137,15 +2120,7 @@ var statename = $('#statename').val();
                                          $("#statenew"+x1+"").val(finalresult[9]).trigger('change');
                                 }
                                 // JC_16 Modified By Arul For Add Document
-                                // else if(stateid !='' && (clickpopup == 'Rename' || clickpopup == 'Addition')){
-                                //     $("#statenew"+x1+"").val(stateid).trigger('change');
-
-                                // }
-                                // // Ends..
-
-                                // JC_27 code added by srikanth
-                                else if(stateid !='' && (clickpopup == 'Rename' || clickpopup == 'Addition' || clickpopup == 'Deletion'))
-                                { 
+                                else if(stateid !=''){
                                     $("#statenew"+x1+"").val(stateid).trigger('change');
 
                                 }
@@ -2170,157 +2145,7 @@ var statename = $('#statename').val();
     });
 
    
-// jc_b
-$(addButtonSub).click(function () {
-    // JC_16 Modified By Arul For Add Document
-    var stateid = $('#stateid').val();
-    var statename = $('#statename').val();
-    // Ends..
-    var seleted = $('#applyon').val();
-    var clickpopup = $('#clickpopup').val();
-    DisableAddButton3();
-    if (x2 < maxField1) {
-        if (x2 == 1) {
-            $('#srow_1').find('input, textarea, button, select').attr('disabled', 'disabled');
-            $("#ms-selected_comesub0 [class*=ms-elem-selectable]").addClass("disabled");
-            $("#ms-selected_comesub0 [class*=ms-elem-selection]").addClass("disabled");
-            $("#ms-partiallylevel0 [class*=ms-elem-selectable]").addClass("disabled");
-            $("#ms-partiallylevel0 [class*=ms-elem-selection]").addClass("disabled");
-        }
-        else {
-            $('#srow_' + x2).find('input, textarea, button, select').attr('disabled', 'disabled');
-            $("#ms-selected_comesub" + x2 + " [class*=ms-elem-selectable]").addClass("disabled");
-            $("#ms-selected_comesub" + x2 + " [class*=ms-elem-selection]").addClass("disabled");
-            $("#ms-partiallylevel" + x2 + " [class*=ms-elem-selectable]").addClass("disabled");
-            $("#ms-partiallylevel" + x2 + " [class*=ms-elem-selection]").addClass("disabled");
-        }
-        x2++;
 
-
-        var subfieldHTML = `
-        <div id="srow_${x2}">
-            <div id="ststatussub${x2}">
-                <div class="form-group row">
-                    <label class="col-md-3 col-form-label">Select State / UT</label>
-                    <div class="col-md-9 pt-2">
-                        <select id="stategetsub${x2}" onchange="return get_district_popup_list_ii(this, ${x2});" name="stategetsub[]"></select>
-                    </div>
-                </div>
-            </div>
-
-            <div style="display: none;" id="districtstatussub${x2}">
-                <div class="form-group row">
-                    <label class="col-md-3 col-form-label">Select District</label>
-                    <div class="col-md-9 pt-2">
-                        <select id="districtgetsub${x2}" onchange="return get_district_popup_sublist_ii(this, ${x2});" name="districtgetsub[]"></select>
-                    </div>
-                </div>
-            </div>
-
-            <div style="display: none;" id="subdistrictstatussub${x2}">
-                <div class="form-group row">
-                    <label class="col-md-3 col-form-label">Select Sub-District</label>
-                    <div class="col-md-9 pt-2">
-                        <select id="subdistrictgetsub${x2}" onchange="return get_sub_district_popup_list_ii(this, ${x2});" name="subdistrictgetsub[]">
-                            <option value="">Select Sub-District</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            
-            <fieldset style="display: none;" class="let" id="let${x2}">
-                <legend class="chha">Action On <span id="comespan${x2}"></span></legend>
-                <div id="adddataofsub${x2}">
-                    <div class="form-group row">
-                        <div class="col-md-2 pt-2">
-                            <label id="addlablesub1${x2}"></label>
-                        </div>
-                        <div id="villagepicklist${x2}"></div>
-                        <div class="col-md-5 pt-2 mt-1">
-                            <label for="oremove">Submerge with Sea / River / Any Other</label>
-                        </div>
-                        <div class="col-md-8 offset-md-2 pt-2">
-                            <textarea class="form-control sub-remark" onkeyup="HandleButton3(this.value)" required placeholder="Remark" rows="4" name="remarksubmerge[]" id="remarksubmerge${x2}"></textarea>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-            <div class="col-md-1 pt-2">
-                <button type="button" class = "btn-block btn-primary btn-rounded waves-effect waves-light remove_button_sub" >
-                    <i class = "fas fa-times-circle" ></i>
-                </button>
-            </div>
-        </div>
-        `;
-        $(wrapper_sub).append(subfieldHTML);
-
-        if (seleted == 'Village / Town') {
-            $(".ST, .DT, .SD, .SD1, .AC, .VAC, .OR").removeClass("col-md-3");
-            $(".ST, .DT, .SD, .SD1, .AC, .VAC, .OR").addClass("col-md-2");
-
-            var fstids = $('select[name="stategetsub[]"] option:selected').map(function () {
-                if (this.value != '') {
-                    return this.value;
-                }
-            }).get();
-
-            var tstids = $('#tstids').val();
-            var tdtids = $('#tdtids').val();
-            var tsdids = $('#tsdids').val();
-
-            lalo = 'getdataofpopup';
-            lalo1 = `&clickpopup=${clickpopup}&fstids=${fstids}&fdtids=${fdtids}&fsdids=${fsdids}&tstids=${tstids}&tdtids=${tdtids}&tsdids=${tsdids}`;
-            $.ajax({
-                type: "POST",
-                url: "insert_data.php",
-                data: `formname=${lalo}&comefrom=${seleted}${lalo1}`
-            }).done(function (result) {
-                var finalresult = result.split("|");
-                if (finalresult[8] !== 'null') {
-                    if (seleted == 'Village / Town' && clickpopup == 'submerge') {
-                        $("#stategetsub" + x2).children().remove();
-                        $("#stategetsub" + x2).append($('<option>', {
-                            value: '',
-                            text: 'Select State / UT',
-                        }));
-
-                        if (stateid != '' && statename != '') {
-                            $("#stategetsub" + x2).append($('<option>', {
-                                value: stateid,
-                                text: statename,
-                            }));
-                        } else {
-                            $(JSON.parse(finalresult[8])).each(function () {
-                                $("#stategetsub" + x2).append($('<option>', {
-                                    value: this.id,
-                                    text: this.Name,
-                                }));
-                            });
-                        }
-
-                        if (stateid != '') {
-                            $('#stategetsub' + x2).val(stateid).trigger('change');
-                        } else {
-                            $('#stategetsub' + x2).val('').trigger('change');
-                        }
-                    }
-                }
-            });
-
-            $("select").select2();
-            $('select.form-select').select2({
-                maximumInputLength: 20
-            });
-        }
-    }
-});
-// Ends
-// JC_11
-$(".closepopup").click(function () {
-    ResetRowNumber();
-    x2 = 1; // jc_b
-});
-// Ends
 
     $(wrapper).on('click', '.remove_button', function(e) {
         e.preventDefault();
@@ -2388,46 +2213,6 @@ $(".closepopup").click(function () {
 
     });
 
-    // jc_b
-    $(wrapper_sub).on('click', '.remove_button_sub', function(e) {
-        e.preventDefault();
-        $(this).parent().parent('div').remove();
-        addButtonSub.attr('disabled', false);
-        x2--;
-        if(x2==1)
-        {
-
-            if($('#0').prop('checked')){
-                $('#srow_1').find('input, textarea, button, select').removeAttr('disabled','disabled');  
-                $("#ms-partiallylevel0 [class*=ms-elem-selectable]").removeClass("disabled");
-                $("#ms-partiallylevel0 [class*=ms-elem-selection]").removeClass("disabled");
-            }else {
-                $('#srow_1').find('input, textarea, button, select').removeAttr('disabled','disabled');  
-                $("#ms-selected_comesub0 [class*=ms-elem-selectable]").removeClass("disabled");
-                $("#ms-selected_comesub0 [class*=ms-elem-selection]").removeClass("disabled");
-                $("#ms-partiallylevel0 [class*=ms-elem-selectable]").removeClass("disabled");
-                $("#ms-partiallylevel0 [class*=ms-elem-selection]").removeClass("disabled"); 
-            }
-        }
-        else
-        {
-            if($('#'+x2).prop('checked')){
-                $('#srow_'+x2).find('input, textarea, button, select').removeAttr('disabled','disabled');  
-                $("#ms-partiallylevel"+x2+" [class*=ms-elem-selectable]").removeClass("disabled");
-                $("#ms-partiallylevel"+x2+" [class*=ms-elem-selection]").removeClass("disabled");
-            }else {
-                $('#srow_'+x2).find('input, textarea, button, select').removeAttr('disabled','disabled');  
-                $("#ms-selected_comesub"+x2+" [class*=ms-elem-selectable]").removeClass("disabled");
-                $("#ms-selected_comesub"+x2+" [class*=ms-elem-selection]").removeClass("disabled"); 
-                $("#ms-partiallylevel"+x2+" [class*=ms-elem-selectable]").removeClass("disabled");
-                $("#ms-partiallylevel"+x2+" [class*=ms-elem-selection]").removeClass("disabled"); 
-            }
-        }
-
-
-    });
-    // ends
-    
  $(wrapper_name).on('keyup', '.newnamecheck', function(e) {
 
  
